@@ -10,7 +10,14 @@ class JSONStorage(StorageStrategy):
     pass
     
 class PickleStorage(StorageStrategy):
-    pass
+    def __init__(self, savefile):
+        self.savefile = savefile
+
+    def load_all(self):
+        pass
+
+    def save_all(self):
+        pass
     
 class SQLiteStorage(StorageStrategy):
     pass
