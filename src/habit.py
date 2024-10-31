@@ -9,11 +9,12 @@ class Period(Enum):
 
 @dataclass
 class Habit:
-    id: int
+    #id: int
     description: str
     period: Period
     #timeline: List[]
     isTracked: bool
+    streak : int
 
 @dataclass
 class HabitList:
@@ -26,3 +27,8 @@ class HabitList:
         return [habit for habit in self.habitlist
                  if habit.period == period and habit.isTracked]
     
+    def return_longest_streak_all(self, habit: Habit) -> int:
+        return 0 #placeholder
+
+    def return_longest_streak(self, habit: Habit) -> int:
+        return 0 #placeholder
