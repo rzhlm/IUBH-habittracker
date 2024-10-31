@@ -19,9 +19,10 @@ class Habit:
 class HabitList:
     habitlist : List[Habit]
 
-    def return_all(self) -> List[Habit]:
+    def return_tracked(self) -> List[Habit]:
         return [habit for habit in self.habitlist if habit.isTracked]
     
     def return_same_period(self, period: Period) -> List[Habit]:
-        return [habit for habit in self.habitlist if habit.period == period]
+        return [habit for habit in self.habitlist
+                 if habit.period == period and habit.isTracked]
     

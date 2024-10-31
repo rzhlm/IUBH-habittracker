@@ -3,6 +3,8 @@
 - [ ] Return longest streak of all habits
 - [ ] Return longest streak for chosen habits
 
+- [ ] MAKE TESTS FOR FUNCS & METHODS
+
 - [ ]  Habit has action & period
 -  [ ] An action/task can be checked off
 -  [ ] Miss = break
