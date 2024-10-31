@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum, auto
 
 class StorageType(Enum):
-    PICKLE = 1,
-    JSON = 2,
-    SQLITE = 3
+    PICKLE = auto(),
+    JSON = auto(),
+    SQLITE = auto()

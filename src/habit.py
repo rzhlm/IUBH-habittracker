@@ -1,6 +1,20 @@
+from dataclasses import dataclass
+from enum import Enum, auto
+from typing import List
+
+class Period(Enum):
+    daily = auto()
+    weekly = auto()
+    monthly = auto()
+
+@dataclass
 class Habit:
-    def __init__(self, description, period, timeline=None):
-        self.id = id
-        self.description = description
-        self.period = period
-        self.timeline = timeline
+    id: int
+    description: str
+    period: Period
+    timeline: List[]
+    isTracked: bool
+
+@dataclass
+class HabitList:
+    habitlist : List[Habit]
