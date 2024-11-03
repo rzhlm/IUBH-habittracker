@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import List
 
@@ -22,7 +22,7 @@ class Habit:
 
 @dataclass
 class HabitList:
-    _habitlist : List[Habit]
+    _habitlist : List[Habit] = field(default_factory=list)
 
     def return_tracked(self) -> List[Habit]:
         return [habit for habit in self._habitlist if habit.isTracked]
