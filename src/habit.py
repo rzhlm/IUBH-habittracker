@@ -22,21 +22,28 @@ class Habit:
 
 @dataclass
 class HabitList:
-    habitlist : List[Habit]
+    _habitlist : List[Habit]
 
     def return_tracked(self) -> List[Habit]:
-        return [habit for habit in self.habitlist if habit.isTracked]
+        return [habit for habit in self._habitlist if habit.isTracked]
     
     def return_same_period(self, period: Period) -> List[Habit]:
-        return [habit for habit in self.habitlist
+        return [habit for habit in self._habitlist
                  if habit.period == period and habit.isTracked]
     
     def return_longest_streak_all(self, habit: Habit) -> int:
         #longest: int = -1
         #ft = filter(, self.habitlist)
-        return max([length.streak for length in self.habitlist])
+        # TODO: check behaviour when multiple values or empty
+        return max([length.streak for length in self._habitlist])
+        
         
     def return_longest_streak(self, habit: Habit) -> int:
-        return max([stored_habit.streak for stored_habit in self.habitlist
+        # TODO: check behaviour when multiple values or empty
+        return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
+        
+
+    def add_habit(self, habit: Habit) -> None:
+        self._habitlist.append(habit)
         
