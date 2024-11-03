@@ -11,10 +11,14 @@ class Period(Enum):
 class Habit:
     #id: int
     description: str
+    creation_data: str
     period: Period
     #timeline: List[]
     isTracked: bool
     streak : int
+    # Use @property method for streak calculation?
+    # But how to know beforehand if at currenttime streak is still valid?
+
 
 @dataclass
 class HabitList:
@@ -28,7 +32,11 @@ class HabitList:
                  if habit.period == period and habit.isTracked]
     
     def return_longest_streak_all(self, habit: Habit) -> int:
-        return 0 #placeholder
-
+        #longest: int = -1
+        #ft = filter(, self.habitlist)
+        return max([length.streak for length in self.habitlist])
+        
     def return_longest_streak(self, habit: Habit) -> int:
-        return 0 #placeholder
+        return max([stored_habit.streak for stored_habit in self.habitlist
+                     if stored_habit == habit ])
+        

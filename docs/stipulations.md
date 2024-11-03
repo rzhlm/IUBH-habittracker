@@ -1,7 +1,7 @@
 - [x] Give list of all tracked habits
 - [x] Give list of all habits with same period
-- [ ] Return longest streak of all habits
-- [ ] Return longest streak for chosen habits
+- [x] Return longest streak of all habits
+- [x] Return longest streak for chosen habits
 
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
