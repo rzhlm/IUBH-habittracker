@@ -1,6 +1,7 @@
 import json
 from habit import Period, Habit, HabitList
 from typing import List
+from enum import Enum
 
 
 class Storage:
@@ -30,9 +31,9 @@ class Storage:
         return habit_dict
 
     def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
-        description: str = data["description"]
-        creation: str = data["creation"]
-        period: Period = Period[data["period"]]
-        isTracked : bool = data["isTracked"]
-        streak = data["streak"]
+        description: str = str(data["description"])
+        creation: str = str(data["creation"])
+        period: Period = Period[str(data["period"])]
+        isTracked : bool = bool(data["isTracked"])
+        streak = int(data["streak"])
         return Habit(description, creation, period, isTracked, streak)
