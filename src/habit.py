@@ -31,7 +31,7 @@ class HabitList:
         return [habit for habit in self._habitlist
                  if habit.period == period and habit.isTracked]
     
-    def return_longest_streak_all(self, habit: Habit) -> int:
+    def return_longest_streak_all(self) -> int:
         #longest: int = -1
         #ft = filter(, self.habitlist)
         # TODO: check behaviour when multiple values or empty
@@ -39,7 +39,7 @@ class HabitList:
         
         
     def return_longest_streak(self, habit: Habit) -> int:
-        # TODO: check behaviour when multiple values or empty
+        # TODO: check behaviour when returning multiple values or empty
         return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
         
