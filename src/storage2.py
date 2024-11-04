@@ -1,7 +1,6 @@
 import json
 from habit import Period, Habit, HabitList
 from typing import List
-from enum import Enum
 
 
 class Storage:
