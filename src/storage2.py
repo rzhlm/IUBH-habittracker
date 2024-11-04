@@ -14,7 +14,7 @@ class Storage:
     def load(self) -> HabitList:
         with open("savefile.sav","r") as file:
             data = json.load(file)
-            habits: List[Habit] = [from_JSON(habit) 
+            habits: List[Habit] = [self.from_JSON(habit) 
                       for habit in data["_habitlist"]]
             return HabitList(habits)
 
@@ -29,10 +29,10 @@ class Storage:
         }
         return habit_dict
 
-    def from_JSON(self, data: dict):
-        description = data["description"]
-        creation = data["creation"]
-        period=Period[data["period"]]
-        isTracked = data["isTracked"]
+    def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
+        description: str = data["description"]
+        creation: str = data["creation"]
+        period: Period = Period[data["period"]]
+        isTracked : bool = data["isTracked"]
         streak = data["streak"]
-        return Habit(description,creation,period, isTracked,streak)
+        return Habit(description, creation, period, isTracked, streak)
