@@ -1,18 +1,19 @@
 import json
-from habit import Period, Habit, HabitList
+from src.habit import Period, Habit, HabitList
 from typing import List
 
 
 class Storage:
-    def save(self, habit_list: HabitList) -> None:
-        with open("savefile.sav","w") as file:
+    def save(self, 
+             habit_list: HabitList, filename: str="savefile.sav") -> None:
+        with open(filename,"w") as file:
             json.dump({"_habitlist":
                        [self.to_JSON(habit) 
                         for habit in habit_list._habitlist]
                        }, file)
 
-    def load(self) -> HabitList:
-        with open("savefile.sav","r") as file:
+    def load(self, filename: str="savefile.sav") -> HabitList:
+        with open(filename,"r") as file:
             data = json.load(file)
             habits: List[Habit] = [self.from_JSON(habit) 
                       for habit in data["_habitlist"]]
