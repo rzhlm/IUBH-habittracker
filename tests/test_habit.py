@@ -23,7 +23,7 @@ def create_habits() -> List[Habit]:
     ]
 
 @pytest.fixture()
-def habit_list(create_habits: List[Habit]) -> HabitList:
+def habit_list(create_habits) -> HabitList:
     hl: HabitList = HabitList(create_habits)
     return hl
 """

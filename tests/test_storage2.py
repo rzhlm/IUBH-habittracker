@@ -1,12 +1,12 @@
-import pytest
+import pytest #apparently not needed according to typechecker. Works without
 from src.storage2 import Storage
-from src.habit import Period, Habit, HabitList
-from tests.test_habit import create_habits, habit_list
+from src.habit import HabitList #, Period, Habit
+from tests.test_habit import habit_list, create_habits
 #from typing import List, Callable
 import os
 
-st = Storage()
-testfile: str = "test_save.sav"
+#st = Storage()
+testfile_name: str = "test_save.sav"
 
 """
 @pytest.fixture
@@ -30,7 +30,17 @@ def create_habits() -> List[Habit]:
 
 """
 
-def test_save(habit_list, testfile: str):
+# This is plain misery:
+
+@pytest.fixture
+def testfile() -> str:
+    return testfile_name
+
+@pytest.fixture
+def st() -> Storage:
+    return Storage()
+
+def test_save(st: Storage, habit_list: HabitList, testfile: str):
     
     if os.path.exists(testfile):
         os.remove(testfile)
@@ -44,7 +54,7 @@ def test_save(habit_list, testfile: str):
     
     
 
-def test_load(testfile: str):
+def test_load(st: Storage, habit_list: HabitList, testfile: str):
     
     st.save(habit_list, testfile)
     hl = st.load(testfile)

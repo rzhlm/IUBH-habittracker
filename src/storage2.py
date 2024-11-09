@@ -32,7 +32,7 @@ class Storage:
 
     def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
         description: str = str(data["description"])
-        creation: str = str(data["creation"])
+        creation: str = str(data["creation_data"])
         period: Period = Period[str(data["period"])]
         isTracked : bool = bool(data["isTracked"])
         streak = int(data["streak"])
