@@ -1,8 +1,8 @@
 import pytest #apparently not needed according to typechecker. Works without
 from src.storage2 import Storage
-from src.habit import HabitList #, Period, Habit
+from src.habit import Habit, HabitList #, Period
 from tests.test_habit import habit_list, create_habits
-#from typing import List, Callable
+from typing import List
 import os
 
 #st = Storage()
@@ -67,8 +67,27 @@ def test_load(st: Storage, habit_list: HabitList, testfile: str):
     os.remove(testfile)
 
 
-def test_to_JSON():
-    pass
+def test_to_JSON(st: Storage, create_habits: List[Habit]):
+    first_habit = create_habits[0]
+    #print(st.to_JSON(first_habit))
+    correct: dict =  {"description": "daily_Habit_tracked",
+                 "creation_data": "2023-11-1", 
+                 "period": "daily", 
+                 "isTracked": True,
+                  "streak": 5}
+    assert st.to_JSON(first_habit) == correct
 
-def test_from_JSON():
-    pass
+def test_from_JSON(st: Storage, ):
+    test_habit: dict = {
+        "description": "daily_Habit_tracked",
+        "creation_data": "2023-11-1",
+        "period": "daily",
+        "isTracked": True,
+        "streak": 5}
+    habit = st.from_JSON(test_habit)
+
+    assert habit.description == test_habit["description"]
+    assert habit.creation_data == test_habit["creation_data"]
+    assert habit.period.name == test_habit["period"]
+    assert habit.isTracked == test_habit["isTracked"]
+    assert habit.streak == test_habit["streak"]
