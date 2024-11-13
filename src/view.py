@@ -34,12 +34,12 @@ class TUI:
     def __init__(self):
         #choices: List[str] = []
         #choices = namedtuple("Choices", ["name", "command", "func"])
-        main = ChoicesNT("Main menu","m",goto_main)
-        quickmark = ChoicesNT("Quick mark","qm", goto_qm)
-        analysis = ChoicesNT("Analysis", "a", goto_analysis)
-        show_list = ChoicesNT("Show list", "sl", goto_showlist)
-        add_habit = ChoicesNT("Add Habit", "ah", goto_add)
-        edit = ChoicesNT("Edit", "e", goto_edit)
+        main = ChoicesNT("Main menu","m","goto_main")
+        quickmark = ChoicesNT("Quick mark","qm", "goto_qm")
+        analysis = ChoicesNT("Analysis", "a", "goto_analysis")
+        show_list = ChoicesNT("Show list", "sl", "goto_showlist")
+        add_habit = ChoicesNT("Add Habit", "ah", "goto_add")
+        edit = ChoicesNT("Edit", "e", "goto_edit")
         
 
     def splash_screen(self):
@@ -52,7 +52,21 @@ class TUI:
     def interact(self):
         self.splash_screen()
         while True:
-            pass
+            #print all options:
+
+            inp = input("Make your choice: ")
+            # make this into a class, but which type?
+            match inp:
+                case "q":
+                    break
+                case _:
+                    continue
+            
 
 class GUI:
     pass
+
+
+if __name__ == "__main__":
+    t = TUI()
+    t.interact()
