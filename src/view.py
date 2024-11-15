@@ -45,6 +45,12 @@ class TUI:
     
     def __init__(self):
         self.choices = self.init_choices()
+        self.colors = {
+            "red": "\033[31m",
+            "yellow" : "\033[0;33m",
+            "green" : "\033[0;32m",
+            "reset" : "\033[0m"
+        }
         self.color = "\033[31m" # red
         self.reset = "\033[0m" # reset
 
@@ -58,52 +64,59 @@ class TUI:
         Choice3("Edit", "e", self.goto_edit),
         ]
         
-    def splash_screen(self):
+    def splash_screen(self) -> None:
         
         welcome = """
             WELCOME TO THE HABIT TRACKING APP !
-            ====================================
+            ===================================
         """
         
     
         print(welcome)
-        print(Motivational.motivational)
+        # make some kind of animation and/or music
+        #print(Motivational.motivational)
+        print("first screen")
+        # TODO: make sure not Win Console or default Mac Terminal
         
-    def show_choices(self):
+    def show_choices(self) -> None:
+        # TODO: somekind of decorator or print_color function
         print("Choose an option: ")
+        #cmd = f""
         for choice in self.choices:
-            print(f"[{self.color}{choice.command}{self.reset}] \t{choice.name}")
+            print(f"[{self.colors["yellow"]}{choice.command}{self.reset}] \t{choice.name}")
             # eg: [e] Edit
-        print(f"[{self.color}q{self.reset}] \tQuit")
+        print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
     def do_input(self, input_action: str):
         for choice in self.choices:
-            if input_action == self.choice:
+            if input_action == choice.command:
                 choice.func()
                 return
-        print("Input not valid")
+        return f"{self.colors["red"]}Input not valid{self.colors["reset"]}"
         
 
-    def interact(self):
+    def interact(self, message: str ="") -> None:
         self.splash_screen()
         while True:
+            
+            print(message)
             self.show_choices()
-            #print all options:
-            #color = "\033[31m" #red
-            inp = input("Make your choice: ")
-            #print("\033[0m") # reset
+            # TODO: somekind of decorator or print_color function
+            inp = input(f"{self.colors["yellow"]}Make your choice: {self.colors["reset"]}")
 
-            # make this into a class, but which type?
             match inp:
                 case "q":
                     print("Quitting...")
                     break
                 case _:
-                    self.do_input
+                    self.do_input(inp)
             
 
     def goto_main(self):
+        #break
+        
         pass
+
     def goto_qm(self):
         pass
     def goto_analysis(self):
