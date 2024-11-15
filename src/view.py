@@ -4,11 +4,14 @@ from enum import Enum, auto
 from typing import NamedTuple, Callable
 from constants import Motivational
 from dataclasses import dataclass
+import os
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
 # and only allow a single instance at a time
 
+
+"""
 class ChoicesE(Enum):
     main = auto()
     quickmark = auto()
@@ -21,6 +24,7 @@ class ChoicesNT(NamedTuple):
     name: str
     command: str
     func: Callable[[],None]
+"""
 
 @dataclass
 class Choice3:
@@ -40,6 +44,20 @@ class View:
     
     def UI(self):
         pass
+
+
+# TUI: interact -> splash -> show_choices -> do_input
+#
+# interact
+#   -> Splash
+#   Loop:
+#       -> Show choices
+#       -> take input
+#       input valid:
+#           -> do_input
+#               -> goto chosen function
+#       input invalid:
+#           -> error message
 
 class TUI:
     
@@ -62,6 +80,7 @@ class TUI:
         Choice3("Show list", "sl", self.goto_showlist),
         Choice3("Add Habit", "ah", self.goto_add),
         Choice3("Edit", "e", self.goto_edit),
+        Choice3("Quit","q",self.goto_quit)
         ]
         
     def splash_screen(self) -> None:
@@ -71,12 +90,14 @@ class TUI:
             ===================================
         """
         
-    
+        self.clear()
         print(welcome)
-        # make some kind of animation and/or music
-        #print(Motivational.motivational)
+        # TODO: make some kind of animation and/or music
+        print(Motivational.motivational)
         print("first screen")
         # TODO: make sure not Win Console or default Mac Terminal
+        #print("press any key to continue")
+        os.system('pause')
         
     def show_choices(self) -> None:
         # TODO: somekind of decorator or print_color function
@@ -85,49 +106,75 @@ class TUI:
         for choice in self.choices:
             print(f"[{self.colors["yellow"]}{choice.command}{self.reset}] \t{choice.name}")
             # eg: [e] Edit
-        print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
+        #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
     def do_input(self, input_action: str):
+        if input_action not in [choice.command for choice in self.choices]:
+                self.invalid_input()
+                return
         for choice in self.choices:
             if input_action == choice.command:
                 choice.func()
                 return
-        return f"{self.colors["red"]}Input not valid{self.colors["reset"]}"
+            
         
 
     def interact(self, message: str ="") -> None:
+        #self.clear()
         self.splash_screen()
         while True:
             
-            print(message)
+            #print(message)
             self.show_choices()
             # TODO: somekind of decorator or print_color function
             inp = input(f"{self.colors["yellow"]}Make your choice: {self.colors["reset"]}")
 
-            match inp:
-                case "q":
-                    print("Quitting...")
-                    break
-                case _:
-                    self.do_input(inp)
-            
+            try:
+                self.do_input(inp.lower())
+            except:
+                print("first exit")
+                break
+        
+        print("exited main loop")
 
     def goto_main(self):
         #break
+        self.clear()
+        #print("inside main")
         
         pass
 
-    def goto_qm(self):
-        pass
-    def goto_analysis(self):
-        pass
-    def goto_showlist(self):
-        pass
-    def goto_add(self):
-        pass
-    def goto_edit(self):
-        pass
+    
+    def invalid_input(self):
+        self.clear()
+        print(f"{self.colors["red"]}Input not valid{self.colors["reset"]}")
 
+    def goto_qm(self):
+        self.clear()
+        print("inside QM")
+
+    def goto_analysis(self):
+        self.clear()
+        # SHOULD CALL THE FUNCTIONAL ANALYSIS MODULE
+        print("inside analysis")
+
+    def goto_showlist(self):
+        self.clear()
+        print("inside show list")
+
+    def goto_add(self):
+        self.clear()
+        print("inside add")
+
+    def goto_edit(self):
+        self.clear()
+        print("inside edit")
+
+    def goto_quit(self):
+        raise Exception()
+
+    def clear(self):
+        os.system('cls' if os.name=='nt' else 'clear')
 class GUI:
     pass
 
