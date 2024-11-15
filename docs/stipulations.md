@@ -15,6 +15,7 @@
 -  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
 -  [ ] creation date + date/time of task completion
 
+- [ ] add notice to use winterminal, not console
 
 # UI flow
 ```mermaid
