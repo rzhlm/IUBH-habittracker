@@ -1,10 +1,11 @@
 from typing import List
-from enum import Enum, auto
+#from enum import Enum, auto
 #from collections import namedtuple
 from typing import NamedTuple, Callable
 from constants import Motivational
 from dataclasses import dataclass
 import os
+from controller import Controller
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
@@ -61,7 +62,8 @@ class View:
 
 class TUI:
     
-    def __init__(self):
+    def __init__(self, controller: Controller = None):
+        self.controller = controller
         self.choices = self.init_choices()
         self.colors = {
             "red": "\033[31m",
@@ -69,8 +71,8 @@ class TUI:
             "green" : "\033[0;32m",
             "reset" : "\033[0m"
         }
-        self.color = "\033[31m" # red
-        self.reset = "\033[0m" # reset
+        #self.color = "\033[31m" # red
+        #self.reset = "\033[0m" # reset
 
     def init_choices(self) -> List[Choice3]:
         return [
@@ -104,7 +106,7 @@ class TUI:
         print("Choose an option: ")
         #cmd = f""
         for choice in self.choices:
-            print(f"[{self.colors["yellow"]}{choice.command}{self.reset}] \t{choice.name}")
+            print(f"[{self.colors["yellow"]}{choice.command}{self.colors["reset"]}] \t{choice.name}")
             # eg: [e] Edit
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
@@ -117,14 +119,10 @@ class TUI:
                 choice.func()
                 return
             
-        
-
     def interact(self, message: str ="") -> None:
         #self.clear()
         self.splash_screen()
         while True:
-            
-            #print(message)
             self.show_choices()
             # TODO: somekind of decorator or print_color function
             inp = input(f"{self.colors["yellow"]}Make your choice: {self.colors["reset"]}")
@@ -137,6 +135,10 @@ class TUI:
         
         print("exited main loop")
 
+    def invalid_input(self):
+        self.clear()
+        print(f"{self.colors["red"]}Input not valid{self.colors["reset"]}")
+
     def goto_main(self):
         #break
         self.clear()
@@ -144,14 +146,14 @@ class TUI:
         
         pass
 
-    
-    def invalid_input(self):
-        self.clear()
-        print(f"{self.colors["red"]}Input not valid{self.colors["reset"]}")
-
     def goto_qm(self):
         self.clear()
-        print("inside QM")
+
+        # Control logic
+        self.controller.do_qm()
+        # view logic
+        print("2.inside QM (TUI)")
+
 
     def goto_analysis(self):
         self.clear()
@@ -171,6 +173,8 @@ class TUI:
         print("inside edit")
 
     def goto_quit(self):
+        self.clear()
+        print("Bye!")
         raise Exception()
 
     def clear(self):
@@ -180,5 +184,7 @@ class GUI:
 
 
 if __name__ == "__main__":
-    t = TUI()
+    
+    controller = Controller()
+    t = TUI(controller)
     t.interact()
