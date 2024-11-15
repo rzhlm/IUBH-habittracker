@@ -15,7 +15,7 @@
 -  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
 -  [ ] creation date + date/time of task completion
 
-- [ ] add notice to use winterminal, not console
+- [ ] add notice to best use winterminal, not console; nor default Mac terminal
 
 # UI flow
 ```mermaid
