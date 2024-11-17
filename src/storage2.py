@@ -4,16 +4,22 @@ from typing import List
 
 
 class Storage:
+    def __init__(self, savefile: str = "savefile.sav"):
+        self.savefile = savefile
+
     def save(self, 
-             habit_list: HabitList, filename: str="savefile.sav") -> None:
-        with open(filename,"w") as file:
+             #habit_list: HabitList, filename: str = "savefile.sav") -> None:
+             habit_list: HabitList) -> None:
+        #with open(filename,"w") as file:
+        with open(self.savefile, 'r') as file:
             json.dump({"_habitlist":
                        [self.to_JSON(habit) 
-                        for habit in habit_list._habitlist]
+                        for habit in habit_list.return_all()]
                        }, file)
 
-    def load(self, filename: str="savefile.sav") -> HabitList:
-        with open(filename,"r") as file:
+    #def load(self, filename: str = "savefile.sav") -> HabitList:
+    def load(self) -> HabitList:
+        with open(self.savefile,"r") as file:
             data = json.load(file)
             habits: List[Habit] = [self.from_JSON(habit) 
                       for habit in data["_habitlist"]]

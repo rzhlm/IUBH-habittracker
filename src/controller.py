@@ -1,7 +1,11 @@
+from habit import Habit, HabitList
+from storage2 import Storage
+
 class Controller:
-    def __init__(self, habits=None, storage=None):
-        self.habits = habits
-        self.storage = storage
+    def __init__(self, habitlist: HabitList = None,
+                  storage: Storage = None):
+        self.habitlist: HabitList = habitlist
+        self.storage : Storage = storage
         pass
 
     def do_qm(self):
@@ -22,3 +26,8 @@ class Controller:
     def do_quit(self):
         print("1.Inside Quit (controller)")
         pass
+
+if __name__ == '__main__':
+    # for testing & dev purposes
+    st = Storage()
+    hl: HabitList = Storage.load()

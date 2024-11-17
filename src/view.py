@@ -169,6 +169,7 @@ class TUI:
         self.clear()
         # Control logic
         self.controller.do_showlist()
+
         # view logic
         print("2.inside Showlist (TUI)")
 
@@ -207,7 +208,7 @@ class GUI:
 
 
 if __name__ == "__main__":
-    
+    # for testing & dev purposes
     controller = Controller()
-    t = TUI(controller)
-    t.interact()
+    tui = TUI(controller)
+    tui.interact()

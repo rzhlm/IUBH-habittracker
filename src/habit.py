@@ -18,12 +18,20 @@ class Habit:
     streak : int
     # Use @property method for streak calculation?
     # But how to know beforehand if at currenttime streak is still valid?
-
+    def toggle_tracked(self):
+        self.isTracked = not self.isTracked
+    def un_track(self):
+        self.isTracked = False
+    def track(self):
+        self.isTracked = True
 
 @dataclass
 class HabitList:
     _habitlist : List[Habit] = field(default_factory=list)
 
+    def return_all(self) -> List[Habit]:
+        return self._habitlist
+    
     def return_tracked(self) -> List[Habit]:
         return [habit for habit in self._habitlist if habit.isTracked]
     
@@ -43,7 +51,8 @@ class HabitList:
         return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
         
-
     def add_habit(self, habit: Habit) -> None:
         self._habitlist.append(habit)
+
+
         
