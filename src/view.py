@@ -99,7 +99,8 @@ class TUI:
         print("first screen")
         # TODO: make sure not Win Console or default Mac Terminal
         #print("press any key to continue")
-        os.system('pause')
+        #os.system('pause')
+        self.pause()
         
     def show_choices(self) -> None:
         # TODO: somekind of decorator or print_color function
@@ -158,27 +159,49 @@ class TUI:
     def goto_analysis(self):
         self.clear()
         # SHOULD CALL THE FUNCTIONAL ANALYSIS MODULE
-        print("inside analysis")
+        
+        # Control logic
+        self.controller.do_analysis()
+        # view logic
+        print("2.inside Analysis (TUI)")
 
     def goto_showlist(self):
         self.clear()
-        print("inside show list")
+        # Control logic
+        self.controller.do_showlist()
+        # view logic
+        print("2.inside Showlist (TUI)")
 
     def goto_add(self):
         self.clear()
-        print("inside add")
+        # Control logic
+        self.controller.do_add()
+        # view logic
+        print("2.inside Add (TUI)")
 
     def goto_edit(self):
         self.clear()
-        print("inside edit")
+        # Control logic
+        self.controller.do_edit()
+        # view logic
+        print("2.inside Edit (TUI)")
 
     def goto_quit(self):
         self.clear()
+        
+        #Controller logic
+        self.controller.do_quit()
+        # View logic:
+        print("2. Inside Quit (view)")
         print("Bye!")
         raise Exception()
 
     def clear(self):
-        os.system('cls' if os.name=='nt' else 'clear')
+        os.system('cls' if os.name == 'nt' else 'clear')
+    
+    def pause(self):
+        os.system('pause' if os.name == 'nt' 
+        else 'read -p "Press any key to continue (POSIX)" -n 1 -r -s')
 class GUI:
     pass
 
