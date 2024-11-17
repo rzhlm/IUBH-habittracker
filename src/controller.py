@@ -30,4 +30,4 @@ class Controller:
 if __name__ == '__main__':
     # for testing & dev purposes
     st = Storage()
-    hl: HabitList = Storage.load()
+    hl: HabitList = st.load()

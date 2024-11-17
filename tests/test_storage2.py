@@ -6,7 +6,7 @@ from typing import List
 import os
 
 #st = Storage()
-testfile_name: str = "test_save.sav"
+
 
 """
 @pytest.fixture
@@ -30,7 +30,10 @@ def create_habits() -> List[Habit]:
 
 """
 
+
+testfile_name: str = "test_save.sav"
 # This is plain misery:
+# It still is.
 
 @pytest.fixture
 def testfile() -> str:
@@ -41,6 +44,7 @@ def st() -> Storage:
     return Storage()
 
 def test_save(st: Storage, habit_list: HabitList, testfile: str):
+#def test_save(st: Storage, habit_list: HabitList):
     
     if os.path.exists(testfile):
         os.remove(testfile)
@@ -49,6 +53,7 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     #hl : HabitList = habit_list
     #hl = habit_list(ch)
     st.save(habit_list, testfile)
+    #st.save(habit_list)
     assert os.path.exists(testfile)
     os.remove(testfile)
     
@@ -57,8 +62,9 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
 def test_load(st: Storage, habit_list: HabitList, testfile: str):
     
     st.save(habit_list, testfile)
-    hl = st.load(testfile)
-    for habit, load_habit in zip(habit_list._habitlist, hl._habitlist):
+    hl: HabitList = st.load(testfile)
+    #hl: HabitList = st.load()
+    for habit, load_habit in zip(habit_list.return_all(), hl.return_all()):
         assert habit.description == load_habit.description
         assert habit.creation_data == load_habit.creation_data
         assert habit.period == load_habit.period
