@@ -71,20 +71,20 @@ class TUI:
             "red": "\033[31m",
             "yellow" : "\033[0;33m",
             "green" : "\033[0;32m",
-            "reset" : "\033[0m"
+            "reset" : "\033[0m",
         }
         #self.color = "\033[31m" # red
         #self.reset = "\033[0m" # reset
 
     def init_menulist(self) -> List[MenuChoices]:
         return [
-        MenuChoices("Main menu","m",self.goto_main),
+        MenuChoices("Main menu","m", self.goto_main),
         MenuChoices("Quick mark","qm",self.goto_qm),
         MenuChoices("Analysis", "a", self.goto_analysis),
         MenuChoices("Show list", "sl", self.goto_showlist),
         MenuChoices("Add Habit", "ah", self.goto_add),
         MenuChoices("Edit", "e", self.goto_edit),
-        MenuChoices("Quit","q",self.goto_quit)
+        MenuChoices("Quit","q", self.goto_quit),
         ]
         
     def splash_screen(self) -> None:
@@ -100,8 +100,6 @@ class TUI:
         print(Motivational.MOTIVATIONAL)
         print("first screen")
         # TODO: make sure not Win Console or default Mac Terminal
-        #print("press any key to continue")
-        #os.system('pause')
         self.pause()
         
     def show_menulist(self) -> None:
@@ -150,6 +148,7 @@ class TUI:
         pass
 
     def goto_qm(self) -> None:
+        """QuickMark: Links the TUI command to the Controller action"""
         self.clear()
 
         # Control logic
@@ -177,6 +176,8 @@ class TUI:
         print("2.inside Showlist (TUI)")
 
     def goto_add(self) -> None:
+        # need to add to habitlist, and give it an ID
+
         self.clear()
         # Control logic
         self.controller.do_add()
@@ -184,6 +185,9 @@ class TUI:
         print("2.inside Add (TUI)")
 
     def goto_edit(self) -> None:
+        # modify everything, except the ID.
+        # also be able to delete (but keep ID)
+
         self.clear()
         # Control logic
         self.controller.do_edit()
@@ -205,7 +209,7 @@ class TUI:
     
     def pause(self) -> None:
         os.system('pause' if os.name == 'nt' 
-        else 'read -p "Press any key to continue (POSIX)" -n 1 -r -s')
+        else 'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s')
 class GUI:
     pass
 

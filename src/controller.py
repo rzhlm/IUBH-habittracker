@@ -19,7 +19,13 @@ class Controller:
         pass
 
     def do_qm(self):
+        """Mark habit as done"""
+        # need to ID the habit, and toggle it
+        # need to know which habits are active for today
+        # freshly added habits should also be active for today
+        
         print("1.inside QM (Controller)")
+        # mark habit as done
         pass
     def do_analysis(self):
         print("1.inside Analysis (Controller)")
