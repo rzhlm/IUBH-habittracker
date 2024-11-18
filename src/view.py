@@ -30,7 +30,7 @@ class ChoicesNT(NamedTuple):
 """
 
 @dataclass
-class Choice3:
+class MenuChoices:
     name: str
     command: str
     func: Callable[[], None]
@@ -64,8 +64,8 @@ class View:
 
 class TUI:
     
-    def __init__(self, controller = None):
-        self.controller = controller
+    def __init__(self, controller: Controller = None):
+        self.controller: Controller = controller
         self.choices = self.init_menulist()
         self.colors = {
             "red": "\033[31m",
@@ -76,15 +76,15 @@ class TUI:
         #self.color = "\033[31m" # red
         #self.reset = "\033[0m" # reset
 
-    def init_menulist(self) -> List[Choice3]:
+    def init_menulist(self) -> List[MenuChoices]:
         return [
-        Choice3("Main menu","m",self.goto_main),
-        Choice3("Quick mark","qm",self.goto_qm),
-        Choice3("Analysis", "a", self.goto_analysis),
-        Choice3("Show list", "sl", self.goto_showlist),
-        Choice3("Add Habit", "ah", self.goto_add),
-        Choice3("Edit", "e", self.goto_edit),
-        Choice3("Quit","q",self.goto_quit)
+        MenuChoices("Main menu","m",self.goto_main),
+        MenuChoices("Quick mark","qm",self.goto_qm),
+        MenuChoices("Analysis", "a", self.goto_analysis),
+        MenuChoices("Show list", "sl", self.goto_showlist),
+        MenuChoices("Add Habit", "ah", self.goto_add),
+        MenuChoices("Edit", "e", self.goto_edit),
+        MenuChoices("Quit","q",self.goto_quit)
         ]
         
     def splash_screen(self) -> None:
@@ -97,7 +97,7 @@ class TUI:
         self.clear()
         print(welcome)
         # TODO: make some kind of animation and/or music
-        print(Motivational.motivational)
+        print(Motivational.MOTIVATIONAL)
         print("first screen")
         # TODO: make sure not Win Console or default Mac Terminal
         #print("press any key to continue")
@@ -113,7 +113,7 @@ class TUI:
             # eg: [e] Edit
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
-    def do_input(self, input_action: str):
+    def do_input(self, input_action: str) -> None:
         if input_action not in [choice.command for choice in self.choices]:
                 self.invalid_input()
                 return
@@ -138,18 +138,18 @@ class TUI:
         
         print("exited main loop")
 
-    def invalid_input(self):
+    def invalid_input(self) -> None:
         self.clear()
         print(f"{self.colors["red"]}Input not valid{self.colors["reset"]}")
 
-    def goto_main(self):
+    def goto_main(self) -> None:
         #break
         self.clear()
         #print("inside main")
         
         pass
 
-    def goto_qm(self):
+    def goto_qm(self) -> None:
         self.clear()
 
         # Control logic
@@ -158,7 +158,7 @@ class TUI:
         print("2.inside QM (TUI)")
 
 
-    def goto_analysis(self):
+    def goto_analysis(self) -> None:
         self.clear()
         # SHOULD CALL THE FUNCTIONAL ANALYSIS MODULE
         
@@ -167,7 +167,7 @@ class TUI:
         # view logic
         print("2.inside Analysis (TUI)")
 
-    def goto_showlist(self):
+    def goto_showlist(self) -> None:
         self.clear()
         # Control logic
         for habit in self.controller.do_showlist():
@@ -176,21 +176,21 @@ class TUI:
         # view logic
         print("2.inside Showlist (TUI)")
 
-    def goto_add(self):
+    def goto_add(self) -> None:
         self.clear()
         # Control logic
         self.controller.do_add()
         # view logic
         print("2.inside Add (TUI)")
 
-    def goto_edit(self):
+    def goto_edit(self) -> None:
         self.clear()
         # Control logic
         self.controller.do_edit()
         # view logic
         print("2.inside Edit (TUI)")
 
-    def goto_quit(self):
+    def goto_quit(self) -> None:
         self.clear()
         
         #Controller logic
@@ -200,10 +200,10 @@ class TUI:
         print("Bye!")
         raise Exception()
 
-    def clear(self):
+    def clear(self) -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
     
-    def pause(self):
+    def pause(self) -> None:
         os.system('pause' if os.name == 'nt' 
         else 'read -p "Press any key to continue (POSIX)" -n 1 -r -s')
 class GUI:
@@ -211,7 +211,8 @@ class GUI:
 
 
 if __name__ == "__main__":
+    pass
     # for testing & dev purposes
-    controller = Controller()
+"""     controller = Controller()
     tui = TUI(controller)
-    tui.interact()
+    tui.interact() """

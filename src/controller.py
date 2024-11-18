@@ -40,10 +40,11 @@ class Controller:
         pass
 
 if __name__ == '__main__':
+    pass
     # for testing & dev purposes
-    st = Storage()
+"""     st = Storage()
     hl: HabitList = st.load("controller.sav")
     c = Controller(hl, st)
 
     tui = TUI(c)
-    tui.interact()
+    tui.interact() """
