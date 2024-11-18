@@ -1,4 +1,9 @@
 from enum import Enum, auto
+from dataclasses import dataclass
+
+@dataclass
+class Settings:
+    FILENAME: str = "savefile.sav"
 
 class StorageType(Enum):
     PICKLE = auto(),
