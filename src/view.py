@@ -5,7 +5,7 @@ from typing import NamedTuple, Callable
 from constants import Motivational
 from dataclasses import dataclass
 import os
-from controller import Controller
+#from controller import Controller
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
@@ -62,9 +62,9 @@ class View:
 
 class TUI:
     
-    def __init__(self, controller: Controller = None):
+    def __init__(self, controller = None):
         self.controller = controller
-        self.choices = self.init_choices()
+        self.choices = self.init_menulist()
         self.colors = {
             "red": "\033[31m",
             "yellow" : "\033[0;33m",
@@ -74,7 +74,7 @@ class TUI:
         #self.color = "\033[31m" # red
         #self.reset = "\033[0m" # reset
 
-    def init_choices(self) -> List[Choice3]:
+    def init_menulist(self) -> List[Choice3]:
         return [
         Choice3("Main menu","m",self.goto_main),
         Choice3("Quick mark","qm",self.goto_qm),
@@ -102,7 +102,7 @@ class TUI:
         #os.system('pause')
         self.pause()
         
-    def show_choices(self) -> None:
+    def show_menulist(self) -> None:
         # TODO: somekind of decorator or print_color function
         print("Choose an option: ")
         #cmd = f""
@@ -124,7 +124,7 @@ class TUI:
         #self.clear()
         self.splash_screen()
         while True:
-            self.show_choices()
+            self.show_menulist()
             # TODO: somekind of decorator or print_color function
             inp = input(f"{self.colors["yellow"]}Make your choice: {self.colors["reset"]}")
 
@@ -168,7 +168,8 @@ class TUI:
     def goto_showlist(self):
         self.clear()
         # Control logic
-        self.controller.do_showlist()
+        for habit in self.controller.do_showlist():
+            print(habit)
 
         # view logic
         print("2.inside Showlist (TUI)")

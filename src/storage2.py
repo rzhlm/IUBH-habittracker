@@ -1,5 +1,8 @@
 import json
 from src.habit import Period, Habit, HabitList
+#from habit import Period, Habit, HabitList
+# -> don't run directly from VSC, run with: python -m src.storage2
+
 from typing import List
 
 
