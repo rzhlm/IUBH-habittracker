@@ -1,11 +1,13 @@
+from __future__ import annotations
 from typing import List
 #from enum import Enum, auto
 #from collections import namedtuple
 from typing import NamedTuple, Callable
-from constants import Motivational
+from src.constants import Motivational
 from dataclasses import dataclass
 import os
 #from controller import Controller
+
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
