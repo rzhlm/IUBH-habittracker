@@ -107,7 +107,7 @@ class TUI:
         print("Choose an option: ")
         #cmd = f""
         for choice in self.choices:
-            print(f"[{self.colors["yellow"]}{choice.command}{self.colors["reset"]}] \t{choice.name}")
+            print(f'[{self.colors["yellow"]}{choice.command}{self.colors["reset"]}] \t{choice.name}')
             # eg: [e] Edit
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
