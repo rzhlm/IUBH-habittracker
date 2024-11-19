@@ -138,7 +138,7 @@ class TUI:
 
     def invalid_input(self) -> None:
         self.clear()
-        print(f"{self.colors["red"]}Input not valid{self.colors["reset"]}")
+        print(f'{self.colors["red"]}Input not valid{self.colors["reset"]}')
 
     def goto_main(self) -> None:
         #break
