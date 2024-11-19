@@ -209,7 +209,7 @@ class TUI:
     
     def pause(self) -> None:
         os.system('pause' if os.name == 'nt' 
-        else 'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s')
+        else 'bash -c \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
 class GUI:
     pass
 
