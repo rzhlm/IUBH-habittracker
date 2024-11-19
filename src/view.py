@@ -126,7 +126,7 @@ class TUI:
         while True:
             self.show_menulist()
             # TODO: somekind of decorator or print_color function
-            inp = input(f"{self.colors["yellow"]}Make your choice: {self.colors["reset"]}")
+            inp = input(f'{self.colors["yellow"]}Make your choice: {self.colors["reset"]}')
 
             try:
                 self.do_input(inp.lower())
