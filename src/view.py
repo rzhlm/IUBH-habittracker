@@ -84,6 +84,7 @@ class TUI:
         MenuChoices("Show list", "sl", self.goto_showlist),
         MenuChoices("Add Habit", "ah", self.goto_add),
         MenuChoices("Edit", "e", self.goto_edit),
+        MenuChoices("Help", "?", self.goto_help),
         MenuChoices("Quit","q", self.goto_quit),
         ]
         
@@ -193,6 +194,12 @@ class TUI:
         self.controller.do_edit()
         # view logic
         print("2.inside Edit (TUI)")
+
+    def goto_help(self) -> None:
+        self.clear()
+        self.controller.do_help()
+        print("2.inside Help (TUI)")
+        
 
     def goto_quit(self) -> None:
         self.clear()

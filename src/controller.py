@@ -23,7 +23,7 @@ class Controller:
         # need to ID the habit, and toggle it
         # need to know which habits are active for today
         # freshly added habits should also be active for today
-        
+
         print("1.inside QM (Controller)")
         # mark habit as done
         pass
@@ -41,6 +41,9 @@ class Controller:
     def do_edit(self):
         print("1. Inside Edit (Controller)")
         pass
+    def do_help(self):
+        print("1. Inside Help (Controller)")
+    
     def do_quit(self):
         print("1.Inside Quit (controller)")
         pass
