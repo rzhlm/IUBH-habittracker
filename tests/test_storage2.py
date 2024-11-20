@@ -1,7 +1,7 @@
 import pytest #apparently not needed according to typechecker. Works without
 from src.storage2 import Storage
 from src.habit import Habit, HabitList #, Period
-from tests.test_habit import habit_list, create_habits
+from tests.test_habit import habit_list, create_habits # noqa # type: ignore
 from typing import List
 import os
 
@@ -50,8 +50,7 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     if os.path.exists(testfile):
         os.remove(testfile)
         # ↑ this one should be uncommented normally
-
-        pass
+        # pass
         
     #ch: List[Habit] = create_habits()
     #hl : HabitList = habit_list
@@ -61,6 +60,9 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     assert os.path.exists(testfile)
     os.remove(testfile)
     # ↑ this one should be uncommented normally
+    
+    #_ = habit_list
+    #_ = create_habits
     
     
 

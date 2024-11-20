@@ -22,10 +22,11 @@ def create_habits() -> List[Habit]:
         
     ]
 
-@pytest.fixture()
+@pytest.fixture
 def habit_list(create_habits: List[Habit]) -> HabitList:
-    hl: HabitList = HabitList(create_habits)
-    return hl
+    #hl: HabitList = HabitList(create_habits)
+    #return hl
+    return HabitList(create_habits)
 """
 def test_period():
     pass
