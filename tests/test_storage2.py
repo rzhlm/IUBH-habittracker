@@ -76,15 +76,18 @@ def test_load(st: Storage, habit_list: HabitList, testfile: str):
 def test_to_JSON(st: Storage, create_habits: List[Habit]):
     first_habit = create_habits[0]
     #print(st.to_JSON(first_habit))
-    correct: dict =  {"description": "daily_Habit_tracked",
-                 "creation_data": "2023-11-1", 
-                 "period": "daily", 
-                 "isTracked": True,
-                  "streak": 5}
+    correct: dict =  {"id": 1,
+                       "description": "daily_Habit_tracked",
+                    "creation_data": "2023-11-1", 
+                     "period": "daily", 
+                     "isTracked": True,
+                      "streak": 5,
+                      }
     assert st.to_JSON(first_habit) == correct
 
 def test_from_JSON(st: Storage, ):
     test_habit: dict = {
+        "id" : 1,
         "description": "daily_Habit_tracked",
         "creation_data": "2023-11-1",
         "period": "daily",

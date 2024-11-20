@@ -34,6 +34,7 @@ class Storage:
     def to_JSON(self, habit: Habit):
         habit_dict : dict[str, str | Period | bool | int]
         habit_dict = {
+                    "id" : habit.id,
                     "description": habit.description,
                     "creation_data" : habit.creation_data,
                     "period": habit.period.name,
@@ -43,9 +44,10 @@ class Storage:
         return habit_dict
 
     def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
+        id: int = int(data["id"])
         description: str = str(data["description"])
         creation: str = str(data["creation_data"])
         period: Period = Period[str(data["period"])]
         isTracked : bool = bool(data["isTracked"])
         streak = int(data["streak"])
-        return Habit(description, creation, period, isTracked, streak)
+        return Habit(id, description, creation, period, isTracked, streak)

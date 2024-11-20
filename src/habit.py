@@ -9,7 +9,7 @@ class Period(Enum):
 
 @dataclass
 class Habit:
-    #id: int
+    id: int
     description: str
     creation_data: str
     period: Period
@@ -28,6 +28,7 @@ class Habit:
 @dataclass
 class HabitList:
     _habitlist : List[Habit] = field(default_factory=list)
+    _len : int = 0
 
     def return_all(self) -> List[Habit]:
         return self._habitlist
