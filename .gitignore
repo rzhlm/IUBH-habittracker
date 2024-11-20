@@ -2,6 +2,8 @@
 activate.bat
 test_save.sav
 controller.sav
+*.sav.old
+
 .env
 
 # Byte-compiled / optimized / DLL files

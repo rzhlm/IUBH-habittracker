@@ -45,9 +45,13 @@ def st() -> Storage:
 
 def test_save(st: Storage, habit_list: HabitList, testfile: str):
 #def test_save(st: Storage, habit_list: HabitList):
-    
+    # in order to make the savefile, comment out all the os.remove
+
     if os.path.exists(testfile):
         os.remove(testfile)
+        # ↑ this one should be uncommented normally
+
+        pass
         
     #ch: List[Habit] = create_habits()
     #hl : HabitList = habit_list
@@ -56,6 +60,7 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     #st.save(habit_list)
     assert os.path.exists(testfile)
     os.remove(testfile)
+    # ↑ this one should be uncommented normally
     
     
 
@@ -71,12 +76,13 @@ def test_load(st: Storage, habit_list: HabitList, testfile: str):
         assert habit.isTracked == load_habit.isTracked
         assert habit.streak == load_habit.streak
     os.remove(testfile)
+    # ↑ this one should be uncommented normally
 
 
 def test_to_JSON(st: Storage, create_habits: List[Habit]):
     first_habit = create_habits[0]
     #print(st.to_JSON(first_habit))
-    correct: dict =  {"id": 1,
+    correct: dict[str, str|int|bool] =  {"id": 1,
                        "description": "daily_Habit_tracked",
                     "creation_data": "2023-11-1", 
                      "period": "daily", 
@@ -86,7 +92,7 @@ def test_to_JSON(st: Storage, create_habits: List[Habit]):
     assert st.to_JSON(first_habit) == correct
 
 def test_from_JSON(st: Storage, ):
-    test_habit: dict = {
+    test_habit: dict[str, str|int|bool] = {
         "id" : 1,
         "description": "daily_Habit_tracked",
         "creation_data": "2023-11-1",

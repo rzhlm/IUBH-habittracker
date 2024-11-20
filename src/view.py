@@ -1,13 +1,14 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Callable, TYPE_CHECKING
 #from enum import Enum, auto
 #from collections import namedtuple
-from typing import NamedTuple, Callable
 from src.constants import Motivational
 from dataclasses import dataclass
 import os
-#from controller import Controller
+#from src.controller import Controller
 
+if TYPE_CHECKING:
+    from src.controller import Controller
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
@@ -63,8 +64,8 @@ class View:
 #           -> error message
 
 class TUI:
-    
-    def __init__(self, controller: Controller = None):
+        
+    def __init__(self, controller: Controller):
         self.controller: Controller = controller
         self.choices = self.init_menulist()
         self.colors = {
@@ -108,7 +109,9 @@ class TUI:
         print("Choose an option: ")
         #cmd = f""
         for choice in self.choices:
-            print(f'[{self.colors["yellow"]}{choice.command}{self.colors["reset"]}] \t{choice.name}')
+            color = self.colors["yellow"]
+            reset = self.colors["reset"]
+            print(f'[{color}{choice.command}{reset}] \t{choice.name}')
             # eg: [e] Edit
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
@@ -139,7 +142,9 @@ class TUI:
 
     def invalid_input(self) -> None:
         self.clear()
-        print(f'{self.colors["red"]}Input not valid{self.colors["reset"]}')
+        color = self.colors["red"]
+        reset = self.colors["reset"]
+        print(f'{color}Input not valid{reset}')
 
     def goto_main(self) -> None:
         #break

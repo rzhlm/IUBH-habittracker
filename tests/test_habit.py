@@ -23,7 +23,7 @@ def create_habits() -> List[Habit]:
     ]
 
 @pytest.fixture()
-def habit_list(create_habits) -> HabitList:
+def habit_list(create_habits: List[Habit]) -> HabitList:
     hl: HabitList = HabitList(create_habits)
     return hl
 """
@@ -65,4 +65,4 @@ def test_add_habit(habit_list: HabitList):
                         streak = 6,
                         )
     habit_list.add_habit(to_add)
-    assert to_add in habit_list._habitlist
+    assert to_add in habit_list.return_all()

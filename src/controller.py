@@ -7,13 +7,13 @@ from src.storage2 import Storage
 # can't run directly, must run: python -m src.controller
 #from habit import Habit, HabitList
 #from storage2 import Storage
-from src.view import View, TUI
+#from src.view import View, TUI
 from typing import List
 
 
 class Controller:
-    def __init__(self, habitlist: HabitList = None,
-                  storage: Storage = None):
+    def __init__(self, habitlist: HabitList,
+                  storage: Storage):
         self.habitlist: HabitList = habitlist
         self.storage : Storage = storage
         pass

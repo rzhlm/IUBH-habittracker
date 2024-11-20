@@ -9,6 +9,8 @@ class Period(Enum):
 
 @dataclass
 class Habit:
+    # if adding here, modify testing
+    # and modify savefiles
     id: int
     description: str
     creation_data: str
