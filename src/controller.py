@@ -30,9 +30,9 @@ class Controller:
     def do_analysis(self):
         print("1.inside Analysis (Controller)")
         pass
-    def do_showlist(self) -> None | List[Habit]:
+    def do_showlist(self) -> List[Habit]:
         print("1.Inside showlist(Controller)")
-        return self.habitlist.return_all()
+        return self.habitlist.return_all() or []
         #self.habitlist.return_tracked
         pass
     def do_add(self):
