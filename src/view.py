@@ -130,7 +130,9 @@ class TUI:
         while True:
             self.show_menulist()
             # TODO: somekind of decorator or print_color function
-            inp = input(f'{self.colors["yellow"]}Make your choice: {self.colors["reset"]}')
+            color = self.colors["yellow"]
+            reset = self.colors["reset"]
+            inp = input(f'{color}Make your choice: {reset}')
 
             try:
                 self.do_input(inp.lower())
@@ -221,7 +223,8 @@ class TUI:
     
     def pause(self) -> None:
         os.system('pause' if os.name == 'nt' 
-        else 'bash -c \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
+        else 'bash -c \
+        \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
 class GUI:
     pass
 
