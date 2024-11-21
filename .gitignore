@@ -3,6 +3,7 @@ activate.bat
 test_save.sav
 controller.sav
 *.sav.old
+.vscode/
 
 .env
 
