@@ -179,6 +179,7 @@ class TUI:
         # Control logic
         for habit in self.controller.do_showlist():
             print(habit)
+            # id, desc, creation, period, isTracked, streak
 
         # view logic
         print("2.inside Showlist (TUI)")
@@ -189,6 +190,7 @@ class TUI:
         self.clear()
         # Control logic
         self.controller.do_add()
+
         # view logic
         print("2.inside Add (TUI)")
 
