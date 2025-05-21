@@ -3,7 +3,7 @@ from src.habit import Period, Habit, HabitList
 #from habit import Period, Habit, HabitList
 # -> don't run directly from VSC, run with: python -m src.storage2
 
-from typing import List
+#from typing import List
 
 
 
@@ -27,7 +27,7 @@ class Storage:
     #def load(self) -> HabitList:
         with open(filename,"r") as file:
             data = json.load(file)
-            habits: List[Habit] = [self.from_JSON(habit) 
+            habits: list[Habit] = [self.from_JSON(habit) 
                       for habit in data["_habitlist"]]
             return HabitList(habits)
 

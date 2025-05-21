@@ -8,7 +8,7 @@ from src.storage2 import Storage
 #from habit import Habit, HabitList
 #from storage2 import Storage
 #from src.view import View, TUI
-from typing import List
+#from typing import List
 
 
 class Controller:
@@ -30,7 +30,7 @@ class Controller:
     def do_analysis(self):
         print("1.inside Analysis (Controller)")
         pass
-    def do_showlist(self) -> List[Habit]:
+    def do_showlist(self) -> list[Habit]:
         #print("1.Inside showlist(Controller)")
         
         return self.habitlist.return_all() or []

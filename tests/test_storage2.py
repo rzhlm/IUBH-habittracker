@@ -2,7 +2,7 @@ import pytest #apparently not needed according to typechecker. Works without
 from src.storage2 import Storage
 from src.habit import Habit, HabitList #, Period
 from tests.test_habit import habit_list, create_habits # noqa # type: ignore
-from typing import List
+#from typing import List
 import os
 
 #st = Storage()
@@ -81,7 +81,7 @@ def test_load(st: Storage, habit_list: HabitList, testfile: str):
     # ↑ this one should be uncommented normally
 
 
-def test_to_JSON(st: Storage, create_habits: List[Habit]):
+def test_to_JSON(st: Storage, create_habits: list[Habit]):
     first_habit = create_habits[0]
     #print(st.to_JSON(first_habit))
     correct: dict[str, str|int|bool] =  {"id": 1,
