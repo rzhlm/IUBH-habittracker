@@ -102,7 +102,8 @@ class TUI:
         print(Motivational.MOTIVATIONAL)
         print("first screen")
         # TODO: make sure not Win Console or default Mac Terminal
-        self.pause()
+        #self.pause()
+        # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
     def show_menulist(self) -> None:
         # TODO: somekind of decorator or print_color function
@@ -176,13 +177,25 @@ class TUI:
 
     def goto_showlist(self) -> None:
         self.clear()
-        # Control logic
+        #print("2.inside Showlist (TUI)")
+        
+        header: str = "obj(\t\t" +\
+        "|id\t\t\t" +\
+        "|start date\t" +\
+        "|period ".ljust(7) +\
+        "|track?\t" +\
+        "|streak".ljust(6) +\
+        "|description\t" +\
+        ")"
+        print(header.expandtabs(3))
+        print("-"*80)
+
         for habit in self.controller.do_showlist():
             print(habit)
-            # id, desc, creation, period, isTracked, streak
+            # id, creation, period, isTracked, streak, desc
 
         # view logic
-        print("2.inside Showlist (TUI)")
+        
 
     def goto_add(self) -> None:
         # need to add to habitlist, and give it an ID

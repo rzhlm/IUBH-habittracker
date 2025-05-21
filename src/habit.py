@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import List
+#from typing import List
 
 class Period(Enum):
     daily = auto()
     weekly = auto()
     monthly = auto()
+
+    def __str__(self) -> str:
+        return f"{self.name}".ljust(7)
 
 @dataclass
 class Habit:
@@ -20,6 +23,18 @@ class Habit:
     streak : int
     # Use @property method for streak calculation?
     # But how to know beforehand if at currenttime streak is still valid?
+
+    def __str__(self):
+        repr: str =  f"Habit(\t" + \
+        f"|{self.id=}\t" + \
+        f"|{self.creation_data}\t" +\
+        f"|{self.period}".ljust(8) +\
+        f"|{int(self.isTracked)}\t\t\t" +\
+        f"|{self.streak}".ljust(7) + \
+        f"|{self.description} )"
+
+        return repr.expandtabs(3)
+        
     def toggle_tracked(self):
         self.isTracked = not self.isTracked
     def un_track(self):
@@ -29,16 +44,16 @@ class Habit:
 
 @dataclass
 class HabitList:
-    _habitlist : List[Habit] = field(default_factory=list)
+    _habitlist : list[Habit] = field(default_factory=list)
     _len : int = 0
 
-    def return_all(self) -> List[Habit]:
+    def return_all(self) -> list[Habit]:
         return self._habitlist
     
-    def return_tracked(self) -> List[Habit]:
+    def return_tracked(self) -> list[Habit]:
         return [habit for habit in self._habitlist if habit.isTracked]
     
-    def return_same_period(self, period: Period) -> List[Habit]:
+    def return_same_period(self, period: Period) -> list[Habit]:
         return [habit for habit in self._habitlist
                  if habit.period == period and habit.isTracked]
     
