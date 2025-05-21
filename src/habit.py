@@ -44,7 +44,7 @@ class Habit:
 
 @dataclass
 class HabitList:
-    _habitlist : list[Habit] = field(default_factory=list)
+    _habitlist : list[Habit] = field(default_factory=lambda: [])
     _len : int = 0
 
     def return_all(self) -> list[Habit]:
