@@ -1,11 +1,11 @@
 from __future__ import annotations
-from typing import List, Callable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 #from enum import Enum, auto
 #from collections import namedtuple
 from src.constants import Motivational
 from dataclasses import dataclass
 import os
-#from src.controller import Controller
+
 
 if TYPE_CHECKING:
     from src.controller import Controller
@@ -77,7 +77,7 @@ class TUI:
         #self.color = "\033[31m" # red
         #self.reset = "\033[0m" # reset
 
-    def init_menulist(self) -> List[MenuChoices]:
+    def init_menulist(self) -> list[MenuChoices]:
         return [
         MenuChoices("Main menu","m", self.goto_main),
         MenuChoices("Quick mark","qm",self.goto_qm),
