@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass #, field
 from enum import Enum, auto
 #from typing import List
 
@@ -44,10 +44,17 @@ class Habit:
     def track(self):
         self.isTracked = True
 
-@dataclass
+#@dataclass
 class HabitList:
-    _habitlist : list[Habit] = field(default_factory=lambda: [])
-    _len : int = 0
+    #_habitlist : list[Habit] = field(default_factory=lambda: [])
+    #_len : int = 0
+
+    def __init__(self, habitlist: list[Habit]):
+        self._habitlist = habitlist
+        self._len = len(habitlist)
+
+    def get_len(self) -> int:
+        return self._len
 
     def return_all(self) -> list[Habit]:
         return self._habitlist
@@ -81,6 +88,7 @@ class HabitList:
         
     def add_habit(self, habit: Habit) -> None:
         self._habitlist.append(habit)
+        self._len += 1
 
 
         

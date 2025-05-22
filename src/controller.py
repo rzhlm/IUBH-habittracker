@@ -2,7 +2,7 @@
 # (temporarily) solved by '.env' file with PYTHONPATH hardcoded
 # some kind of venv-related problem
 from __future__ import annotations
-#from src.habit import Period, Habit, HabitList
+from src.habit import Habit
 from typing import TYPE_CHECKING
 
 # can't run directly, must run: python -m src.controller
@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.storage2 import Storage
-    from src.habit import Period, Habit, HabitList
+    from src.habit import Period, HabitList
 
 
 class Controller:
@@ -21,6 +21,8 @@ class Controller:
                   storage: Storage):
         self.habitlist: HabitList = habitlist
         self.storage : Storage = storage
+        self.current_date = ""
+        # TODO: add date loading
         pass
 
     def do_advance_date(self):
@@ -51,9 +53,23 @@ class Controller:
     def do_showlist_period(self, period: Period) -> list[Habit]:
         return self.habitlist.return_same_period(period) or []
 
-    def do_add(self):
-        print("1.Inside add (Controller)")
+    def do_add(self, period: Period, description: str):
+        #print("1.Inside add (Controller)")
+        # Habit:
+        # id, start-date, period, track, streak, last-done, desc
+        id: int = self.habitlist.get_len() + 1
+        new_habit: Habit = Habit(
+            id = id,
+            description = description,
+            creation_data=self.current_date,
+            period = period,
+            isTracked = True,
+            streak=0,
+            last_complete=""
+        )
+        self.habitlist.add_habit(new_habit)
         pass
+
     def do_edit(self):
         print("1. Inside Edit (Controller)")
         pass

@@ -15,11 +15,11 @@ def initialize_ui() -> TUI:
     habitlist: HabitList = storage.HL_load(filename)
     controller: Controller = Controller(habitlist, storage)
     
-    tui = TUI(controller)
+    tui: TUI = TUI(controller)
     return tui
 
 def main() -> None:
-    ui = initialize_ui()
+    ui: TUI = initialize_ui()
     ui.interact()
 
 if __name__ == "__main__":

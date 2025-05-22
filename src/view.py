@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
     from src.controller import Controller
+    from src.habit import Habit
 
 # Intention to make Abstract Fact or Facade for choice of UI
 # Either TUI or GUI
@@ -76,14 +77,16 @@ class TUI(View):
             "green" : "\033[0;32m",
             "reset" : "\033[0m",
         }
-        self.currentdate = self.load_date()
+        self.currentdate = self.goto_load_date()
 
-    def save_date(self):
+    def goto_save_date(self):
         # TODO: implement save on exit
+        # save date in storage in Controller
         pass
     
-    def load_date(self):
+    def goto_load_date(self):
         # TODO: implement load on start
+        # get date from storage in Controller
         pass
         return "2025-2-1"
 
@@ -93,11 +96,11 @@ class TUI(View):
         MenuChoices("Advance date","adv", self.goto_advance_date),
         MenuChoices("Quick mark","qm",self.goto_qm),
         MenuChoices("Analysis", "a", self.goto_analysis),
-        MenuChoices("Show list (all)", "sl", self.goto_showlist),
+        MenuChoices("Show list (all) (debugging)", "sl", self.goto_showlist),
         MenuChoices(" Show list (tracked)", "slt", self.goto_showlist_tracked),
         MenuChoices(" Show list (same period, tracked)", "slp", self.goto_showlist_period),
         MenuChoices("Add Habit", "ah", self.goto_add),
-        MenuChoices("Edit", "e", self.goto_edit),
+        MenuChoices("Edit Habit", "e", self.goto_edit),
         MenuChoices("----", "-", self.clear),
         MenuChoices("Help", "?", self.goto_help),
         MenuChoices("Quit","q", self.goto_quit),
@@ -116,10 +119,11 @@ class TUI(View):
         print(Motivational.MOTIVATIONAL)
         print("first screen / remember to add pause again")
         # TODO: make sure not Win Console or default Mac Terminal
-        #self.pause()
+        # self.pause()
         # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
     def show_menulist(self) -> None:
+        print("-" * 80)
         # TODO: somekind of decorator or print_color function
         print(self.colors["yellow"],
               "current date:",
@@ -135,7 +139,7 @@ class TUI(View):
                 print(f'[{color}{choice.command}{reset}] \t{choice.name}')
             else:
                 print(f' [{color}{choice.command}{reset}] \t{choice.name}')
-            
+        print("-" * 80)    
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
     def do_input(self, input_action: str) -> None:
@@ -177,6 +181,8 @@ class TUI(View):
         # TODO: remark
         # Or perhaps save state here instead of in 'finally'
         print("remember to save the state at exit")
+        # save habitlist with storage object in self.controller
+        # save current_date with own method
         print("exited main loop (self.interact)")
 
     def invalid_input(self) -> None:
@@ -214,7 +220,8 @@ class TUI(View):
         print("2.inside Analysis (TUI)")
 
     def print_table_head(self) -> None:
-        header: str = "obj(".ljust(7) +\
+        header: str = self.colors["yellow"]+\
+        "obj(".ljust(7) +\
         "|id".ljust(6) +\
         "|start date".ljust(12) +\
         "|period".ljust(8) +\
@@ -222,9 +229,9 @@ class TUI(View):
         "|streak".ljust(6) +\
         "|last done".ljust(11) +\
         "|description\t" +\
-        ")"
+        ")" + self.colors["reset"]
         print(header.expandtabs(3))
-        print("-" * 80)
+        # print("-" * 80)
 
     def goto_showlist(self, option: str | None = None) -> None:
         self.clear()
@@ -239,7 +246,8 @@ class TUI(View):
             for habit in self.controller.do_showlist_tracked():
                 print(habit)
         elif option == "period":
-            self.clear()
+            period = self.period_picker()
+            """ self.clear()
             period = None
             for i, p in enumerate(Period, start=1):
                 print(f"{p}: {i}")
@@ -257,14 +265,14 @@ class TUI(View):
                 case "3":
                     period = Period.monthly
                 case _:
-                    raise NotImplementedError("period-input problem")
+                    raise NotImplementedError("period-input problem") """
             #print("test before")
             #print(f"period branch, {period=}")
             #result = self.controller.do_showlist_period(period)
             #print(result)
             #print(f"DEBUG: do_showlist_period before habit loop: {result}")
             
-            period_habits = self.controller.do_showlist_period(period)
+            period_habits: list[Habit] = self.controller.do_showlist_period(period)
             if len(period_habits) == 0:
                 self.clear()
                 print("No habits with this periodicity")
@@ -278,7 +286,7 @@ class TUI(View):
         else:
             raise NotImplementedError("option not existing in goto_showlist")
             
-        print("_" * 80)
+        #print("_" * 80)
         #return #prob not needed, testing bug
         
     def goto_showlist_tracked(self) -> None:
@@ -287,15 +295,43 @@ class TUI(View):
     def goto_showlist_period(self) -> None:
         self.goto_showlist(option = "period")
 
+    def period_picker(self) -> Period:
+        self.clear()
+        period: Period | None = None
+        for i, p in enumerate(Period, start=1):
+            print(f"{p}: {i}")
+        color = self.colors["yellow"]
+        reset = self.colors["reset"]
+        period_inp: str = input(f'{color}Which period? (1, 2, 3): {reset}')
+        #print(f"{type(period_inp)=} {period_inp=}")
+        if period_inp.strip() not in [str(i) for i in range(1,4)]:
+            print("invalid selection")
+        match period_inp.strip():
+            case "1":
+                period = Period.daily
+            case "2":
+                period = Period.weekly
+            case "3":
+                period = Period.monthly
+            case _:
+                raise NotImplementedError("period-input problem")
+        return period
+        
+
     def goto_add(self) -> None:
         # need to add to habitlist, and give it an ID
-
         self.clear()
+        period: Period = self.period_picker()
+
+        print("Description? (max 35 char, more will be cut off)")
+        print("until here, circa:".ljust(34,"-") + "|")
+        descript_input: str = input()[:35]
+        
         # Control logic
-        self.controller.do_add()
+        self.controller.do_add(period, descript_input)
 
         # view logic
-        print("2.inside Add (TUI)")
+        # print("2.inside Add (TUI)")
 
     def goto_edit(self) -> None:
         # modify everything, except the ID.
