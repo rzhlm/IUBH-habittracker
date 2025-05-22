@@ -2,7 +2,7 @@
 # (temporarily) solved by '.env' file with PYTHONPATH hardcoded
 # some kind of venv-related problem
 
-from src.habit import Habit, HabitList
+from src.habit import Period, Habit, HabitList
 from src.storage2 import Storage
 # can't run directly, must run: python -m src.controller
 #from habit import Habit, HabitList
@@ -36,6 +36,13 @@ class Controller:
         return self.habitlist.return_all() or []
         #self.habitlist.return_tracked
         pass
+
+    def do_showlist_tracked(self) -> list[Habit]:
+        return self.habitlist.return_tracked() or []
+    
+    def do_showlist_period(self, period: Period) -> list[Habit]:
+        return self.habitlist.return_same_period(period) or []
+
     def do_add(self):
         print("1.Inside add (Controller)")
         pass

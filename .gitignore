@@ -4,6 +4,7 @@ test_save.sav
 controller.sav
 *.sav.old
 .vscode/
+*.bat
 
 .env
 
