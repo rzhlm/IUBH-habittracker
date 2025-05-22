@@ -1,4 +1,4 @@
-#from __future__ import annotations
+from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 #from enum import Enum, auto
 #from collections import namedtuple
@@ -6,7 +6,7 @@ from src.constants import Motivational
 from dataclasses import dataclass
 import os
 from src.habit import Period
-
+from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
     from src.controller import Controller
@@ -36,18 +36,13 @@ class MenuChoices:
     name: str
     command: str
     func: Callable[[], None]
-
     
-class View:
-    #@abstractmethod
-    #def interact(self):
-    #    pass
 
+class View(ABC):
     #single_instance = True
-    def __init__(self):
-        pass
-    
-    def UI(self):
+
+    @abstractmethod
+    def interact(self):
         pass
 
 
@@ -64,8 +59,14 @@ class View:
 #       input invalid:
 #           -> error message
 
-class TUI:
-        
+
+class GUI(View):
+
+    def interact(self):
+        pass
+
+class TUI(View):
+
     def __init__(self, controller: Controller):
         self.controller: Controller = controller
         self.choices = self.init_menulist()
@@ -75,12 +76,21 @@ class TUI:
             "green" : "\033[0;32m",
             "reset" : "\033[0m",
         }
-        #self.color = "\033[31m" # red
-        #self.reset = "\033[0m" # reset
+        self.currentdate = self.load_date()
+
+    def save_date(self):
+        # TODO: implement save on exit
+        pass
+    
+    def load_date(self):
+        # TODO: implement load on start
+        pass
+        return "2025-2-1"
 
     def init_menulist(self) -> list[MenuChoices]:
         return [
         MenuChoices("Main menu","m", self.goto_main),
+        MenuChoices("Advance date","adv", self.goto_advance_date),
         MenuChoices("Quick mark","qm",self.goto_qm),
         MenuChoices("Analysis", "a", self.goto_analysis),
         MenuChoices("Show list (all)", "sl", self.goto_showlist),
@@ -88,6 +98,7 @@ class TUI:
         MenuChoices(" Show list (same period, tracked)", "slp", self.goto_showlist_period),
         MenuChoices("Add Habit", "ah", self.goto_add),
         MenuChoices("Edit", "e", self.goto_edit),
+        MenuChoices("----", "-", self.clear),
         MenuChoices("Help", "?", self.goto_help),
         MenuChoices("Quit","q", self.goto_quit),
         ]
@@ -110,7 +121,12 @@ class TUI:
         
     def show_menulist(self) -> None:
         # TODO: somekind of decorator or print_color function
-        print("Choose an option: ")
+        print(self.colors["yellow"],
+              "current date:",
+              self.colors["yellow"],
+              self.currentdate,
+              self.colors["reset"])
+        print("\nChoose an option: ")
         
         for choice in self.choices:
             color = self.colors["yellow"]
@@ -131,7 +147,7 @@ class TUI:
                 choice.func()
                 #return
             
-    def interact(self, message: str ="") -> None:
+    def interact(self, message: str = "") -> None:
         #self.clear()
         self.splash_screen()
         while True:
@@ -144,12 +160,23 @@ class TUI:
             try:
                 self.do_input(inp.lower())
             except GeneratorExit:
+                # This is how I handle getting out of the input loop
+                print("Intended exit, GeneratorExit")
                 break
             except Exception as e:
+                # This is for genuine Exceptions
                 print("first exit: broke out of 'While True: try/except'")
                 print(f"Exception: {e}")
                 break
-        
+            finally:
+                # TODO: Save state of objects
+                # habitlist, and state file
+                #
+                pass
+                
+        # TODO: remark
+        # Or perhaps save state here instead of in 'finally'
+        print("remember to save the state at exit")
         print("exited main loop (self.interact)")
 
     def invalid_input(self) -> None:
@@ -158,11 +185,14 @@ class TUI:
         reset = self.colors["reset"]
         print(f'{color}Input not valid{reset}')
 
+    def goto_advance_date(self) -> None:
+        self.clear()
+        pass
+
     def goto_main(self) -> None:
         #break
         self.clear()
-        #print("inside main")
-        
+        #print("inside main")        
         pass
 
     def goto_qm(self) -> None:
@@ -178,7 +208,6 @@ class TUI:
     def goto_analysis(self) -> None:
         self.clear()
         # SHOULD CALL THE FUNCTIONAL ANALYSIS MODULE
-        
         # Control logic
         self.controller.do_analysis()
         # view logic
@@ -186,11 +215,12 @@ class TUI:
 
     def print_table_head(self) -> None:
         header: str = "obj(".ljust(7) +\
-        "|id \t" +\
-        "|start date\t" +\
-        "|period ".ljust(7) +\
+        "|id".ljust(6) +\
+        "|start date".ljust(12) +\
+        "|period".ljust(8) +\
         "|track?".ljust(7) +\
         "|streak".ljust(6) +\
+        "|last done".ljust(11) +\
         "|description\t" +\
         ")"
         print(header.expandtabs(3))
@@ -270,6 +300,7 @@ class TUI:
     def goto_edit(self) -> None:
         # modify everything, except the ID.
         # also be able to delete (but keep ID)
+        # perhaps with a flag streak=-1 or a magic date val
 
         self.clear()
         # Control logic
@@ -292,6 +323,7 @@ class TUI:
         print("2. Inside Quit (view)")
         print("Bye!")
         raise GeneratorExit()
+    
 
     def clear(self) -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -300,8 +332,7 @@ class TUI:
         os.system('pause' if os.name == 'nt' 
         else 'bash -c \
         \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
-class GUI:
-    pass
+
 
 
 if __name__ == "__main__":

@@ -21,16 +21,18 @@ class Habit:
     #timeline: List[]
     isTracked: bool
     streak : int
+    last_complete: str
     # Use @property method for streak calculation?
     # But how to know beforehand if at currenttime streak is still valid?
 
     def __str__(self):
         repr: str =  f"Habit(".ljust(7) + \
-        f"|{self.id}\t" + \
-        f"|{self.creation_data}\t" +\
+        f"|{self.id}".ljust(6) + \
+        f"|{self.creation_data}".ljust(12) +\
         f"|{self.period}".ljust(8) +\
-        f"|{self.isTracked}\t" +\
+        f"|{self.isTracked}".ljust(7) +\
         f"|{self.streak}".ljust(7) + \
+        f"|{self.last_complete}".ljust(11) +\
         f"|{self.description} )"
 
         return repr.expandtabs(3)
@@ -51,11 +53,19 @@ class HabitList:
         return self._habitlist
     
     def return_tracked(self) -> list[Habit]:
-        return [habit for habit in self._habitlist if habit.isTracked]
+        return [habit 
+                for habit in self._habitlist 
+                if habit.isTracked and
+                habit.streak != -1 # streak = -1 if flagged as deleted
+                ] 
     
     def return_same_period(self, period: Period) -> list[Habit]:
-        return [habit for habit in self._habitlist
-                 if habit.period == period and habit.isTracked]
+        return [habit 
+                for habit in self._habitlist
+                if habit.period == period and
+                habit.isTracked and
+                habit.streak != -1 # streak = -1 if flagged as deleted
+                ]
     
     def return_longest_streak_all(self) -> int:
         #longest: int = -1

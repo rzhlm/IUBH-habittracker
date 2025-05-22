@@ -5,6 +5,10 @@ controller.sav
 *.sav.old
 .vscode/
 *.bat
+controller-22may2025.sav
+savefile-22may2025.sav
+savefile.old-notcompat
+
 
 .env
 

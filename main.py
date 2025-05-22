@@ -12,7 +12,7 @@ def initialize_ui() -> TUI:
     settings: Settings = Settings()
     filename: str = settings.FILENAME
     storage: Storage = Storage()
-    habitlist: HabitList = storage.load(filename)
+    habitlist: HabitList = storage.HL_load(filename)
     controller: Controller = Controller(habitlist, storage)
     
     tui = TUI(controller)

@@ -50,12 +50,12 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     if os.path.exists(testfile):
         os.remove(testfile)
         # ↑ this one should be uncommented normally
-        # pass
+        pass
         
     #ch: List[Habit] = create_habits()
     #hl : HabitList = habit_list
     #hl = habit_list(ch)
-    st.save(habit_list, testfile)
+    st.HL_save(habit_list, testfile)
     #st.save(habit_list)
     assert os.path.exists(testfile)
     os.remove(testfile)
@@ -68,8 +68,8 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
 
 def test_load(st: Storage, habit_list: HabitList, testfile: str):
     
-    st.save(habit_list, testfile)
-    hl: HabitList = st.load(testfile)
+    st.HL_save(habit_list, testfile)
+    hl: HabitList = st.HL_load(testfile)
     #hl: HabitList = st.load()
     for habit, load_habit in zip(habit_list.return_all(), hl.return_all()):
         assert habit.description == load_habit.description
@@ -84,13 +84,15 @@ def test_load(st: Storage, habit_list: HabitList, testfile: str):
 def test_to_JSON(st: Storage, create_habits: list[Habit]):
     first_habit = create_habits[0]
     #print(st.to_JSON(first_habit))
-    correct: dict[str, str|int|bool] =  {"id": 1,
-                       "description": "daily_Habit_tracked",
-                    "creation_data": "2023-11-1", 
-                     "period": "daily", 
-                     "isTracked": True,
-                      "streak": 5,
-                      }
+    correct: dict[str, str|int|bool] =  {
+        "id": 1,
+        "description": "daily_Habit_tracked",
+        "creation_data": "2023-11-1",
+        "period": "daily",
+        "isTracked": True,
+        "streak": 5,
+        "last_complete" : "2023-11-1",
+        }
     assert st.to_JSON(first_habit) == correct
 
 def test_from_JSON(st: Storage, ):
@@ -100,7 +102,9 @@ def test_from_JSON(st: Storage, ):
         "creation_data": "2023-11-1",
         "period": "daily",
         "isTracked": True,
-        "streak": 5}
+        "streak": 5,
+        "last_complete": "2023-11-1",
+        }
     habit = st.from_JSON(test_habit)
 
     assert habit.description == test_habit["description"]

@@ -12,23 +12,28 @@ class Storage:
     def __init__(self):
         pass 
 
-    def save(self, 
-             habit_list: HabitList,
-               filename: str = "default_savefile.sav") -> None:
-             #habit_list: HabitList) -> None:
+
+    def HL_save(self,
+                habit_list: HabitList,
+                filename: str = "default_savefile.sav") -> None:
+        #habit_list: HabitList) -> None:
         with open(filename,"w") as file:
         #with open(self.savefile, 'r') as file:
             json.dump({"_habitlist":
-                       [self.to_JSON(habit) 
-                        for habit in habit_list.return_all()]
+                       [
+                           self.to_JSON(habit) 
+                           for habit in habit_list.return_all()
+                        ]
                        }, file)
 
-    def load(self, filename: str = "default_savefile.sav") -> HabitList:
+    def HL_load(self, filename: str = "default_savefile.sav") -> HabitList:
     #def load(self) -> HabitList:
         with open(filename,"r") as file:
             data = json.load(file)
-            habits: list[Habit] = [self.from_JSON(habit) 
-                      for habit in data["_habitlist"]]
+            habits: list[Habit] = [
+                self.from_JSON(habit) 
+                for habit in data["_habitlist"]
+                ]
             return HabitList(habits)
 
     def to_JSON(self, habit: Habit):
@@ -40,7 +45,8 @@ class Storage:
                     "period": habit.period.name,
                     "isTracked": habit.isTracked,
                     "streak": habit.streak,
-        }
+                    "last_complete": habit.last_complete,
+                    }
         return habit_dict
 
     def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
@@ -49,5 +55,13 @@ class Storage:
         creation: str = str(data["creation_data"])
         period: Period = Period[str(data["period"])]
         isTracked : bool = bool(data["isTracked"])
-        streak = int(data["streak"])
-        return Habit(id, description, creation, period, isTracked, streak)
+        streak: int = int(data["streak"])
+        last_complete: str = str(data["last_complete"])
+        return Habit(id, 
+                     description, 
+                     creation, 
+                     period, 
+                     isTracked, 
+                     streak, 
+                     last_complete,
+                     )

@@ -1,7 +1,7 @@
 # lots of trouble with imports, 
 # (temporarily) solved by '.env' file with PYTHONPATH hardcoded
 # some kind of venv-related problem
-#from __future__ import annotations
+from __future__ import annotations
 #from src.habit import Period, Habit, HabitList
 from typing import TYPE_CHECKING
 
@@ -21,6 +21,9 @@ class Controller:
                   storage: Storage):
         self.habitlist: HabitList = habitlist
         self.storage : Storage = storage
+        pass
+
+    def do_advance_date(self):
         pass
 
     def do_qm(self):
@@ -64,6 +67,7 @@ class Controller:
 if __name__ == '__main__':
     pass
     # for testing & dev purposes
+# if the below is removed, remove the respective test-savefiles as well
 """     st = Storage()
     hl: HabitList = st.load("controller.sav")
     c = Controller(hl, st)
