@@ -1,4 +1,4 @@
-from __future__ import annotations
+#from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 #from enum import Enum, auto
 #from collections import namedtuple
@@ -143,6 +143,8 @@ class TUI:
 
             try:
                 self.do_input(inp.lower())
+            except GeneratorExit:
+                break
             except Exception as e:
                 print("first exit: broke out of 'While True: try/except'")
                 print(f"Exception: {e}")
@@ -289,7 +291,7 @@ class TUI:
         # View logic:
         print("2. Inside Quit (view)")
         print("Bye!")
-        raise Exception()
+        raise GeneratorExit()
 
     def clear(self) -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
