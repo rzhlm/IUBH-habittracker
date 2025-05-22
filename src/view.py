@@ -192,7 +192,7 @@ class TUI:
         "|description\t" +\
         ")"
         print(header.expandtabs(3))
-        print("-"*80)
+        print("-" * 80)
 
     def goto_showlist(self, option: str | None = None) -> None:
         self.clear()
@@ -244,15 +244,10 @@ class TUI:
                     print(habit)
                 #print("test after habit loop")
         else:
-            raise NotImplementedError("option problem in goto_showlist")
+            raise NotImplementedError("option not existing in goto_showlist")
             
-            
-        # if option == tracked:
-        # if option == period:
-
-        
-        print("_"*80)
-        return #prob not needed, testing bug
+        print("_" * 80)
+        #return #prob not needed, testing bug
         
     def goto_showlist_tracked(self) -> None:
         self.goto_showlist(option = "tracked")
