@@ -26,7 +26,7 @@ class Habit:
     # But how to know beforehand if at currenttime streak is still valid?
 
     def __str__(self):
-        repr: str =  f"Habit(".ljust(7) + \
+        repr: str =  "Habit(".ljust(7) + \
         f"|{self.id}".ljust(6) + \
         f"|{self.creation_data}".ljust(12) +\
         f"|{self.period}".ljust(8) +\

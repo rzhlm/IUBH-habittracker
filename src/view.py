@@ -238,7 +238,7 @@ class TUI(View):
         #print("2.inside Showlist (TUI)")
         self.print_table_head()        
 
-        if option == None:
+        if option is None:
             for habit in self.controller.do_showlist():
                 print(habit)
             # id, creation, period, isTracked, streak, desc
