@@ -16,9 +16,13 @@ class Controller:
                   storage: Storage):
         self.habitlist: HabitList = habitlist
         self.storage : Storage = storage
-        self.current_date = ""
+        self.current_date = self.storage.date_load()
         # TODO: add date loading
         pass
+
+    def do_save_date(self, date: str) -> None:
+        self.current_date = date
+        self.storage.date_save(self.current_date)
 
     def do_advance_date(self):
         pass

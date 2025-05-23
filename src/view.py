@@ -77,18 +77,17 @@ class TUI(View):
             "green" : "\033[0;32m",
             "reset" : "\033[0m",
         }
-        self.currentdate = self.goto_load_date()
+        self.currentdate: str = self.goto_load_date()
 
-    def goto_save_date(self):
+    def goto_save_date(self) -> None:
         # TODO: implement save on exit
         # save date in storage in Controller
-        pass
+        self.controller.do_save_date(self.currentdate)
     
-    def goto_load_date(self):
+    def goto_load_date(self) -> str:
         # TODO: implement load on start
         # get date from storage in Controller
-        pass
-        return "2025-2-1"
+        return self.controller.current_date
 
     def init_menulist(self) -> list[MenuChoices]:
         return [
