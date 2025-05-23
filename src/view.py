@@ -180,6 +180,7 @@ class TUI(View):
                 
         # TODO: remark
         # Or perhaps save state here instead of in 'finally'
+        # perhaps with contextmanager instead over the while loop
         print("remember to save the state at exit")
         # save habitlist with storage object in self.controller
         # save current_date with own method
@@ -220,8 +221,8 @@ class TUI(View):
         print("2.inside Analysis (TUI)")
 
     def print_table_head(self) -> None:
-        header: str = self.colors["yellow"]+\
-        "obj(".ljust(7) +\
+        #"obj(".ljust(7) +\
+        header: str = self.colors["yellow"] +\
         "|id".ljust(6) +\
         "|start date".ljust(12) +\
         "|period".ljust(8) +\
@@ -231,7 +232,7 @@ class TUI(View):
         "|description\t" +\
         ")" + self.colors["reset"]
         print(header.expandtabs(3))
-        # print("-" * 80)
+        print("-" * 80)
 
     def goto_showlist(self, option: str | None = None) -> None:
         self.clear()
@@ -322,9 +323,10 @@ class TUI(View):
         # need to add to habitlist, and give it an ID
         self.clear()
         period: Period = self.period_picker()
-
-        print("Description? (max 35 char, more will be cut off)")
-        print("until here, circa:".ljust(34,"-") + "|")
+        
+        print(f"{self.colors["yellow"]}" +\
+              "\nDescription? (max 35 char, more will be cut off)")
+        print("until here, circa:".ljust(34,"-") + "|" + self.colors["reset"])
         descript_input: str = input()[:35]
         
         # Control logic
