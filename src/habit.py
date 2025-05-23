@@ -38,10 +38,13 @@ class Habit:
         return repr.expandtabs(3)
         
     def toggle_tracked(self):
+        """HABIT: Toggles Tracked bool of Habit"""
         self.isTracked = not self.isTracked
     def un_track(self):
+        """HABIT: turns Tracked bool to False"""
         self.isTracked = False
     def track(self):
+        """HABIT: turns Tracked bool to True"""
         self.isTracked = True
 
 #@dataclass
@@ -54,12 +57,15 @@ class HabitList:
         self._len = len(habitlist)
 
     def get_len(self) -> int:
+        """HABITLIST: gets the length of the habitlist"""
         return self._len
 
     def return_all(self) -> list[Habit]:
+        """HABITLIST: returns all habits (also untracked & deleted)"""
         return self._habitlist
     
     def return_tracked(self) -> list[Habit]:
+        """HABITLIST: returns tracked habits"""
         return [habit 
                 for habit in self._habitlist 
                 if habit.isTracked and
@@ -67,6 +73,7 @@ class HabitList:
                 ] 
     
     def return_same_period(self, period: Period) -> list[Habit]:
+        """HABITLIST: returns habits with same periodicity"""
         return [habit 
                 for habit in self._habitlist
                 if habit.period == period and
@@ -75,6 +82,7 @@ class HabitList:
                 ]
     
     def return_longest_streak_all(self) -> int:
+        """HABITLIST: returns longest streak of all habits"""
         #longest: int = -1
         #ft = filter(, self.habitlist)
         # TODO: check behaviour when multiple values or empty
@@ -87,6 +95,7 @@ class HabitList:
                      if stored_habit == habit ])
         
     def add_habit(self, habit: Habit) -> None:
+        """HABITLIST: adds Habit instance to Habitlist, and updates counter"""
         self._habitlist.append(habit)
         self._len += 1
 

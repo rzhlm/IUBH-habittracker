@@ -80,16 +80,19 @@ class TUI(View):
         self.currentdate: str = self.goto_load_date()
 
     def goto_save_date(self) -> None:
+        """VIEW/TUI: passes date val to controller for saving"""
         # TODO: implement save on exit
         # save date in storage in Controller
         self.controller.do_save_date(self.currentdate)
     
     def goto_load_date(self) -> str:
+        """VIEW/TUI: gets date val from controller"""
         # TODO: implement load on start
         # get date from storage in Controller
         return self.controller.current_date
 
     def init_menulist(self) -> list[MenuChoices]:
+        """VIEW/TUI: initializes the menulist"""
         return [
         MenuChoices("Main menu","m", self.goto_main),
         MenuChoices("Advance date","adv", self.goto_advance_date),
@@ -106,6 +109,7 @@ class TUI(View):
         ]
         
     def splash_screen(self) -> None:
+        """VIEW/TUI: displays splash screen"""
         
         welcome = """
             WELCOME TO THE HABIT TRACKING APP !
@@ -122,6 +126,7 @@ class TUI(View):
         # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
     def show_menulist(self) -> None:
+        """VIEW/TUI: prints menulist"""
         print("-" * 80)
         # TODO: somekind of decorator or print_color function
         print(self.colors["yellow"],
@@ -143,6 +148,7 @@ class TUI(View):
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
     def do_input(self, input_action: str) -> None:
+        """VIEW/TUI: gets user input in REPL"""
         if input_action.strip() not in [choice.command for choice in self.choices]:
                 self.invalid_input()
                 #return
@@ -152,6 +158,7 @@ class TUI(View):
                 #return
             
     def interact(self, message: str = "") -> None:
+        """VIEW/TUI: The main REPL method"""
         #self.clear()
         self.splash_screen()
         while True:
@@ -187,25 +194,26 @@ class TUI(View):
         print("exited main loop (self.interact)")
 
     def invalid_input(self) -> None:
+        """VIEW/TUI: prints that input is invalid"""
         self.clear()
         color = self.colors["red"]
         reset = self.colors["reset"]
         print(f'{color}Input not valid{reset}')
 
     def goto_advance_date(self) -> None:
-        self.clear()
-        pass
+        """VIEW/TUI: advances the date to new value"""
+        newdate = ""
+        self.controller.do_advance_date(newdate)
 
     def goto_main(self) -> None:
+        """VIEW/TUI: placeholder function for getting to main menu"""
         #break
         self.clear()
         #print("inside main")        
         pass
 
     def goto_qm(self) -> None:
-        """QuickMark: Links the TUI command to the Controller action"""
         self.clear()
-
         # Control logic
         self.controller.do_qm()
         # view logic
@@ -221,6 +229,7 @@ class TUI(View):
         print("2.inside Analysis (TUI)")
 
     def print_table_head(self) -> None:
+        """VIEW/TUI: prints the header of the Habit table"""
         #"obj(".ljust(7) +\
         header: str = self.colors["yellow"] +\
         "|id".ljust(6) +\
@@ -235,8 +244,8 @@ class TUI(View):
         print("-" * 80)
 
     def goto_showlist(self, option: str | None = None) -> None:
+        """VIEW/TUI: shows user-requested type of habitlist"""
         self.clear()
-        #print("2.inside Showlist (TUI)")
         self.print_table_head()        
 
         if option is None:
@@ -291,12 +300,15 @@ class TUI(View):
         #return #prob not needed, testing bug
         
     def goto_showlist_tracked(self) -> None:
+        """VIEW/TUI: connector function for getting a list of tracked habits"""
         self.goto_showlist(option = "tracked")
 
     def goto_showlist_period(self) -> None:
+        """VIEW/TUI: connector function for getting habits with same periods """
         self.goto_showlist(option = "period")
 
     def period_picker(self) -> Period:
+        """VIEW/TUI: prints the available periods and asks user which"""
         self.clear()
         period: Period | None = None
         for i, p in enumerate(Period, start=1):
@@ -320,6 +332,7 @@ class TUI(View):
         
 
     def goto_add(self) -> None:
+        """VIEW/TUI: prints & input for adding habit (passing to controller)"""
         # need to add to habitlist, and give it an ID
         self.clear()
         period: Period = self.period_picker()
@@ -336,26 +349,47 @@ class TUI(View):
         # print("2.inside Add (TUI)")
 
     def goto_edit(self) -> None:
-        # modify everything, except the ID.
+        """VIEW/TUI: edit, prints and gets input for habit editing 
+        (passing to controller"""
+        # ID should not be modifyible at all
         # also be able to delete (but keep ID)
-        # perhaps with a flag streak=-1 or a magic date val
+        # delete : streak = -1
+        # id, start date, streak: not modifyible
+        # period, track, description: modifyible
 
-        self.clear()
-        # Control logic
+        #self.clear()
+        c: str = self.colors["yellow"]
+        r: str = self.colors["reset"]
+        print(f"{c}Which ID would you like to edit?{r}")
+        edit_id: int = int(input("ID:"))
+
+        self.print_table_head()
+        edit_habit: Habit | None = None
+        for habit in self.controller.do_showlist():
+            if edit_id == habit.id:
+                edit_habit = habit
+        
+        if edit_habit is None:
+            print(f"{c}ID not in list!{r}")
+            self.pause()
+        else:
+            pass
+        
         self.controller.do_edit()
-        # view logic
-        print("2.inside Edit (TUI)")
+        
 
     def goto_help(self) -> None:
+        """VIEW/TUI: prints help info"""
         self.clear()
         self.controller.do_help()
         print("2.inside Help (TUI)")
         
 
     def goto_quit(self) -> None:
+        """VIEW/TUI: exits the REPL"""
         self.clear()
         
-        #Controller logic
+        
         self.controller.do_quit()
         # View logic:
         print("2. Inside Quit (view)")
@@ -364,9 +398,11 @@ class TUI(View):
     
 
     def clear(self) -> None:
+        """VIEW/TUI: clears the shell screen"""
         os.system('cls' if os.name == 'nt' else 'clear')
     
     def pause(self) -> None:
+        """VIEW/TUI: aks user to press any key to continue"""
         os.system('pause' if os.name == 'nt' 
         else 'bash -c \
         \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
@@ -374,8 +410,4 @@ class TUI(View):
 
 
 if __name__ == "__main__":
-    pass
-    # for testing & dev purposes
-"""     controller = Controller()
-    tui = TUI(controller)
-    tui.interact() """
+    print("This module does not run directly, import only")

@@ -17,18 +17,20 @@ class Controller:
         self.habitlist: HabitList = habitlist
         self.storage : Storage = storage
         self.current_date = self.storage.date_load()
-        # TODO: add date loading
-        pass
+        print(f"STARTup: DATE: {self.current_date.split("\n")}/end")
+        import os
+        os.system('pause')
 
     def do_save_date(self, date: str) -> None:
+        """CONTROLLER: saves the date (passes to STORAGE)"""
         self.current_date = date
         self.storage.date_save(self.current_date)
 
-    def do_advance_date(self):
+    def do_advance_date(self, newdate: str):
+        """CONTROLLER: advances the manual date"""
         pass
 
     def do_qm(self):
-        """Mark habit as done"""
         # need to ID the habit, and toggle it
         # need to know which habits are active for today
         # freshly added habits should also be active for today
@@ -40,47 +42,53 @@ class Controller:
         print("1.inside Analysis (Controller)")
         pass
     def do_showlist(self) -> list[Habit]:
-        #print("1.Inside showlist(Controller)")
-        
+        """CONTROLLER: returns a list of all habits"""
         return self.habitlist.return_all() or []
-        #self.habitlist.return_tracked
-        pass
 
     def do_showlist_tracked(self) -> list[Habit]:
+        """CONTROLLER: returns a list of tracked habits"""
         return self.habitlist.return_tracked() or []
     
     def do_showlist_period(self, period: Period) -> list[Habit]:
+        """CONTROLLER: returns all habits with same periodicity"""
         return self.habitlist.return_same_period(period) or []
 
     def do_add(self, period: Period, description: str):
-        #print("1.Inside add (Controller)")
-        # Habit:
+        """CONTROLLER: adds a new habit to Habitlist"""
         # id, start-date, period, track, streak, last-done, desc
         id: int = self.habitlist.get_len() + 1
         new_habit: Habit = Habit(
             id = id,
             description = description,
-            creation_data=self.current_date,
+            creation_data = self.current_date,
             period = period,
             isTracked = True,
-            streak=0,
-            last_complete=""
+            streak = 0,
+            last_complete = ""
         )
         self.habitlist.add_habit(new_habit)
         pass
 
+    def do_delete(self, period: Period):
+        """CONTROLLER: removes a habit from Habitlist"""
+        pass
+
     def do_edit(self):
+        """CONTROLLER: edits a habit"""
         print("1. Inside Edit (Controller)")
         pass
+
     def do_help(self):
+        """CONTROLLER: help instructions"""
         print("1. Inside Help (Controller)")
     
     def do_quit(self):
+        """CONTROLLER: exit logic"""
         print("1.Inside Quit (controller)")
         pass
 
 if __name__ == '__main__':
-    pass
+    print("This module is for import, not for running as main")
     # for testing & dev purposes
 # if the below is removed, remove the respective test-savefiles as well
 """     st = Storage()
