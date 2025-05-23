@@ -70,8 +70,8 @@ class TUI(View):
 
     def __init__(self, controller: Controller):
         self.controller: Controller = controller
-        self.choices = self.init_menulist()
-        self.colors = {
+        self.choices: list[MenuChoices] = self.init_menulist()
+        self.colors: dict[str, str] = {
             "red": "\033[31m",
             "yellow" : "\033[0;33m",
             "green" : "\033[0;32m",
@@ -139,6 +139,7 @@ class TUI(View):
                 print(f'[{color}{choice.command}{reset}] \t{choice.name}')
             else:
                 print(f' [{color}{choice.command}{reset}] \t{choice.name}')
+                # this is to push the submenu slightly to the right
         print("-" * 80)    
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 

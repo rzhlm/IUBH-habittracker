@@ -1,15 +1,10 @@
 # lots of trouble with imports, 
 # (temporarily) solved by '.env' file with PYTHONPATH hardcoded
 # some kind of venv-related problem
+
 from __future__ import annotations
 from src.habit import Habit
 from typing import TYPE_CHECKING
-
-# can't run directly, must run: python -m src.controller
-#from habit import Habit, HabitList
-#from storage2 import Storage
-#from src.view import View, TUI
-#from typing import List
 
 if TYPE_CHECKING:
     from src.storage2 import Storage

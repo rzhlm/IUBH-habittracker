@@ -32,29 +32,32 @@ def create_habits() -> List[Habit]:
 
 
 testfile_name: str = "test_save.sav"
-# This is plain misery:
-# It still is.
+testdatefile_name: str = "test_date_save.sav"
+testdate_date: str = "2020-1-1"
 
 @pytest.fixture
 def testfile() -> str:
     return testfile_name
 
 @pytest.fixture
+def test_date_file() -> str:
+    return testdatefile_name
+
+@pytest.fixture
+def date() -> str:
+    return testdate_date
+
+@pytest.fixture
 def st() -> Storage:
     return Storage()
 
 def test_save(st: Storage, habit_list: HabitList, testfile: str):
-#def test_save(st: Storage, habit_list: HabitList):
     # in order to make the savefile, comment out all the os.remove
 
     if os.path.exists(testfile):
         os.remove(testfile)
         # ↑ this one should be uncommented normally
         pass
-        
-    #ch: List[Habit] = create_habits()
-    #hl : HabitList = habit_list
-    #hl = habit_list(ch)
     st.HL_save(habit_list, testfile)
     #st.save(habit_list)
     assert os.path.exists(testfile)
@@ -63,7 +66,6 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     
     #_ = habit_list
     #_ = create_habits
-    
     
 
 def test_load(st: Storage, habit_list: HabitList, testfile: str):
@@ -95,6 +97,7 @@ def test_to_JSON(st: Storage, create_habits: list[Habit]):
         }
     assert st.to_JSON(first_habit) == correct
 
+
 def test_from_JSON(st: Storage, ):
     test_habit: dict[str, str|int|bool] = {
         "id" : 1,
@@ -112,3 +115,19 @@ def test_from_JSON(st: Storage, ):
     assert habit.period.name == test_habit["period"]
     assert habit.isTracked == test_habit["isTracked"]
     assert habit.streak == test_habit["streak"]
+
+
+def test_save_date(st: Storage, date: str, test_date_file: str) -> None:
+    if os.path.exists(test_date_file):
+        os.remove(test_date_file)
+        # ↑ this one should be uncommented normally
+    st.date_save(date, test_date_file)
+    assert os.path.exists(test_date_file)
+    os.remove( test_date_file)
+
+def test_date_load(st: Storage, date: str, test_date_file: str):
+    st.date_save(date, test_date_file)
+    date_loaded: str = st.date_load(test_date_file)
+    assert date == date_loaded
+    os.remove(test_date_file)
+    # ↑ this one should be uncommented normally

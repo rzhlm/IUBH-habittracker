@@ -13,6 +13,17 @@ class Storage:
         pass 
 
 
+    def date_save(self,
+                  date: str,
+                  filename: str = "datefile.sav") -> None:
+        with open(filename, 'w') as f:
+            f.writelines(date)
+
+    def date_load(self, filename: str = "datefile.sav") -> str:
+        with open(filename, 'r') as f:
+            date: str = f.readline()
+        return date
+
     def HL_save(self,
                 habit_list: HabitList,
                 filename: str = "default_savefile.sav") -> None:
