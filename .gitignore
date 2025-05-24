@@ -5,6 +5,7 @@ controller.sav
 *.sav.old
 .vscode/
 *.bat
+*.xml
 
 .env
 
