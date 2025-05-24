@@ -1,5 +1,5 @@
 import json
-from src.habit import Period, Habit, HabitList
+from src.habit import Period, Habit, HabitAnalysis
 #from habit import Period, Habit, HabitList
 # -> don't run directly from VSC, run with: python -m src.storage2
 
@@ -23,11 +23,11 @@ class Storage:
     def date_load(self, filename: str = "datefile.sav") -> str:
         """STORAGE: loads the date value from file"""
         with open(filename, 'r') as f:
-            date: str = f.readline()
+            date: str = f.readline().rstrip('\n').strip()
         return date
 
     def HL_save(self,
-                habit_list: HabitList,
+                habit_list: HabitAnalysis,
                 filename: str = "default_savefile.sav") -> None:
         """STORAGE: saves the Habitlist instance (to JSON to file)"""
         #habit_list: HabitList) -> None:
@@ -40,7 +40,7 @@ class Storage:
                         ]
                        }, file)
 
-    def HL_load(self, filename: str = "default_savefile.sav") -> HabitList:
+    def HL_load(self, filename: str = "default_savefile.sav") -> HabitAnalysis:
         """STORAGE: loads the Habitlist from storage, and transforms into instance"""
         with open(filename,"r") as file:
             data = json.load(file)
@@ -48,7 +48,7 @@ class Storage:
                 self.from_JSON(habit) 
                 for habit in data["_habitlist"]
                 ]
-            return HabitList(habits)
+            return HabitAnalysis(habits)
 
     def to_JSON(self, habit: Habit):
         """STORAGE: transforms a Habit instance into JSON"""

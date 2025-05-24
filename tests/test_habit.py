@@ -1,7 +1,7 @@
 import pytest
 #from typing import List
 
-from src.habit import Period, Habit, HabitList
+from src.habit import Period, Habit, HabitAnalysis
 
 @pytest.fixture
 def create_habits() -> list[Habit]:
@@ -64,10 +64,10 @@ def create_habits() -> list[Habit]:
     ]
 
 @pytest.fixture
-def habit_list(create_habits: list[Habit]) -> HabitList:
+def habit_list(create_habits: list[Habit]) -> HabitAnalysis:
     #hl: HabitList = HabitList(create_habits)
     #return hl
-    return HabitList(create_habits)
+    return HabitAnalysis(create_habits)
 """
 def test_period():
     pass
@@ -77,28 +77,28 @@ def test_habit():
     pass
 """
 
-def test_return_tracked(habit_list: HabitList):
+def test_return_tracked(habit_list: HabitAnalysis):
     tracked : list[Habit] = habit_list.return_tracked()
     assert len(tracked) == 4
     for habit in tracked:
         assert habit.isTracked
 
-def test_return_same_period(habit_list: HabitList):
+def test_return_same_period(habit_list: HabitAnalysis):
     same_period : list[Habit] = habit_list.return_same_period(Period.daily)
     assert len(same_period) == 3
     for habit in same_period:
         assert habit.period == Period.daily
 
-def test_return_longest_streak_all(habit_list: HabitList):
+def test_return_longest_streak_all(habit_list: HabitAnalysis):
     assert habit_list.return_longest_streak_all() == 17
 
 #@pytest.mark.xfail
-def test_return_longest_streak(habit_list: HabitList,
+def test_return_longest_streak(habit_list: HabitAnalysis,
                                 create_habits: list[Habit]):
     habits: Habit = create_habits[0]
     assert habit_list.return_longest_streak(habits) == 5
 
-def test_add_habit(habit_list: HabitList):
+def test_add_habit(habit_list: HabitAnalysis):
     to_add: Habit = Habit(id = 10, 
                           description = "desc", 
                           creation_data = "2023-1-1",

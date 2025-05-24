@@ -8,13 +8,13 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.storage2 import Storage
-    from src.habit import Period, HabitList
+    from src.habit import Period, HabitAnalysis
 
 
 class Controller:
-    def __init__(self, habitlist: HabitList,
+    def __init__(self, habitlist: HabitAnalysis,
                   storage: Storage):
-        self.habitlist: HabitList = habitlist
+        self.habitlist: HabitAnalysis = habitlist
         self.storage : Storage = storage
         self.current_date = self.storage.date_load()
         print(f"STARTup: DATE: {self.current_date.split("\n")}/end")

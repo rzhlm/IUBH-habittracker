@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest #apparently not needed according to typechecker. Works without
 from src.storage2 import Storage
-from src.habit import Habit, HabitList #, Period
+from src.habit import Habit, HabitAnalysis #, Period
 from tests.test_habit import habit_list, create_habits # noqa # type: ignore
 import os
 
@@ -35,7 +35,7 @@ def st() -> Storage:
 # ##############################################################################
 # Test functions
 
-def test_save(st: Storage, habit_list: HabitList, testfile: str):
+def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
     # in order to make the savefile, comment out all the os.remove
     if os.path.exists(testfile):
         os.remove(testfile)
@@ -47,9 +47,9 @@ def test_save(st: Storage, habit_list: HabitList, testfile: str):
     # ↑ this one should be uncommented normally
     
 
-def test_load(st: Storage, habit_list: HabitList, testfile: str):
+def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
     st.HL_save(habit_list, testfile)
-    hl: HabitList = st.HL_load(testfile)
+    hl: HabitAnalysis = st.HL_load(testfile)
     #hl: HabitList = st.load()
     for habit, load_habit in zip(habit_list.return_all(), hl.return_all()):
         assert habit.description == load_habit.description

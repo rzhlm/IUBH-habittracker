@@ -6,13 +6,13 @@ from src.storage2 import Storage
 from src.view import TUI
 
 if TYPE_CHECKING:
-    from src.habit import HabitList
+    from src.habit import HabitAnalysis
 
 def initialize_ui() -> TUI:
     settings: Settings = Settings()
     filename: str = settings.FILENAME
     storage: Storage = Storage()
-    habitlist: HabitList = storage.HL_load(filename)
+    habitlist: HabitAnalysis = storage.HL_load(filename)
     controller: Controller = Controller(habitlist, storage)
     
     tui: TUI = TUI(controller)

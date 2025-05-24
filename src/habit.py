@@ -48,7 +48,7 @@ class Habit:
         self.isTracked = True
 
 #@dataclass
-class HabitList:
+class HabitAnalysis:
     #_habitlist : list[Habit] = field(default_factory=lambda: [])
     #_len : int = 0
 
