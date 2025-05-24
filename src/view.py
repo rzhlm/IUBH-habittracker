@@ -192,8 +192,8 @@ class TUI(View):
     def goto_advance_date(self) -> None:
         """VIEW/TUI: advances the date to new value"""
         if self.controller.can_advance_date():
-            # advance logic
             print("going to next day")
+            # advance logic here
         else:
             # not yet advance logic
             red = self.colors["red"]
