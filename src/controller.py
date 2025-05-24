@@ -74,9 +74,9 @@ class Controller:
         return False
         pass
 
-    def do_edit(self):
+    def do_edit(self, habit: Habit):
         """CONTROLLER: edits a habit"""
-        print("1. Inside Edit (Controller)")
+        #print("1. Inside Edit (Controller)")
         pass
 
     def do_help(self):

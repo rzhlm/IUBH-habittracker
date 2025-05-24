@@ -162,7 +162,7 @@ class TUI(View):
             
     def interact(self, message: str = "") -> None:
         """VIEW/TUI: The main REPL method"""
-        #self.clear()
+        self.clear()
         self.splash_screen()
         while True:
             self.show_menulist()
@@ -180,20 +180,9 @@ class TUI(View):
             except Exception as e:
                 # This is for genuine Exceptions
                 print("first exit: broke out of 'While True: try/except'")
-                print(f"Exception: {e}")
+                print(f"VIEW/TUI: self.interact: Exception: {e}")
                 break
-            finally:
-                # TODO: Save state of objects
-                # habitlist, and state file
-                #
-                pass
                 
-        # TODO: remark
-        # Or perhaps save state here instead of in 'finally'
-        # perhaps with contextmanager instead over the while loop
-        print("remember to save the state at exit")
-        # save habitlist with storage object in self.controller
-        # save current_date with own method
         print("exited main loop (self.interact)")
         self.controller.do_quit()
 
@@ -289,7 +278,9 @@ class TUI(View):
             period_habits: list[Habit] = self.controller.do_showlist_period(period)
             if len(period_habits) == 0:
                 self.clear()
-                print("No habits with this periodicity")
+                red = self.colors["red"]
+                _, r = self.set_default_colors()
+                print(f"{red}No habits with this periodicity{r}")
             else:
                 self.clear()
                 self.print_table_head()
@@ -314,15 +305,30 @@ class TUI(View):
     def period_picker(self) -> Period:
         """VIEW/TUI: prints the available periods and asks user which"""
         self.clear()
-        period: Period | None = None
+        #period: Period | None = None
         for i, p in enumerate(Period, start=1):
             print(f"{p}: {i}")
+
         c,r = self.set_default_colors()
-        period_inp: str = input(f'{c}Which period? (1, 2, 3): {r}')
+        period_inp: str = ""
+        try:
+            period_inp: str = input(f"{c}Which period? (1, 2, 3): {r}")[:4]\
+            .strip()
+            length = len(Period)
+            if period_inp not in [str(i) for i in range(1, length + 1)]:
+                red = self.colors["red"]
+                _, r = self.set_default_colors()
+                print(f"{red}Invalid selection!")
+                print(f"setting period to default: daily{r}")
+                period = Period.daily # TODO: an explicit Period.default
+                self.pause()
+                return period
+        except Exception as e:
+            print(f"VIEW/TUI: period_picker, exception: {e}")
+
         #print(f"{type(period_inp)=} {period_inp=}")
-        if period_inp.strip() not in [str(i) for i in range(1,4)]:
-            print("invalid selection")
-        match period_inp.strip():
+        
+        match period_inp:
             case "1":
                 period = Period.daily
             case "2":
@@ -339,17 +345,18 @@ class TUI(View):
         # need to add to habitlist, and give it an ID
         self.clear()
         period: Period = self.period_picker()
+
         c, r = self.set_default_colors()
-        print(f"{c}" +\
-              "\nDescription? (max 35 char, more will be cut off)")
+        print(f"{c}\nDescription? (type 'q.' to return)")
+        print("max 35 char, more will be cut off)")
         print("until here, circa:".ljust(34,"-") + f"|{r}")
-        descript_input: str = input()[:35]
         
-        # Control logic
+        descript_input: str = input()[:35]
+        if descript_input.lower().startswith('q.'):
+            return
+        
         self.controller.do_add(period, descript_input)
 
-        # view logic
-        # print("2.inside Add (TUI)")
 
     def goto_edit(self) -> None:
         """VIEW/TUI: edit, prints and gets input for habit editing 
@@ -362,22 +369,32 @@ class TUI(View):
 
         #self.clear()
         c, r = self.set_default_colors()
-        print(f"{c}Which ID would you like to edit?{r}")
-        edit_id: int = int(input("ID:"))
+        print(f"{c}Which ID would you like to edit? ('q' to return){r}")
+        try:
+            edit_id: str = input("ID:")[:4].strip()
+            if edit_id.lower().startswith('q'):
+                return
+            elif edit_id.isnumeric():
+                id: int = int(edit_id)
+            else:
+                red = self.colors["red"]
+                print(f"{red}Invalid input!{r}")
+                self.pause()
+                return
+        except Exception as e:
+            print(f"TUI:Problem in edit input, {e}")
 
         self.print_table_head()
-        edit_habit: Habit | None = None
+        #edit_habit: Habit | None = None
         for habit in self.controller.do_showlist():
-            if edit_id == habit.id:
+            if id == habit.id: # type: ignore
                 edit_habit = habit
+            else:
+                red = self.colors["red"]
+                print(f"{red}ID not in list!{r}")
+                self.pause()
         
-        if edit_habit is None:
-            print(f"{c}ID not in list!{r}")
-            self.pause()
-        else:
-            pass
-        
-        self.controller.do_edit()
+        self.controller.do_edit(edit_habit) # type: ignore
         
 
     def goto_help(self) -> None:
