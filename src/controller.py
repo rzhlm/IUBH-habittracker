@@ -5,6 +5,7 @@
 from __future__ import annotations
 from src.habit import Habit
 from typing import TYPE_CHECKING
+from src.constants import Settings
 
 if TYPE_CHECKING:
     from src.storage2 import Storage
@@ -53,7 +54,7 @@ class Controller:
         """CONTROLLER: returns all habits with same periodicity"""
         return self.habitlist.return_same_period(period) or []
 
-    def do_add(self, period: Period, description: str):
+    def do_add(self, period: Period, description: str) -> None:
         """CONTROLLER: adds a new habit to Habitlist"""
         # id, start-date, period, track, streak, last-done, desc
         id: int = self.habitlist.get_len() + 1
@@ -67,10 +68,10 @@ class Controller:
             last_complete = ""
         )
         self.habitlist.add_habit(new_habit)
-        pass
 
-    def do_delete(self, period: Period):
+    def do_delete(self, period: Period) -> bool:
         """CONTROLLER: removes a habit from Habitlist"""
+        return False
         pass
 
     def do_edit(self):
@@ -84,8 +85,11 @@ class Controller:
     
     def do_quit(self):
         """CONTROLLER: exit logic"""
-        print("1.Inside Quit (controller)")
-        pass
+        print("entering QUIT LOGIC")
+        settings: Settings = Settings()
+        self.storage.date_save(self.current_date)
+        self.storage.HL_save(self.habitlist, settings.FILENAME)
+
 
 if __name__ == '__main__':
     print("This module is for import, not for running as main")

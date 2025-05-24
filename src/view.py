@@ -77,13 +77,13 @@ class TUI(View):
             "green" : "\033[0;32m",
             "reset" : "\033[0m",
         }
-        self.currentdate: str = self.goto_load_date()
+        #self.currentdate: str = self.goto_load_date()
 
-    def goto_save_date(self) -> None:
-        """VIEW/TUI: passes date val to controller for saving"""
-        # TODO: implement save on exit
-        # save date in storage in Controller
-        self.controller.do_save_date(self.currentdate)
+    # def goto_save_date(self) -> None:
+    #     """VIEW/TUI: passes date val to controller for saving"""
+    #     # TODO: implement save on exit
+    #     # save date in storage in Controller
+    #     self.controller.do_save_date(self.currentdate)
     
     def goto_load_date(self) -> str:
         """VIEW/TUI: gets date val from controller"""
@@ -125,24 +125,27 @@ class TUI(View):
         # self.pause()
         # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
+    def set_default_colors(self) -> tuple[str, str]:
+        color: str = self.colors["yellow"]
+        reset: str = self.colors["reset"]
+        return (color, reset)
+
     def show_menulist(self) -> None:
         """VIEW/TUI: prints menulist"""
         print("-" * 80)
         # TODO: somekind of decorator or print_color function
-        print(self.colors["yellow"],
-              "current date:",
-              self.colors["yellow"],
-              self.currentdate,
-              self.colors["reset"])
-        print("\nChoose an option: ")
+        c, r = self.set_default_colors()
+        print(f"{c}current date:",
+              self.goto_load_date())
+        print(f"\nChoose an option: {r}")
         
         for choice in self.choices:
-            color = self.colors["yellow"]
-            reset = self.colors["reset"]
+            c, r = self.set_default_colors()
+            
             if not choice.name.startswith(" "):
-                print(f'[{color}{choice.command}{reset}] \t{choice.name}')
+                print(f'[{c}{choice.command}{r}] \t{choice.name}')
             else:
-                print(f' [{color}{choice.command}{reset}] \t{choice.name}')
+                print(f' [{c}{choice.command}{r}] \t{choice.name}')
                 # this is to push the submenu slightly to the right
         print("-" * 80)    
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
@@ -192,6 +195,7 @@ class TUI(View):
         # save habitlist with storage object in self.controller
         # save current_date with own method
         print("exited main loop (self.interact)")
+        self.controller.do_quit()
 
     def invalid_input(self) -> None:
         """VIEW/TUI: prints that input is invalid"""
@@ -313,9 +317,8 @@ class TUI(View):
         period: Period | None = None
         for i, p in enumerate(Period, start=1):
             print(f"{p}: {i}")
-        color = self.colors["yellow"]
-        reset = self.colors["reset"]
-        period_inp: str = input(f'{color}Which period? (1, 2, 3): {reset}')
+        c,r = self.set_default_colors()
+        period_inp: str = input(f'{c}Which period? (1, 2, 3): {r}')
         #print(f"{type(period_inp)=} {period_inp=}")
         if period_inp.strip() not in [str(i) for i in range(1,4)]:
             print("invalid selection")
@@ -336,10 +339,10 @@ class TUI(View):
         # need to add to habitlist, and give it an ID
         self.clear()
         period: Period = self.period_picker()
-        
-        print(f"{self.colors["yellow"]}" +\
+        c, r = self.set_default_colors()
+        print(f"{c}" +\
               "\nDescription? (max 35 char, more will be cut off)")
-        print("until here, circa:".ljust(34,"-") + "|" + self.colors["reset"])
+        print("until here, circa:".ljust(34,"-") + f"|{r}")
         descript_input: str = input()[:35]
         
         # Control logic
@@ -358,8 +361,7 @@ class TUI(View):
         # period, track, description: modifyible
 
         #self.clear()
-        c: str = self.colors["yellow"]
-        r: str = self.colors["reset"]
+        c, r = self.set_default_colors()
         print(f"{c}Which ID would you like to edit?{r}")
         edit_id: int = int(input("ID:"))
 
