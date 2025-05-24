@@ -1,6 +1,5 @@
 from dataclasses import dataclass #, field
 from enum import Enum, auto
-#from typing import List
 
 class Period(Enum):
     daily = auto()
@@ -26,13 +25,16 @@ class Habit:
     # But how to know beforehand if at currenttime streak is still valid?
 
     def __str__(self):
+        #f"|{self.last_complete}".ljust(11) +\
+        never = "1900-01-01"
+        last = "never" if self.last_complete == never else self.last_complete
         #repr: str =  "Habit(".ljust(7) + \
         repr: str =  f"|{self.id}".ljust(6) + \
         f"|{self.creation_data}".ljust(12) +\
         f"|{self.period}".ljust(8) +\
         f"|{self.isTracked}".ljust(7) +\
         f"|{self.streak}".ljust(7) + \
-        f"|{self.last_complete}".ljust(11) +\
+        f"|{last}".ljust(11) +\
         f"|{self.description} )"
 
         return repr.expandtabs(3)

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Settings:
     FILENAME: str = "savefile.sav"
+    DTSTRF: str = "%Y-%m-%d"
 
 class StorageType(Enum):
     PICKLE = auto(),

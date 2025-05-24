@@ -6,6 +6,7 @@ import os
 from src.habit import Period
 from abc import ABC, abstractmethod
 from copy import deepcopy
+import datetime as dt
 
 if TYPE_CHECKING:
     from src.controller import Controller
@@ -78,7 +79,7 @@ class TUI(View):
         }
 
     
-    def get_date(self) -> str:
+    def get_date(self) -> dt.date:
         """VIEW/TUI: gets date val from controller"""
         # TODO: implement load on start
         # get date from storage in Controller
@@ -89,7 +90,7 @@ class TUI(View):
         return [
         MenuChoices("Main menu","m", self.goto_main),
         MenuChoices("Advance date","adv", self.goto_advance_date),
-        MenuChoices("Quick mark","qm",self.goto_qm),
+        MenuChoices("Quick mark","qm",self.begin_quickmark),
         MenuChoices("Analysis", "a", self.goto_analysis),
         MenuChoices("Show list (all) (EXPERT MODE, for debugging)", "sl", self.goto_showlist),
         MenuChoices(" Show list (tracked)", "slt", self.goto_showlist_tracked),
@@ -128,13 +129,14 @@ class TUI(View):
         print("-" * 80)
         # TODO: somekind of decorator or print_color function
         c, r = self.set_default_colors()
-        print(f"{c}current date:",
-              self.get_date())
+        strf = self.controller.settings.DTSTRF
+        curr_date = self.get_date()
+        curr_date = curr_date.strftime(strf)
+        print(f"{c}current date:", curr_date)
+
         print(f"\nChoose an option: {r}")
-        
         for choice in self.choices:
-            c, r = self.set_default_colors()
-            
+            #c, r = self.set_default_colors()
             if not choice.name.startswith(" "):
                 print(f'[{c}{choice.command}{r}] \t{choice.name}')
             else:
@@ -189,16 +191,77 @@ class TUI(View):
 
     def goto_advance_date(self) -> None:
         """VIEW/TUI: advances the date to new value"""
-        newdate = ""
-        self.controller.do_advance_date(newdate)
+        if self.controller.can_advance_date():
+            # advance logic
+            print("going to next day")
+        else:
+            # not yet advance logic
+            red = self.colors["red"]
+            c, r = self.set_default_colors()
+            print(f"{red}Can't advance to tomorrow, still habits to mark!{r}")
+            self.pause()
+            print(f"{c}Please mark these:{r}")
+            self.print_table_head()
+            for to_mark in self.controller.return_unmarked_habits():
+                print(to_mark)
 
     def goto_main(self) -> None:
         """VIEW/TUI: placeholder function for getting to main menu"""
         self.clear()
 
-    def goto_qm(self) -> None:
+    def begin_quickmark(self) -> None:
+        c,r = self.set_default_colors()
         self.clear()
-        print("2.inside QM (TUI)")
+        self.print_table_head()
+        for to_mark in self.controller.return_unmarked_habits():
+            print(to_mark)
+        print(f"{c}Which ID would you like to mark (done/not-done)?" +\
+              f"('q' to return){r}")
+        try:
+            mark_id: str = input("ID:")[:4].strip()
+            if mark_id.lower().startswith('q'):
+                return
+            elif mark_id.isnumeric():
+                id: int = int(mark_id)
+            else:
+                self.invalid_input()
+                self.pause()
+                return
+        except Exception as e:
+            print(f"TUI:Problem in marking input, {e}")
+            self.pause()
+        
+        found: bool = False
+        for habit in self.controller.return_unmarked_habits():
+            if id == habit.id: # type: ignore
+                # TODO: reimplement HabitAnalysis with a dict instead of list
+                # edit_habit = habit # by ref, so the actual habit gets edited!
+                # IMHO passing a pointer would be cleaner than this weird stuff
+                mark_habit = deepcopy(habit) 
+                found = True
+                break
+        if not found:
+            red = self.colors["red"]
+            print(f"{red}ID not in list!{r}")
+            self.pause()
+            return
+    
+        self.finish_quickmark(mark_habit)
+
+    def finish_quickmark(self, habit: Habit):
+        c, r = self.set_default_colors()
+        print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
+        action = input()[:1].lower().strip()
+        match action:
+            case 'd':
+                self.controller.mark_habit_done(habit)
+            case 'n':
+                self.controller.mark_habit_not_done(habit)
+            case 'q':
+                return
+            case _:
+                self.invalid_input()
+        pass
         self.controller.do_qm()
 
     def goto_analysis(self) -> None:
