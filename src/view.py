@@ -1,7 +1,5 @@
 from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
-#from enum import Enum, auto
-#from collections import namedtuple
 from src.constants import Motivational
 from dataclasses import dataclass
 import os
@@ -78,13 +76,7 @@ class TUI(View):
             "green" : "\033[0;32m",
             "reset" : "\033[0m",
         }
-        #self.currentdate: str = self.goto_load_date()
 
-    # def goto_save_date(self) -> None:
-    #     """VIEW/TUI: passes date val to controller for saving"""
-    #     # TODO: implement save on exit
-    #     # save date in storage in Controller
-    #     self.controller.do_save_date(self.currentdate)
     
     def get_date(self) -> str:
         """VIEW/TUI: gets date val from controller"""
@@ -176,13 +168,13 @@ class TUI(View):
                 self.mainmenu_input(inp.lower())
             except GeneratorExit:
                 # This is how I handle getting out of the input loop
+                # could make a custom one
                 print("Intended exit, GeneratorExit")
                 break
             except Exception as e:
                 # This is for actual Exceptions
                 print(f"VIEW/TUI: self.interact: Exception: {e}")
                 print("broke out of 'While True: try/except'")
-                
                 break
                 
         print("exited main loop (self.interact)")
@@ -206,19 +198,13 @@ class TUI(View):
 
     def goto_qm(self) -> None:
         self.clear()
-        # Control logic
-        self.controller.do_qm()
-        # view logic
         print("2.inside QM (TUI)")
-
+        self.controller.do_qm()
 
     def goto_analysis(self) -> None:
         self.clear()
-        # SHOULD CALL THE FUNCTIONAL ANALYSIS MODULE
-        # Control logic
-        self.controller.do_analysis()
-        # view logic
         print("2.inside Analysis (TUI)")
+        self.controller.do_analysis()
 
     def print_table_head(self) -> None:
         """VIEW/TUI: prints the header of the Habit table"""
@@ -314,7 +300,6 @@ class TUI(View):
                 raise NotImplementedError("period-input problem")
         return period
         
-
     def goto_add(self) -> None:
         """VIEW/TUI: prints & input for adding habit (passing to controller)"""
         # need to add to habitlist, and give it an ID
@@ -332,7 +317,6 @@ class TUI(View):
             return
         
         self.controller.do_add(period, descript_input)
-
 
     def begin_edit(self) -> None:
         """VIEW/TUI: gets & validates input for the habit to edit"""
@@ -360,6 +344,7 @@ class TUI(View):
             if id == habit.id: # type: ignore
                 # TODO: reimplement HabitAnalysis with a dict instead of list
                 # edit_habit = habit # by ref, so the actual habit gets edited!
+                # IMHO passing a pointer would be cleaner than this weird stuff
                 edit_habit = deepcopy(habit) 
                 found = True
                 break
