@@ -6,6 +6,8 @@ controller.sav
 .vscode/
 *.bat
 *.xml
+default_savefile.sav
+
 
 .env
 
