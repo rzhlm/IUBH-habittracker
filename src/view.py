@@ -102,7 +102,7 @@ class TUI(View):
         MenuChoices(" Show list (tracked)", "slt", self.goto_showlist_tracked),
         MenuChoices(" Show list (same period, tracked)", "slp", self.goto_showlist_period),
         MenuChoices("Add Habit", "ah", self.goto_add),
-        MenuChoices("Edit Habit", "e", self.goto_edit),
+        MenuChoices("Edit Habit", "e", self.begin_edit),
         MenuChoices("----", "-", self.clear),
         MenuChoices("Help", "?", self.goto_help),
         MenuChoices("Quit","q", self.goto_quit),
@@ -178,9 +178,10 @@ class TUI(View):
                 print("Intended exit, GeneratorExit")
                 break
             except Exception as e:
-                # This is for genuine Exceptions
-                print("first exit: broke out of 'While True: try/except'")
+                # This is for actual Exceptions
                 print(f"VIEW/TUI: self.interact: Exception: {e}")
+                print("broke out of 'While True: try/except'")
+                
                 break
                 
         print("exited main loop (self.interact)")
@@ -200,10 +201,7 @@ class TUI(View):
 
     def goto_main(self) -> None:
         """VIEW/TUI: placeholder function for getting to main menu"""
-        #break
         self.clear()
-        #print("inside main")        
-        pass
 
     def goto_qm(self) -> None:
         self.clear()
@@ -224,7 +222,8 @@ class TUI(View):
     def print_table_head(self) -> None:
         """VIEW/TUI: prints the header of the Habit table"""
         #"obj(".ljust(7) +\
-        header: str = self.colors["yellow"] +\
+        c, r = self.set_default_colors()
+        header: str = c +\
         "|id".ljust(6) +\
         "|start date".ljust(12) +\
         "|period".ljust(8) +\
@@ -232,9 +231,10 @@ class TUI(View):
         "|streak".ljust(6) +\
         "|last done".ljust(11) +\
         "|description\t" +\
-        ")" + self.colors["reset"]
+        ")"
         print(header.expandtabs(3))
-        print("-" * 80)
+        print(f"{c}{'_' * 80}{r}")
+    
 
     def goto_showlist(self, option: str | None = None) -> None:
         """VIEW/TUI: shows user-requested type of habitlist"""
@@ -250,31 +250,6 @@ class TUI(View):
                 print(habit)
         elif option == "period":
             period = self.period_picker()
-            """ self.clear()
-            period = None
-            for i, p in enumerate(Period, start=1):
-                print(f"{p}: {i}")
-            color = self.colors["yellow"]
-            reset = self.colors["reset"]
-            period_inp: str = input(f'{color}Which period? (1, 2, 3): {reset}')
-            #print(f"{type(period_inp)=} {period_inp=}")
-            if period_inp.strip() not in [str(i) for i in range(1,4)]:
-                print("invalid selection")
-            match period_inp.strip():
-                case "1":
-                    period = Period.daily
-                case "2":
-                    period = Period.weekly
-                case "3":
-                    period = Period.monthly
-                case _:
-                    raise NotImplementedError("period-input problem") """
-            #print("test before")
-            #print(f"period branch, {period=}")
-            #result = self.controller.do_showlist_period(period)
-            #print(result)
-            #print(f"DEBUG: do_showlist_period before habit loop: {result}")
-            
             period_habits: list[Habit] = self.controller.do_showlist_period(period)
             if len(period_habits) == 0:
                 self.clear()
@@ -348,9 +323,10 @@ class TUI(View):
 
         c, r = self.set_default_colors()
         print(f"{c}\nDescription? (type 'q.' to return)")
+        # "q." because "quit smoking" also starts with 'q'
         print("max 35 char, more will be cut off)")
         print("until here, circa:".ljust(34,"-") + f"|{r}")
-        
+
         descript_input: str = input()[:35]
         if descript_input.lower().startswith('q.'):
             return
@@ -358,15 +334,8 @@ class TUI(View):
         self.controller.do_add(period, descript_input)
 
 
-    def goto_edit(self) -> None:
-        """VIEW/TUI: edit, prints and gets input for habit editing 
-        (passing to controller"""
-        # ID should not be modifyible at all
-        # also be able to delete (but keep ID)
-        # delete : streak = -1
-        # id, start date, streak: not modifyible
-        # period, track, description: modifyible
-
+    def begin_edit(self) -> None:
+        """VIEW/TUI: gets & validates input for the habit to edit"""
         #self.clear()
         c, r = self.set_default_colors()
         print(f"{c}Which ID would you like to edit? ('q' to return){r}")
@@ -377,42 +346,60 @@ class TUI(View):
             elif edit_id.isnumeric():
                 id: int = int(edit_id)
             else:
-                red = self.colors["red"]
-                print(f"{red}Invalid input!{r}")
+                #red = self.colors["red"]
+                #print(f"{red}Invalid input!{r}")
+                self.invalid_input()
                 self.pause()
                 return
         except Exception as e:
             print(f"TUI:Problem in edit input, {e}")
 
-        self.print_table_head()
         #edit_habit: Habit | None = None
+        #print(f"{id=} {type(id)=}")
+        found: bool = False
         for habit in self.controller.do_showlist():
+            #print(f"{habit.id=} {type(id)=}")
             if id == habit.id: # type: ignore
+                #print("FOUND")
                 edit_habit = habit
-            else:
-                red = self.colors["red"]
-                print(f"{red}ID not in list!{r}")
-                self.pause()
+                found = True
+        if not found:
+            red = self.colors["red"]
+            print(f"{red}ID not in list!{r}")
+            self.pause()
+            return
         
-        self.controller.do_edit(edit_habit) # type: ignore
-        
+        self.goto_finish_edit(edit_habit) # type: ignore
+        # it does not seem unbound, as to arrive here the error paths
+        # have already been dealt with.
+
+    def goto_finish_edit(self, habit: Habit):
+        """VIEW/TUI: displays and sends off Habit for editing to Controller"""
+        # ID should not be modifyible at all
+        # also be able to delete (but keep ID)
+        # delete : streak = -1
+        # id, start date, streak: not modifyible
+        # period, track, description: modifyible
+        self.clear()
+        self.print_table_head()
+        print(habit)
+        self.controller.do_edit(habit)
 
     def goto_help(self) -> None:
         """VIEW/TUI: prints help info"""
         self.clear()
-        self.controller.do_help()
         print("2.inside Help (TUI)")
-        
 
+        helpstr: str = self.controller.do_help()
+        print(helpstr)
+        
+        
     def goto_quit(self) -> None:
         """VIEW/TUI: exits the REPL"""
         self.clear()
-        
-        
         self.controller.do_quit()
-        # View logic:
-        print("2. Inside Quit (view)")
-        print("Bye!")
+        # ↑ is already run once at exit of REPL
+        # ↑ can probably be removed, to avoid unnecessary disk activity
         raise GeneratorExit()
     
 

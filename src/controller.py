@@ -79,9 +79,10 @@ class Controller:
         #print("1. Inside Edit (Controller)")
         pass
 
-    def do_help(self):
+    def do_help(self) -> str:
         """CONTROLLER: help instructions"""
         print("1. Inside Help (Controller)")
+        return ""
     
     def do_quit(self):
         """CONTROLLER: exit logic"""
