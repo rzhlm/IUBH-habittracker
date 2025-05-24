@@ -94,8 +94,19 @@ class Controller:
 
     def do_help(self) -> str:
         """CONTROLLER: help instructions"""
-        print("1. Inside Help (Controller)")
-        return ""
+        helpstr: str = f"""HELP
+        The colored letters are commands, which you should input.
+
+        The date is advanced manually, this is a great feature.
+        You can't advance date, until each tracked habit has 
+        been marked "done" or "not done".
+        
+        When you edit, you can change: track/untrack, description, or delete.
+
+
+        If you need further help, call 1-800-I-NEED-HELP
+        """
+        return helpstr
     
     def do_quit(self):
         """CONTROLLER: exit logic"""

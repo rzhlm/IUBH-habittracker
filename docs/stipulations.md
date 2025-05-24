@@ -19,13 +19,19 @@ OTHER TODO:
 -  [ ] streak
 -  [ ] Analysis of best & worst
 -  [x] Save state on exit
--  [ ] save state on edit
+-  [x] save state on edit
 
 -  [x] Docstrings
 -  [x] quit from add-habit & edit
 -  [ ] 
 
 - [ ] add notice to best use winterminal, not console; nor default Mac terminal
+
+
+- [] daily checkoff logic
+- [] Date advance logic
+
+
 
 # UI flow
 ```mermaid

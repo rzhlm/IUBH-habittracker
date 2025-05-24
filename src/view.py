@@ -91,7 +91,7 @@ class TUI(View):
         MenuChoices("Advance date","adv", self.goto_advance_date),
         MenuChoices("Quick mark","qm",self.goto_qm),
         MenuChoices("Analysis", "a", self.goto_analysis),
-        MenuChoices("Show list (all) (debugging)", "sl", self.goto_showlist),
+        MenuChoices("Show list (all) (EXPERT MODE, for debugging)", "sl", self.goto_showlist),
         MenuChoices(" Show list (tracked)", "slt", self.goto_showlist_tracked),
         MenuChoices(" Show list (same period, tracked)", "slp", self.goto_showlist_period),
         MenuChoices("Add Habit", "ah", self.goto_add),
@@ -222,7 +222,6 @@ class TUI(View):
         print(header.expandtabs(3))
         print(f"{c}{'_' * 80}{r}")
     
-
     def goto_showlist(self, option: str | None = None) -> None:
         """VIEW/TUI: shows user-requested type of habitlist"""
         self.clear()
@@ -425,15 +424,11 @@ class TUI(View):
         # after edit
         pass
 
-
     def goto_help(self) -> None:
         """VIEW/TUI: prints help info"""
-        self.clear()
-        print("2.inside Help (TUI)")
-
+        #self.clear()
         helpstr: str = self.controller.do_help()
         print(helpstr)
-        
         
     def goto_quit(self) -> None:
         """VIEW/TUI: exits the REPL"""
@@ -443,7 +438,6 @@ class TUI(View):
         # ↑ can probably be removed, to avoid unnecessary disk activity
         raise GeneratorExit()
     
-
     def clear(self) -> None:
         """VIEW/TUI: clears the shell screen"""
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -453,7 +447,6 @@ class TUI(View):
         os.system('pause' if os.name == 'nt' 
         else 'bash -c \
         \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
-
 
 
 if __name__ == "__main__":
