@@ -1,3 +1,9 @@
+
+REQUIREMENTS:
+-  [x] At least Weekly & Daily periods
+-  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
+-  [ ] creation date + date/time of task completion
+
 - [x] Give list of all tracked habits
 - [x] Give list of all habits with same period
 - [x] Return longest streak of all habits
@@ -5,16 +11,19 @@
 
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
-- [ ]  Habit has action & period
+
+OTHER TODO:
+- [x]  Habit has action & period
 -  [ ] An action/task can be checked off
 -  [ ] Miss = break
 -  [ ] streak
 -  [ ] Analysis of best & worst
--  [ ] Save state on exit & edits
+-  [x] Save state on exit
+-  [ ] save state on edit
 
--  [x] At least Weekly & Daily periods
--  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
--  [ ] creation date + date/time of task completion
+-  [x] Docstrings
+-  [x] quit from add-habit & edit
+-  [ ] 
 
 - [ ] add notice to best use winterminal, not console; nor default Mac terminal
 

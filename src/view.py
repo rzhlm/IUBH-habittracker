@@ -55,7 +55,7 @@ class View(ABC):
 #       -> Show choices
 #       -> take input
 #       input valid:
-#           -> do_input
+#           -> mainmenu_input
 #               -> goto chosen function
 #       input invalid:
 #           -> error message
@@ -85,7 +85,7 @@ class TUI(View):
     #     # save date in storage in Controller
     #     self.controller.do_save_date(self.currentdate)
     
-    def goto_load_date(self) -> str:
+    def get_date(self) -> str:
         """VIEW/TUI: gets date val from controller"""
         # TODO: implement load on start
         # get date from storage in Controller
@@ -136,7 +136,7 @@ class TUI(View):
         # TODO: somekind of decorator or print_color function
         c, r = self.set_default_colors()
         print(f"{c}current date:",
-              self.goto_load_date())
+              self.get_date())
         print(f"\nChoose an option: {r}")
         
         for choice in self.choices:
@@ -150,7 +150,7 @@ class TUI(View):
         print("-" * 80)    
         #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
-    def do_input(self, input_action: str) -> None:
+    def mainmenu_input(self, input_action: str) -> None:
         """VIEW/TUI: gets user input in REPL"""
         if input_action.strip() not in [choice.command for choice in self.choices]:
                 self.invalid_input()
@@ -172,7 +172,7 @@ class TUI(View):
             inp = input(f'{color}Make your choice: {reset}')
 
             try:
-                self.do_input(inp.lower())
+                self.mainmenu_input(inp.lower())
             except GeneratorExit:
                 # This is how I handle getting out of the input loop
                 print("Intended exit, GeneratorExit")
@@ -189,7 +189,7 @@ class TUI(View):
 
     def invalid_input(self) -> None:
         """VIEW/TUI: prints that input is invalid"""
-        self.clear()
+        #self.clear()
         color = self.colors["red"]
         reset = self.colors["reset"]
         print(f'{color}Input not valid{reset}')
@@ -300,9 +300,8 @@ class TUI(View):
                 return period
         except Exception as e:
             print(f"VIEW/TUI: period_picker, exception: {e}")
+            self.pause()
 
-        #print(f"{type(period_inp)=} {period_inp=}")
-        
         match period_inp:
             case "1":
                 period = Period.daily
@@ -353,16 +352,15 @@ class TUI(View):
                 return
         except Exception as e:
             print(f"TUI:Problem in edit input, {e}")
+            self.pause()
 
-        #edit_habit: Habit | None = None
-        #print(f"{id=} {type(id)=}")
         found: bool = False
         for habit in self.controller.do_showlist():
-            #print(f"{habit.id=} {type(id)=}")
             if id == habit.id: # type: ignore
-                #print("FOUND")
+                # TODO: reimplement HabitAnalysis with a dict instead of list
                 edit_habit = habit
                 found = True
+                break
         if not found:
             red = self.colors["red"]
             print(f"{red}ID not in list!{r}")
@@ -370,20 +368,76 @@ class TUI(View):
             return
         
         self.goto_finish_edit(edit_habit) # type: ignore
-        # it does not seem unbound, as to arrive here the error paths
+        # typechecker error: unbound
+        # it does not seem unbound, as to arrive here, the error paths
         # have already been dealt with.
 
     def goto_finish_edit(self, habit: Habit):
         """VIEW/TUI: displays and sends off Habit for editing to Controller"""
-        # ID should not be modifyible at all
-        # also be able to delete (but keep ID)
         # delete : streak = -1
         # id, start date, streak: not modifyible
         # period, track, description: modifyible
+        
+        # before edit:
         self.clear()
         self.print_table_head()
         print(habit)
-        self.controller.do_edit(habit)
+        
+        # edit:
+        # period, track, description: modifyible
+        try:
+            c, r = self.set_default_colors()
+            quit = False
+            while quit != True:
+                #self.clear()
+                print(f"{c}Edit what?" +\
+                      "track/untrack 't'," +\
+                        "description 'desc'," +\
+                            f"delete 'del'? {r}")
+                print(f"{c}('q' to return){r}")
+
+                edit_select: str = input()[:4].lower().strip()
+                match edit_select:
+                    case 't':
+                        habit.toggle_tracked()
+                        self.controller.do_edit(habit)
+                        print(f"{c}Tracking toggled!{r}")
+                        self.print_table_head()
+                        print(habit)
+                        print("-" * 80)
+                        #self.pause()
+                    case 'desc':
+                        print(f"{c}New description: (max length 35){r}")
+                        print(f"{c}{'-' * 34}|{r}")
+                        new_descr: str = input()[:35]
+                        habit.description = new_descr
+                        self.controller.do_edit(habit)
+
+                        print(f"{c}Description changed!{r}")
+                        self.print_table_head()
+                        print(habit)
+                        print("-" * 80)
+                    case 'del':
+                        habit.streak = -1
+                        self.controller.do_edit(habit)
+                        print(f"{c}habit deleted! (kindof){r}")
+                        #self.pause()
+                    case 'q':
+                        quit = True
+                    case _:
+                        self.invalid_input()
+                        self.pause()
+            pass
+        except Exception as e:
+            print(f"VIEW/TUI: finish_edit, exception: {e}")
+            self.pause()
+            return
+
+        #self.controller.do_edit(habit)
+
+        # after edit
+        pass
+
 
     def goto_help(self) -> None:
         """VIEW/TUI: prints help info"""
