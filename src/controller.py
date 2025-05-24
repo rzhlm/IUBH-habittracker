@@ -70,10 +70,10 @@ class Controller:
         )
         self.habitlist.add_habit(new_habit)
 
-    def do_delete(self, period: Period) -> bool:
+    def do_delete(self, habit: Habit) -> None:
         """CONTROLLER: removes a habit from Habitlist"""
-        return False
-        pass
+        habit.streak = -1
+        self.do_edit(habit)
 
     def do_edit(self, edit_habit: Habit):
         """CONTROLLER: edits a habit"""
@@ -81,11 +81,14 @@ class Controller:
         # because of Python passing by reference, the habit gets edited
         # directly instead of a copy of it, unless explicitly deepcopied.
         # In order to avoid side-effects & unexpected behaviour: deepcopy
-        
+
         # for i, habit in enumerate(self.habitlist._habitlist):
         #     if edit_habit.id == habit.id:
         #         self.habitlist._habitlist[i] = deepcopy(edit_habit)
         #         break
+
+        # we're being passed a deepcopy, and this one gets passed to respective
+        # method in the habitlist/habitanalysis class.
         self.habitlist.update_habit(edit_habit)
 
 

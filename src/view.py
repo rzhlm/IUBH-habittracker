@@ -377,10 +377,10 @@ class TUI(View):
             quit = False
             while not quit:
                 #self.clear()
-                print(f"{c}Edit what?" +\
-                      "track/untrack 't'," +\
-                        "description 'desc'," +\
-                            f"delete 'del'? {r}")
+                print(f"{c}Which edit? " +\
+                      "Track/untrack 't'," +\
+                        "Description 'desc'," +\
+                            f"Delete 'del'? {r}")
                 print(f"{c}('q' to return){r}")
 
                 edit_select: str = input()[:4].lower().strip()
@@ -405,8 +405,8 @@ class TUI(View):
                         print(habit)
                         print("-" * 80)
                     case 'del':
-                        habit.streak = -1
-                        self.controller.do_edit(habit)
+                        # habit.streak = -1
+                        self.controller.do_delete(habit)
                         print(f"{c}habit deleted! (kindof){r}")
                         #self.pause()
                     case 'q':
