@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import os
 from src.habit import Period
 from abc import ABC, abstractmethod
+from copy import deepcopy
 
 if TYPE_CHECKING:
     from src.controller import Controller
@@ -358,7 +359,8 @@ class TUI(View):
         for habit in self.controller.do_showlist():
             if id == habit.id: # type: ignore
                 # TODO: reimplement HabitAnalysis with a dict instead of list
-                edit_habit = habit
+                # edit_habit = habit # by ref, so the actual habit gets edited!
+                edit_habit = deepcopy(habit) 
                 found = True
                 break
         if not found:
@@ -388,7 +390,7 @@ class TUI(View):
         try:
             c, r = self.set_default_colors()
             quit = False
-            while quit != True:
+            while not quit:
                 #self.clear()
                 print(f"{c}Edit what?" +\
                       "track/untrack 't'," +\

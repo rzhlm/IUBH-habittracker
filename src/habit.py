@@ -59,6 +59,16 @@ class HabitAnalysis:
     def get_len(self) -> int:
         """HABITLIST: gets the length of the habitlist"""
         return self._len
+    
+    def update_habit(self, new_habit: Habit):
+        #self._habitlist[]
+        for i, habit in enumerate(self._habitlist):
+            if new_habit.id == habit.id:
+                #self._habitlist[i] = deepcopy(new_habit)
+                self._habitlist[i] = new_habit
+                break
+
+        pass
 
     def return_all(self) -> list[Habit]:
         """HABITLIST: returns all habits (also untracked & deleted)"""

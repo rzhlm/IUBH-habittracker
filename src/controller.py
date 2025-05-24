@@ -6,6 +6,7 @@ from __future__ import annotations
 from src.habit import Habit
 from typing import TYPE_CHECKING
 from src.constants import Settings
+#from copy import deepcopy
 
 if TYPE_CHECKING:
     from src.storage2 import Storage
@@ -74,10 +75,19 @@ class Controller:
         return False
         pass
 
-    def do_edit(self, habit: Habit):
+    def do_edit(self, edit_habit: Habit):
         """CONTROLLER: edits a habit"""
-        #print("1. Inside Edit (Controller)")
-        pass
+        # Beware of 'by ref' passing of objects!
+        # because of Python passing by reference, the habit gets edited
+        # directly instead of a copy of it, unless explicitly deepcopied.
+        # In order to avoid side-effects & unexpected behaviour: deepcopy
+        
+        # for i, habit in enumerate(self.habitlist._habitlist):
+        #     if edit_habit.id == habit.id:
+        #         self.habitlist._habitlist[i] = deepcopy(edit_habit)
+        #         break
+        self.habitlist.update_habit(edit_habit)
+
 
     def do_help(self) -> str:
         """CONTROLLER: help instructions"""
