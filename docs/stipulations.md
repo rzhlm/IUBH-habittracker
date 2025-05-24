@@ -10,6 +10,7 @@
 -  [ ] Miss = break
 -  [ ] streak
 -  [ ] Analysis of best & worst
+-  [ ] Save state on exit & edits
 
 -  [x] At least Weekly & Daily periods
 -  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
