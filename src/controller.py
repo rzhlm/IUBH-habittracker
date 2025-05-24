@@ -17,9 +17,9 @@ class Controller:
         self.habitlist: HabitAnalysis = habitlist
         self.storage : Storage = storage
         self.current_date = self.storage.date_load()
-        print(f"STARTup: DATE: {self.current_date.split("\n")}/end")
-        import os
-        os.system('pause')
+        #print(f"STARTup: DATE: {self.current_date.split("\n")}/end")
+        #import os
+        #os.system('pause')
 
     def do_save_date(self, date: str) -> None:
         """CONTROLLER: saves the date (passes to STORAGE)"""
