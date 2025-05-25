@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 # Either TUI or GUI
 # and only allow a single instance at a time
 
+# TODO: add debug & info logging
+
 
 """
 class ChoicesE(Enum):
@@ -78,7 +80,6 @@ class TUI(View):
             "reset" : "\033[0m",
         }
 
-    
     def get_date(self) -> dt.date:
         """VIEW/TUI: gets date val from controller"""
         # TODO: implement load on start
@@ -194,13 +195,14 @@ class TUI(View):
         if self.controller.can_advance_date():
             print("going to next day")
             # advance logic here
+            self.controller.do_advance_date()
         else:
             # not yet advance logic
             red = self.colors["red"]
             c, r = self.set_default_colors()
             print(f"{red}Can't advance to tomorrow, still habits to mark!{r}")
             self.pause()
-            print(f"{c}Please mark these:{r}")
+            print(f"{c}Please mark these, with Quick Mark:{r}")
             self.print_table_head()
             for to_mark in self.controller.return_unmarked_habits():
                 print(to_mark)
@@ -212,9 +214,19 @@ class TUI(View):
     def begin_quickmark(self) -> None:
         c,r = self.set_default_colors()
         self.clear()
+        #print(self.controller.done_indicator)
         self.print_table_head()
-        for to_mark in self.controller.return_unmarked_habits():
+        
+        unmarked_habits = self.controller.return_unmarked_habits()
+        
+        if not unmarked_habits:
+            print(f"{c}All habits marked! You can advance date.{r}")
+            self.pause()
+            return
+        
+        for to_mark in unmarked_habits:
             print(to_mark)
+
         print(f"{c}Which ID would you like to mark (done/not-done)?" +\
               f"('q' to return){r}")
         try:
@@ -227,16 +239,17 @@ class TUI(View):
                 self.invalid_input()
                 self.pause()
                 return
+            
         except Exception as e:
             print(f"TUI:Problem in marking input, {e}")
             self.pause()
+            return
         
         found: bool = False
-        for habit in self.controller.return_unmarked_habits():
+        for habit in unmarked_habits:
             if id == habit.id: # type: ignore
                 # TODO: reimplement HabitAnalysis with a dict instead of list
                 # edit_habit = habit # by ref, so the actual habit gets edited!
-                # IMHO passing a pointer would be cleaner than this weird stuff
                 mark_habit = deepcopy(habit) 
                 found = True
                 break
@@ -246,12 +259,14 @@ class TUI(View):
             self.pause()
             return
     
-        self.finish_quickmark(mark_habit)
+        self.finish_quickmark(mark_habit) # type: ignore
 
-    def finish_quickmark(self, habit: Habit):
+    def finish_quickmark(self, habit: Habit) -> None:
+
+        # note: habit is deepcopy() of an existing habit
         c, r = self.set_default_colors()
         print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
-        action = input()[:1].lower().strip()
+        action = input().strip()[:1].lower()
         match action:
             case 'd':
                 self.controller.mark_habit_done(habit)
@@ -261,8 +276,10 @@ class TUI(View):
                 return
             case _:
                 self.invalid_input()
-        pass
+                self.pause()
+
         self.controller.do_qm()
+        print(self.controller.done_indicator)
 
     def goto_analysis(self) -> None:
         self.clear()
@@ -421,7 +438,7 @@ class TUI(View):
         # it does not seem unbound, as to arrive here, the error paths
         # have already been dealt with.
 
-    def goto_finish_edit(self, habit: Habit):
+    def goto_finish_edit(self, habit: Habit) -> None:
         """VIEW/TUI: displays and sends off Habit for editing to Controller"""
         # delete : streak = -1
         # id, start date, streak: not modifyible
@@ -470,6 +487,7 @@ class TUI(View):
                         # habit.streak = -1
                         self.controller.do_delete(habit)
                         print(f"{c}habit deleted! (kindof){r}")
+                        return
                         #self.pause()
                     case 'q':
                         quit = True
@@ -507,7 +525,7 @@ class TUI(View):
     
     def pause(self) -> None:
         """VIEW/TUI: aks user to press any key to continue"""
-        os.system('pause' if os.name == 'nt' 
+        os.system("pause" if os.name == "nt" 
         else 'bash -c \
         \'read -p "Press any key to continue (POSIX)\n" -n 1 -r -s\'')
 

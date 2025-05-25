@@ -81,3 +81,8 @@ class Storage:
                      streak, 
                      last_complete,
                      )
+    
+
+
+if __name__ == "__main__":
+    print("This module is for importing, not for running directly")

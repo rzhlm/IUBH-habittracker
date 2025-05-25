@@ -39,3 +39,6 @@ class Motivational:
 """
 # fair use
 # made with: https://dom111.github.io/image-to-ansi/
+
+if __name__ == "__main__":
+    print("This module is for importing, not for running directly")

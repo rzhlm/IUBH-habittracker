@@ -1,5 +1,6 @@
 from dataclasses import dataclass #, field
 from enum import Enum, auto
+from copy import deepcopy
 
 class Period(Enum):
     daily = auto()
@@ -66,11 +67,11 @@ class HabitAnalysis:
         #self._habitlist[]
         for i, habit in enumerate(self._habitlist):
             if new_habit.id == habit.id:
-                #self._habitlist[i] = deepcopy(new_habit)
-                self._habitlist[i] = new_habit
+                self._habitlist[i] = deepcopy(new_habit)
+                #self._habitlist[i] = new_habit
+                # need deepcopy to prevent a Heisenbug
+                # TODO: find heisenbug, remove deepcopy
                 break
-
-        pass
 
     def return_all(self) -> list[Habit]:
         """HABITLIST: returns all habits (also untracked & deleted)"""
@@ -112,4 +113,5 @@ class HabitAnalysis:
         self._len += 1
 
 
-        
+if __name__ == "__main__":
+    print("This module is for importing, not for running directly")

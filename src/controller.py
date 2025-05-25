@@ -3,12 +3,13 @@
 # some kind of venv-related problem
 
 from __future__ import annotations
-from src.habit import Habit
+from src.habit import Habit, Period
 from typing import TYPE_CHECKING
 from src.constants import Settings
-import datetime as dt
+import datetime as dt, timedelta
 #from copy import deepcopy
 from dataclasses import dataclass
+#import os
 
 if TYPE_CHECKING:
     from src.storage2 import Storage
@@ -45,8 +46,7 @@ class Controller:
 
         di_temp: list[DoneIndicator] = [
             DoneIndicator(habit.id, marked = False, done = False)
-            for habit
-            in self.do_showlist_tracked()]
+            for habit in self.do_showlist_tracked()]
         return DoneIndicatorList(self.current_date, di_temp)
 
     def do_save_date(self) -> None:
@@ -66,10 +66,16 @@ class Controller:
         format = self.settings.DTSTRF
         return date.strftime(format)
 
+    def str_to_dt(self, date_str: str) -> dt.date:
+        strf = self.settings.DTSTRF
+        date_dt = dt.datetime.strptime(date_str, strf)
+        return date_dt
+
     def are_all_habits_marked(self) -> bool:
         if self.done_indicator.today == self.current_date:
             return all(di.marked for di in self.done_indicator.data)
-        raise Exception("CONTROLLER: are_all_habits_marked: logic error")
+        return False
+        # raise Exception("CONTROLLER: are_all_habits_marked: logic error")
 
     def is_ready_to_advance(self) -> bool:
         if self.done_indicator.today == self.current_date:
@@ -77,39 +83,88 @@ class Controller:
                 self.ready_to_advance = True
                 return True
             return False
-        raise Exception("CONTROLLER: is_ready_to_advance: logic error")
+        return False
+        # raise Exception("CONTROLLER: is_ready_to_advance: logic error")
 
     def mark_habit_done(self, passed_habit: Habit) -> None:
         strf = self.settings.DTSTRF
         passed_habit.last_complete = self.current_date.strftime(strf)
         self.habitlist.update_habit(passed_habit)
-        
+        #print(passed_habit)
+        #print(self.habitlist)
+        #print(self.done_indicator)
+        #os.system('pause')
+
         for di in self.done_indicator.data:
             if passed_habit.id == di.id:
-                di.marked == True # type: ignore
-                di.done == True # type: ignore
+                di.marked = True
+                di.done = True
+                #print("TRUE")
+                #print(self.done_indicator)
+                #os.system("pause")
                 break
 
     def mark_habit_not_done(self, habit: Habit) -> None:
         for di in self.done_indicator.data:
             if habit.id == di.id:
-                di.marked == True # type: ignore
+                di.marked = True
                 break
 
     def can_advance_date(self) -> bool:
         return self.is_ready_to_advance()
 
+    def is_habit_done_timely(self, habit: Habit) -> bool:
+        """"CONTROLLER: checks if habit is done on time"""
+        match habit.period:
+            case Period.daily:
+                # done today
+                date_str = self.dt_to_str(self.current_date)
+                return habit.last_complete == date_str
+            case Period.weekly:
+                # done in the past 7 days
+                # a diff of 6 is also possible, depending on how you
+                # define how much time has passed and if a streak
+                # becomes missed on or after the period.
+                habit_dt = self.str_to_dt(habit.last_complete)
+                diff = habit_dt - self.current_date
+                return diff.days <= 7
+            case Period.monthly:
+                # done in the past calendar month
+                # == done in the same month as current
+                habit_dt = self.str_to_dt(habit.last_complete)
+                current_month = self.current_date.month
+                return habit_dt.month == current_month
+            case _:
+                raise ValueError(f"non-existing period: {habit}")
+
+    def update_streak(self, habit: Habit) -> None:
+        """CONTROLLER: updates the streak, based on the periodicity"""
+        match habit.period:
+            case Period.daily:
+                pass
+            case Period.weekly:
+                pass
+            case Period.monthly:
+                pass
+            case _:
+                pass
+
+
     def do_advance_date(self) -> None:
         """CONTROLLER: advances the manual date"""
         if self.can_advance_date():
-            pass
             # update streaks, for done
-
-            # reset streaks, for not done
-
+            for habit in self.habitlist.return_all():
+                if self.is_habit_done_timely(habit):
+                    self.update_streak(habit)
+                else:
+                    # reset streaks, for not done
+                    habit.streak = 0
             # advance date
+            self.current_date = self.current_date + dt.timedelta(days=1)
 
-            # create new done_indicator for today
+            # create new done_indicator for new day
+            self.done_indicator = self.init_done_indicator_list()
 
     def return_unmarked_habits(self) -> list[Habit]:
         habit_dict = {
@@ -128,6 +183,7 @@ class Controller:
 
         # mark habit as done
         pass
+
     def do_analysis(self):
         print("1.inside Analysis (Controller)")
         pass
