@@ -129,19 +129,18 @@ class Controller:
                 diff = habit_dt - self.current_date
                 return diff.days <= 7
             case Period.monthly:
-                # done in the past calendar month
-                # == done in the same month as current
+                # done in the past 31 days. Same caveat as above
                 habit_dt = self.str_to_dt(habit.last_complete)
-                current_month = self.current_date.month
-                return habit_dt.month == current_month
+                diff = habit_dt - self.current_date
+                return diff.days <= 31
             case _:
                 raise ValueError(f"non-existing period: {habit}")
 
     def update_streak(self, habit: Habit) -> None:
-        """CONTROLLER: updates the streak, based on the periodicity"""
+        """CONTROLLER: updates the streak (if necessary), based on the periodicity"""
         match habit.period:
             case Period.daily:
-                pass
+                
             case Period.weekly:
                 pass
             case Period.monthly:
@@ -238,7 +237,7 @@ class Controller:
 
     def do_help(self) -> str:
         """CONTROLLER: help instructions"""
-        helpstr: str = f"""HELP
+        helpstr: str = """HELP
         The colored letters are commands, which you should input.
 
         A habit can be tracked or untracked. This is a 'soft delete'/'archival'.
