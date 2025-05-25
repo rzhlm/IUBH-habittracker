@@ -7,7 +7,7 @@ controller.sav
 *.bat
 *.xml
 default_savefile.sav
-
+*.good*
 
 .env
 
