@@ -132,10 +132,14 @@ class TUI(View):
         c, r = self.set_default_colors()
         strf = self.controller.settings.DTSTRF
         curr_date = self.get_date()
-        curr_date = curr_date.strftime(strf)
-        print(f"{c}current date:", curr_date)
+        weekday = curr_date.strftime("%A")
+        #curr_day = curr_date.weekday()
 
-        print(f"\nChoose an option: {r}")
+        curr_date = curr_date.strftime(strf)
+        
+        print(f"{c}current date:{r} {curr_date} ({weekday})")
+
+        print(f"\n{c}Choose an option: {r}")
         for choice in self.choices:
             #c, r = self.set_default_colors()
             if not choice.name.startswith(" "):
@@ -192,7 +196,8 @@ class TUI(View):
 
     def goto_advance_date(self) -> None:
         """VIEW/TUI: advances the date to new value"""
-        if self.controller.can_advance_date():
+        if self.controller.is_ready_to_advance():
+            self.clear()
             print("going to next day")
             # advance logic here
             self.controller.do_advance_date()

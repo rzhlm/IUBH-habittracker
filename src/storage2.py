@@ -1,5 +1,6 @@
 import json
 from src.habit import Period, Habit, HabitAnalysis
+import sys
 #from habit import Period, Habit, HabitList
 # -> don't run directly from VSC, run with: python -m src.storage2
 
@@ -11,7 +12,6 @@ from src.habit import Period, Habit, HabitAnalysis
 class Storage:
     def __init__(self):
         pass 
-
 
     def date_save(self,
                   date: str,
@@ -42,13 +42,17 @@ class Storage:
 
     def HL_load(self, filename: str = "default_savefile.sav") -> HabitAnalysis:
         """STORAGE: loads the Habitlist from storage, and transforms into instance"""
-        with open(filename,"r") as file:
-            data = json.load(file)
-            habits: list[Habit] = [
-                self.from_JSON(habit) 
-                for habit in data["_habitlist"]
-                ]
-            return HabitAnalysis(habits)
+        try:
+            with open(filename,"r") as file:
+                data = json.load(file)
+                habits: list[Habit] = [
+                    self.from_JSON(habit) 
+                    for habit in data["_habitlist"]
+                    ]
+                return HabitAnalysis(habits)
+        except Exception as e:
+            print(f"could not load savefile, error: {e}")
+            sys.exit(1)
 
     def to_JSON(self, habit: Habit):
         """STORAGE: transforms a Habit instance into JSON"""
@@ -82,7 +86,6 @@ class Storage:
                      last_complete,
                      )
     
-
 
 if __name__ == "__main__":
     print("This module is for importing, not for running directly")

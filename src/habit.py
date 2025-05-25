@@ -111,6 +111,7 @@ class HabitAnalysis:
         """HABITLIST: adds Habit instance to Habitlist, and updates counter"""
         self._habitlist.append(habit)
         self._len += 1
+        #breakpoint()
 
 
 if __name__ == "__main__":
