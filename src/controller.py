@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 @dataclass
 class DoneIndicator:
+    """CONTROLLER: is a 'struct'/dataclass for keeping track of
+     status of a single habit """
     id: int
     marked: bool
     done: bool
@@ -25,11 +27,14 @@ class DoneIndicator:
 
 @dataclass
 class DoneIndicatorList:
+    """CONTROLLER: bundles all the DoneIndicators of all the tracked habits
+    + the day for which they are marked (= done or not done)"""
     today: dt.date
     data: list[DoneIndicator]
 
 
 class Controller:
+    """CONTROLLER: C part of the MVC"""
     def __init__(self, habitlist: HabitAnalysis,
                   storage: Storage):
         self.settings: Settings = Settings()
@@ -40,6 +45,8 @@ class Controller:
         self.done_indicator = self.init_done_indicator_list()
 
     def init_done_indicator_list(self) -> DoneIndicatorList:
+        """CONTROLLER: makes the DoneIndicatorList, for keeping track of which
+        habits are still to be checked off"""
         #if self.done_indicator:
         #    del self.done_indicator
 
@@ -49,6 +56,7 @@ class Controller:
         return DoneIndicatorList(self.current_date, di_temp)
     
     def addto_indicator_list(self, habit: Habit) -> None:
+        """CONTROLLER: adds a newly created habit to the DoneIndicatorList"""
         di = DoneIndicator(habit.id, False, False)
         self.done_indicator.data.append(di)
 
@@ -60,6 +68,7 @@ class Controller:
         self.storage.date_save(date_str)
 
     def load_date(self) -> dt.date:
+        """CONTROLLER: loads the datestring from storage and makes it datetime"""
         strf = self.settings.DTSTRF
         try:
             loaded_date = self.storage.date_load()
@@ -71,21 +80,26 @@ class Controller:
         #return date_dt.date()
 
     def dt_to_str(self, date: dt.date) -> str:
+        """CONTROLLER: turns a datetime into string, with our configured format"""
         format = self.settings.DTSTRF
         return date.strftime(format)
 
     def str_to_dt(self, date_str: str) -> dt.date:
+        """CONTROLLER: turns a string into datetime, using our configured format"""
         strf = self.settings.DTSTRF
         date_dt = dt.datetime.strptime(date_str, strf)
         return date_dt
 
     def are_all_habits_marked(self) -> bool:
+        """CONTROLLER: checks if all the habits for today have been marked"""
         if self.done_indicator.today == self.current_date:
             return all(di.marked for di in self.done_indicator.data)
         return False
         # raise Exception("CONTROLLER: are_all_habits_marked: logic error")
 
     def is_ready_to_advance(self) -> bool:
+        """CONTROLLER: checks whether all habits are marked,
+        in order to advance the date."""
         if self.done_indicator.today == self.current_date:
             if self.are_all_habits_marked():
                 self.ready_to_advance = True
@@ -95,31 +109,32 @@ class Controller:
         # raise Exception("CONTROLLER: is_ready_to_advance: logic error")
 
     def mark_habit_done(self, passed_habit: Habit) -> None:
+        """CONTROLLER: 
+        1) modifies the last_complete date of a habit, in the habitlist
+        2) modifies the DoneIndicator for that habit to 'done'"""
         strf = self.settings.DTSTRF
         passed_habit.last_complete = self.current_date.strftime(strf)
         self.habitlist.update_habit(passed_habit)
-        #print(passed_habit)
-        #print(self.habitlist)
-        #print(self.done_indicator)
-        #os.system('pause')
+        #breakpoint()
 
         for di in self.done_indicator.data:
             if passed_habit.id == di.id:
                 di.marked = True
                 di.done = True
-                #print("TRUE")
-                #print(self.done_indicator)
-                #os.system("pause")
+                #breakpoint()
                 break
 
     def mark_habit_not_done(self, habit: Habit) -> None:
+        """CONTROLLER: marks a habit in the DoneIndicatorList,
+        as not done (but marked for that day)"""
         for di in self.done_indicator.data:
             if habit.id == di.id:
                 di.marked = True
                 break
 
     def is_habit_done_timely(self, habit: Habit) -> bool:
-        """"CONTROLLER: checks if habit is done on time"""
+        """"CONTROLLER: checks if habit is done on time
+        depending on its periodicity"""
         habit_dt = self.str_to_dt(habit.last_complete)
         diff = (self.current_date - habit_dt).days
 
@@ -137,42 +152,42 @@ class Controller:
                 # done in the past 31 days. Same caveat as above
                 return diff <= 31
             case _:
-                raise ValueError(f"non-existing period: {habit}")
+                raise ValueError(f"non-expected period: {habit}")
 
-    def is_habit_done_in_period(self, habit: Habit, period_days: int) -> bool:
-        """CONTROLLER: is habit done in the period until day before the current?
-        (for weekly/monthly habits at tehir edges)"""
-        habit_dt = self.str_to_dt(habit.last_complete)
-        diff = (self.current_date - habit_dt).days
-        return 1 <= diff <= period_days
+    # def is_habit_done_in_period(self, habit: Habit, period_days: int) -> bool:
+    #     """CONTROLLER: is habit done in the period until day before the current?
+    #     (for weekly/monthly habits at tehir edges)"""
+    #     habit_dt = self.str_to_dt(habit.last_complete)
+    #     diff = (self.current_date - habit_dt).days
+    #     return 1 <= diff <= period_days
 
-    def is_habit_done_last_week(self, habit: Habit) -> bool:
-        """CONTROLLER: is habit done in previous calendar week.
-        test on subsequent monday."""
-        last_completion_date = self.str_to_dt(habit.last_complete)
-        last_week_start = self.current_date - dt.timedelta(days=7)
-        last_week_end = self.current_date - dt.timedelta(days=1)
-        return last_week_start <= last_completion_date <= last_week_end
+    # def is_habit_done_last_week(self, habit: Habit) -> bool:
+    #     """CONTROLLER: is habit done in previous calendar week.
+    #     test on subsequent monday."""
+    #     last_completion_date = self.str_to_dt(habit.last_complete)
+    #     last_week_start = self.current_date - dt.timedelta(days=7)
+    #     last_week_end = self.current_date - dt.timedelta(days=1)
+    #     return last_week_start <= last_completion_date <= last_week_end
 
-    def is_habit_done_last_month(self, habit: Habit) -> bool:
-        """CONTROLLER: is habit done in previous calendar month?
-        Test on 1st day of new month."""
-        # if today is 1st March, is habit.last_complete
-        # in the month of February?
+    # def is_habit_done_last_month(self, habit: Habit) -> bool:
+    #     """CONTROLLER: is habit done in previous calendar month?
+    #     Test on 1st day of new month."""
+    #     # if today is 1st March, is habit.last_complete
+    #     # in the month of February?
 
-        prev_date = self.current_date - dt.timedelta(days=1)
-        last_complete_date = self.str_to_dt(habit.last_complete)
-        # if self.current_date.month == 1:
-        #     prev_year = self.current_date.year - 1
-        #     prev_month = 12
-        # else:
-        #     prev_year = self.current_date.year
-        #     prev_month = self.current_date.month - 1
-        return last_complete_date.year == prev_date.year and \
-            last_complete_date.month == prev_date.month
+    #     prev_date = self.current_date - dt.timedelta(days=1)
+    #     last_complete_date = self.str_to_dt(habit.last_complete)
+    #     # if self.current_date.month == 1:
+    #     #     prev_year = self.current_date.year - 1
+    #     #     prev_month = 12
+    #     # else:
+    #     #     prev_year = self.current_date.year
+    #     #     prev_month = self.current_date.month - 1
+    #     return last_complete_date.year == prev_date.year and \
+    #         last_complete_date.month == prev_date.month
 
     def update_streak(self, habit: Habit) -> None:
-        """CONTROLLER: updates the streak (if necessary), based on the periodicity"""
+        """CONTROLLER: updates the streak with 1 unit"""
         habit.streak += 1
 
     def do_advance_date(self) -> None:
@@ -180,6 +195,7 @@ class Controller:
         if self.is_ready_to_advance():
             # update streaks, for done
             for habit in self.habitlist.return_all():
+                
                 match habit.period:
                     case Period.daily:
                         if self.is_habit_done_timely(habit):
@@ -188,26 +204,25 @@ class Controller:
                             # not done: streak loss
                             habit.streak = 0
                     case Period.weekly:
-                        # checked every monday
-                        # meaning: is habit done in calendar-week?
+                        # checked after every monday
+                        # meaning: is habit done in previous calendar-week?
                         # dt.weekday: 0=monday, 6=sunday
                         if self.current_date.weekday() == 0:
-                            #if self.is_habit_done_last_week(habit):
                             if self.is_habit_done_timely(habit):
                                 self.update_streak(habit)
                             else:
                                 habit.streak = 0
                     case Period.monthly:
-                        # reset on 1st of next month
+                        # check after 1st of next month
                         # meaning: is habit done in calendar-month?
                         if self.current_date.day == 1:
-                            #if self.is_habit_done_last_month(habit):
                             if self.is_habit_done_timely(habit):
                                 self.update_streak(habit)
                             else:
                                 habit.streak = 0
                     case _:
-                        raise ValueError("CONTROLLER: do_advance_date, invalid period")
+                        raise ValueError("CONTROLLER: do_advance_date, \
+                                         undefined period")
 
             # advance date
             self.current_date = self.current_date + dt.timedelta(days=1)
@@ -216,6 +231,8 @@ class Controller:
             self.done_indicator = self.init_done_indicator_list()
 
     def return_unmarked_habits(self) -> list[Habit]:
+        """CONTROLLER: finds the habits which for the current day have not yet
+        been marked as 'done' or 'not done'."""
         habit_dict = {
             habit.id: habit 
             for habit in self.do_showlist_tracked()
@@ -226,15 +243,9 @@ class Controller:
             if not di.marked]
 
     def do_qm(self):
-        # need to ID the habit, and toggle it
-        # need to know which habits are active for today
-        # freshly added habits should also be active for today
-
-        # mark habit as done
         pass
 
     def do_analysis(self):
-        print("1.inside Analysis (Controller)")
         pass
 
     def do_showlist(self) -> list[Habit]:
@@ -268,7 +279,7 @@ class Controller:
         #breakpoint()
 
     def do_delete(self, habit: Habit) -> None:
-        """CONTROLLER: removes a habit from Habitlist"""
+        """CONTROLLER: flags a habit from Habitlist as 'deleted'"""
         habit.streak = -1
         self.do_edit(habit)
 
@@ -290,6 +301,7 @@ class Controller:
 
     def do_help(self) -> str:
         """CONTROLLER: help instructions"""
+
         helpstr: str = """HELP
         The colored letters are commands, which you should input.
 
@@ -313,8 +325,7 @@ class Controller:
     
     def do_quit(self) -> None:
         """CONTROLLER: exit logic"""
-        print("entering QUIT LOGIC")
-        #self.storage.date_save(self.current_date)
+        #print("entering QUIT LOGIC")
         self.do_save_date()
         self.storage.HL_save(self.habitlist, self.settings.FILENAME)
 

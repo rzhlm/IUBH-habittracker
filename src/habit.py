@@ -12,6 +12,7 @@ class Period(Enum):
 
 @dataclass
 class Habit:
+    """HABIT: the structure which defines a habit"""
     # if adding here, modify testing
     # and modify savefiles
     id: int
@@ -23,9 +24,9 @@ class Habit:
     streak : int
     last_complete: str
     # Use @property method for streak calculation?
-    # But how to know beforehand if at currenttime streak is still valid?
 
     def __str__(self):
+        """HABIT: The string representation when printed"""
         #f"|{self.last_complete}".ljust(11) +\
         never = "1900-01-01"
         last = "never" if self.last_complete == never else self.last_complete
@@ -52,6 +53,8 @@ class Habit:
 
 #@dataclass
 class HabitAnalysis:
+    """HABIT: stores a list of all the habits, counts them
+    + all the methods to retrieve, update, add, etc."""
     #_habitlist : list[Habit] = field(default_factory=lambda: [])
     #_len : int = 0
 
@@ -60,10 +63,12 @@ class HabitAnalysis:
         self._len = len(habitlist)
 
     def get_len(self) -> int:
-        """HABITLIST: gets the length of the habitlist"""
+        """HABIT: gets the length of the habitlist: number of habits"""
         return self._len
     
     def update_habit(self, new_habit: Habit):
+        """HABIT: updates a habit in the habitlist
+        (overwrites it with a new copy)"""
         #self._habitlist[]
         for i, habit in enumerate(self._habitlist):
             if new_habit.id == habit.id:
@@ -74,11 +79,11 @@ class HabitAnalysis:
                 break
 
     def return_all(self) -> list[Habit]:
-        """HABITLIST: returns all habits (also untracked & deleted)"""
+        """HABIT: returns all habits (also untracked & deleted)"""
         return self._habitlist
     
     def return_tracked(self) -> list[Habit]:
-        """HABITLIST: returns tracked habits"""
+        """HABIT: returns tracked habits"""
         return [habit 
                 for habit in self._habitlist 
                 if habit.isTracked and
@@ -86,7 +91,7 @@ class HabitAnalysis:
                 ] 
     
     def return_same_period(self, period: Period) -> list[Habit]:
-        """HABITLIST: returns habits with same periodicity"""
+        """HABIT: returns habits with same periodicity"""
         return [habit 
                 for habit in self._habitlist
                 if habit.period == period and
@@ -95,20 +100,22 @@ class HabitAnalysis:
                 ]
     
     def return_longest_streak_all(self) -> int:
-        """HABITLIST: returns longest streak of all habits"""
+        """HABIT: returns longest streak of all habits"""
         #longest: int = -1
         #ft = filter(, self.habitlist)
         # TODO: check behaviour when multiple values or empty
         return max([length.streak for length in self._habitlist])
         
-        
     def return_longest_streak(self, habit: Habit) -> int:
+        """HABIT: returns the longest streak of a particular habit"""
         # TODO: check behaviour when returning multiple values or empty
+        # This won't work with the current code. Must be amended
         return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
         
     def add_habit(self, habit: Habit) -> None:
-        """HABITLIST: adds Habit instance to Habitlist, and updates counter"""
+        """HABIT: adds Habit instance to _habitlist,
+        and updates counter of total stored habits"""
         self._habitlist.append(habit)
         self._len += 1
         #breakpoint()

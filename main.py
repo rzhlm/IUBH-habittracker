@@ -10,6 +10,8 @@ if TYPE_CHECKING:
     from src.habit import HabitAnalysis
 
 def initialize_ui() -> TUI:
+    """MAIN: sets up all the necessary instances for the TUI,
+    and then returns the TUI"""
     settings: Settings = Settings()
     filename: str = settings.FILENAME
     storage: Storage = Storage()
@@ -19,6 +21,7 @@ def initialize_ui() -> TUI:
     return tui
 
 def main() -> None:
+    """MAIN: main function. Runs the UI"""
     ui: TUI = initialize_ui()
     ui.interact()
 

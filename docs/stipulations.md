@@ -14,22 +14,15 @@ REQUIREMENTS:
 
 OTHER TODO:
 - [x]  Habit has action & period
--  [ ] An action/task can be checked off
--  [ ] Miss = break
--  [ ] streak
+-  [x] An action/task can be checked off
+-  [x] Miss = break
+-  [x] streak
 -  [ ] Analysis of best & worst
 -  [x] Save state on exit
 -  [x] save state on edit
 
--  [x] Docstrings
--  [x] quit from add-habit & edit
--  [ ] 
-
 - [ ] add notice to best use winterminal, not console; nor default Mac terminal
 
-
-- [] daily checkoff logic
-- [] Date advance logic
 
 
 

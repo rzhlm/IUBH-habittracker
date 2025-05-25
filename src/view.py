@@ -19,32 +19,24 @@ if TYPE_CHECKING:
 # TODO: add debug & info logging
 
 
-"""
-class ChoicesE(Enum):
-    main = auto()
-    quickmark = auto()
-    analysis = auto()
-    show_list = auto()
-    add_habit = auto()
-    edit = auto()
-
-class ChoicesNT(NamedTuple):
-    name: str
-    command: str
-    func: Callable[[],None]
-"""
-
 @dataclass
 class MenuChoices:
+    """VIEW: the structure to bundle a TUI-menu-item"""
     name: str
     command: str
     func: Callable[[], None]
     
 
 class View(ABC):
+    """VIEW: The ABC from which GUI, TUI and others inherit"""
     #single_instance = True
 
     @abstractmethod
+    def interact(self):
+        pass
+
+class GUI(View):
+    """VIEW: placeholder for GUI class"""
     def interact(self):
         pass
 
@@ -63,12 +55,22 @@ class View(ABC):
 #           -> error message
 
 
-class GUI(View):
-
-    def interact(self):
-        pass
-
 class TUI(View):
+    """VIEW: The TUI class, with all of its methods
+    The flow (REPL) is as follows:
+    # TUI: interact -> splash -> show_menulist -> mainmenu_input
+    #
+    # interact
+    #   -> Splash
+    #   REPL:
+    #       -> Show Menulist
+    #       -> take input
+    #       input valid:
+    #           -> mainmenu_input
+    #               -> goto chosen function
+    #       input invalid:
+    #           -> error message    
+    """
 
     def __init__(self, controller: Controller):
         self.controller: Controller = controller
@@ -81,7 +83,7 @@ class TUI(View):
         }
 
     def get_date(self) -> dt.date:
-        """VIEW/TUI: gets date val from controller"""
+        """VIEW/TUI: gets date value from controller instance"""
         # TODO: implement load on start
         # get date from storage in Controller
         return self.controller.current_date
@@ -115,12 +117,13 @@ class TUI(View):
         print(welcome)
         # TODO: make some kind of animation and/or music
         print(Motivational.MOTIVATIONAL)
-        print("first screen / remember to add pause again")
+        #print("first screen / remember to add pause again")
         # TODO: make sure not Win Console or default Mac Terminal
-        # self.pause()
+        self.pause()
         # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
     def set_default_colors(self) -> tuple[str, str]:
+        """VIEW/TUI: returns the default color values"""
         color: str = self.colors["yellow"]
         reset: str = self.colors["reset"]
         return (color, reset)
@@ -133,7 +136,6 @@ class TUI(View):
         strf = self.controller.settings.DTSTRF
         curr_date = self.get_date()
         weekday = curr_date.strftime("%A")
-        #curr_day = curr_date.weekday()
 
         curr_date = curr_date.strftime(strf)
         
@@ -141,14 +143,12 @@ class TUI(View):
 
         print(f"\n{c}Choose an option: {r}")
         for choice in self.choices:
-            #c, r = self.set_default_colors()
             if not choice.name.startswith(" "):
                 print(f'[{c}{choice.command}{r}] \t{choice.name}')
             else:
                 print(f' [{c}{choice.command}{r}] \t{choice.name}')
                 # this is to push the submenu slightly to the right
         print("-" * 80)    
-        #print(f"[{self.colors["yellow"]}q{self.reset}] \tQuit")
 
     def mainmenu_input(self, input_action: str) -> None:
         """VIEW/TUI: gets user input in REPL"""
@@ -161,22 +161,25 @@ class TUI(View):
                 #return
             
     def interact(self, message: str = "") -> None:
-        """VIEW/TUI: The main REPL method"""
+        """VIEW/TUI: The main REPL method, called from MAIN"""
         self.clear()
         self.splash_screen()
+        # REPL:
         while True:
             self.show_menulist()
             # TODO: somekind of decorator or print_color function
-            color = self.colors["yellow"]
-            reset = self.colors["reset"]
-            inp = input(f'{color}Make your choice: {reset}')
+            c, r = self.set_default_colors()
+            inp = input(f'{c}Make your choice: {r}')
 
             try:
                 self.mainmenu_input(inp.lower())
+
             except GeneratorExit:
                 # This is how I handle getting out of the input loop
                 # could make a custom one
-                print("Intended exit, GeneratorExit")
+                #print("Intended exit, GeneratorExit")
+                # breakpoint()
+                print(f"{c}Do you habits! No excuses!{r}")
                 break
             except Exception as e:
                 # This is for actual Exceptions
@@ -184,7 +187,8 @@ class TUI(View):
                 print("broke out of 'While True: try/except'")
                 break
                 
-        print("exited main loop (self.interact)")
+        # print("exited main loop (self.interact)")
+        # breakpoint()
         self.controller.do_quit()
 
     def invalid_input(self) -> None:
@@ -217,6 +221,8 @@ class TUI(View):
         self.clear()
 
     def begin_quickmark(self) -> None:
+        """VIEW/TUI: the method which asks user for input on which
+        habits to mark as done/not-done (is called 'marking')"""
         c,r = self.set_default_colors()
         self.clear()
         #print(self.controller.done_indicator)
@@ -267,6 +273,8 @@ class TUI(View):
         self.finish_quickmark(mark_habit) # type: ignore
 
     def finish_quickmark(self, habit: Habit) -> None:
+        """VIEW/TUI: method which takes a selected habit and asks for input on
+        whether it was done or not done that day"""
 
         # note: habit is deepcopy() of an existing habit
         c, r = self.set_default_colors()
@@ -284,11 +292,10 @@ class TUI(View):
                 self.pause()
 
         self.controller.do_qm()
-        print(self.controller.done_indicator)
+        #print(self.controller.done_indicator)
 
     def goto_analysis(self) -> None:
         self.clear()
-        print("2.inside Analysis (TUI)")
         self.controller.do_analysis()
 
     def print_table_head(self) -> None:

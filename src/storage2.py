@@ -10,6 +10,7 @@ import sys
 
 # TODO: add Singleton pattern: class attr or decorator
 class Storage:
+    """STORAGE2: all the methods needed for loading & saving of our data"""
     def __init__(self):
         pass 
 
