@@ -1,6 +1,8 @@
 import json
-from src.habit import Period, Habit, HabitAnalysis
+from src.habit import Period, Habit, HabitAnalysis, BestStreak
 import sys
+import dataclasses
+from typing import Any
 #from habit import Period, Habit, HabitList
 # -> don't run directly from VSC, run with: python -m src.storage2
 
@@ -57,34 +59,44 @@ class Storage:
 
     def to_JSON(self, habit: Habit):
         """STORAGE: transforms a Habit instance into JSON"""
-        habit_dict : dict[str, str | Period | bool | int]
+        habit_dict : dict[str, str | Period | bool | int | dict[str, Any]]
         habit_dict = {
                     "id" : habit.id,
                     "description": habit.description,
                     "creation_data" : habit.creation_data,
                     "period": habit.period.name,
-                    "isTracked": habit.isTracked,
+                    "is_tracked": habit.is_tracked,
                     "streak": habit.streak,
                     "last_complete": habit.last_complete,
+                    "record": dataclasses.asdict(habit.record)
                     }
         return habit_dict
 
-    def from_JSON(self, data: dict[str, str | int | bool]) -> Habit:
+    def from_JSON(self, data: dict[str, Any]) -> Habit:
         """STORAGE: transforms JSON into a Habit instance"""
+
+        record_data = data["record"]
+        best_streak = BestStreak(
+            on_date = str(record_data.get("on_date","1900-01-01")),
+            max_streak = int(record_data.get("max_streak", 0)),
+            )
+        
         id: int = int(data["id"])
         description: str = str(data["description"])
         creation: str = str(data["creation_data"])
         period: Period = Period[str(data["period"])]
-        isTracked : bool = bool(data["isTracked"])
+        is_tracked : bool = bool(data["is_tracked"])
         streak: int = int(data["streak"])
         last_complete: str = str(data["last_complete"])
+        record: BestStreak = best_streak
         return Habit(id, 
                      description, 
                      creation, 
                      period, 
-                     isTracked, 
+                     is_tracked, 
                      streak, 
                      last_complete,
+                     record,
                      )
     
 

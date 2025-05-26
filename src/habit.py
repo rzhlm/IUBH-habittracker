@@ -2,12 +2,6 @@ from dataclasses import dataclass #, field
 from enum import Enum, auto
 from copy import deepcopy
 
-# ANALYSIS requirements:
-# - return all currently tracked habits : ✓
-# - return all habits of <period>: ✓
-# - return longest streak of all habits: ✓
-# - return longest streak of 1 habit: (works in theory), but no max is stored
-
 
 class Period(Enum):
     daily = auto()
@@ -16,6 +10,11 @@ class Period(Enum):
 
     def __str__(self) -> str:
         return f"{self.name}".ljust(7)
+
+@dataclass
+class BestStreak:
+    on_date: str
+    max_streak: int
 
 @dataclass
 class Habit:
@@ -27,9 +26,10 @@ class Habit:
     creation_data: str
     period: Period
     #timeline: List[]
-    isTracked: bool
+    is_tracked: bool
     streak : int
     last_complete: str
+    record : BestStreak
     # Use @property method for streak calculation?
 
     def __str__(self):
@@ -41,7 +41,7 @@ class Habit:
         repr: str =  f"|{self.id}".ljust(6) + \
         f"|{self.creation_data}".ljust(12) +\
         f"|{self.period}".ljust(8) +\
-        f"|{self.isTracked}".ljust(7) +\
+        f"|{self.is_tracked}".ljust(7) +\
         f"|{self.streak}".ljust(7) + \
         f"|{last}".ljust(11) +\
         f"|{self.description} )"
@@ -50,13 +50,13 @@ class Habit:
         
     def toggle_tracked(self):
         """HABIT: Toggles Tracked bool of Habit"""
-        self.isTracked = not self.isTracked
+        self.is_tracked = not self.is_tracked
     def un_track(self):
         """HABIT: turns Tracked bool to False"""
-        self.isTracked = False
+        self.is_tracked = False
     def track(self):
         """HABIT: turns Tracked bool to True"""
-        self.isTracked = True
+        self.is_tracked = True
 
 #@dataclass
 class HabitAnalysis:
@@ -93,7 +93,7 @@ class HabitAnalysis:
         """HABIT: returns tracked habits"""
         return [habit 
                 for habit in self._habitlist 
-                if habit.isTracked and
+                if habit.is_tracked and
                 habit.streak != -1 # flagged as deleted: streak = -1
                 ] 
     
@@ -102,7 +102,7 @@ class HabitAnalysis:
         return [habit 
                 for habit in self._habitlist
                 if habit.period == period and
-                habit.isTracked and
+                habit.is_tracked and
                 habit.streak != -1 # flagged as deleted: streak = -1
                 ]
     
@@ -116,12 +116,24 @@ class HabitAnalysis:
     def return_longest_ever_all(self) -> Habit:
         pass
         
-    def return_longest_streak_specific(self, habit: Habit) -> Habit:
-        """HABIT: returns the longest streak of a particular habit"""
+    def return_longest_streak_specific(self, habit: Habit) -> tuple[str, int]:
+        """HABIT: returns the longest streak of a particular habit
+        tuple(date: str, streak: int)"""
         # TODO: check behaviour when returning multiple values or empty
-        # This won't work with the current code: max = current
-        return max([stored_habit.streak for stored_habit in self._habitlist
+        # added default for now, but will fail at the other end.
+        return max(
+                (
+                (h.last_complete, h.streak)
+                for h in self._habitlist if h == habit
+                ), key = lambda x: x[1], default=("", 0)
+                )
+
+
+        return (
+            the_date_it_occured,
+            max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
+                     )
     
     def return_longest_ever_specific(self, habit: Habit) -> Habit:
         pass

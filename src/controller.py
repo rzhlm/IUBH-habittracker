@@ -4,7 +4,7 @@
 # ::: only on Windows laptop, no problem on Linux or macOS
 
 from __future__ import annotations
-from src.habit import Habit, Period
+from src.habit import Habit, Period, BestStreak
 from typing import TYPE_CHECKING
 from src.constants import Settings
 import datetime as dt
@@ -80,7 +80,7 @@ class Controller:
         except Exception as e:
             print(f"can't read datefile! error: {e}")
             sys.exit(1)
-            
+
         date_dt = dt.datetime.strptime(loaded_date, strf)
         return date_dt
         #return date_dt.date()
@@ -244,9 +244,10 @@ class Controller:
             description = description,
             creation_data = self.current_date.strftime(strf),
             period = period,
-            isTracked = True,
+            is_tracked = True,
             streak = 0,
-            last_complete = "1900-01-01"
+            last_complete = "1900-01-01",
+            record = BestStreak("1900-01-01", 0),
         )
         self.habitlist.add_habit(new_habit)
         self.addto_indicator_list(new_habit)
