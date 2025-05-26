@@ -8,6 +8,7 @@ controller.sav
 *.xml
 default_savefile.sav
 *.good*
+savefile-*.sav
 
 .env
 
