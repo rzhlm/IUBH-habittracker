@@ -66,7 +66,11 @@ class Controller:
         #self.current_date = date
         strf = self.settings.DTSTRF
         date_str = self.current_date.strftime(strf)
-        self.storage.date_save(date_str)
+        try:
+            self.storage.date_save(date_str)
+        except Exception as e:
+            print(f"could not save datefile! error: {e}")
+            sys.exit(1)
 
     def load_date(self) -> dt.date:
         """CONTROLLER: loads the datestring from storage and makes it datetime"""
@@ -76,6 +80,7 @@ class Controller:
         except Exception as e:
             print(f"can't read datefile! error: {e}")
             sys.exit(1)
+            
         date_dt = dt.datetime.strptime(loaded_date, strf)
         return date_dt
         #return date_dt.date()
