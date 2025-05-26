@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 from src.constants import Motivational
 from dataclasses import dataclass
 import os
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
 
 # TODO: add debug & info logging
 
+# initialize custom color-print functions (curried), in this namespace
 yprint = cprint()
 rprint = cprint("\033[31m")
 
