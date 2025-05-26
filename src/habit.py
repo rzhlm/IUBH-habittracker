@@ -13,6 +13,8 @@ class Period(Enum):
 
 @dataclass
 class BestStreak:
+    """HABIT: the structure which stores date & streak of best streak
+    for each habit"""
     on_date: str
     max_streak: int
 
@@ -62,9 +64,7 @@ class Habit:
 class HabitAnalysis:
     """HABIT: stores a list of all the habits, counts them
     + all the methods to retrieve, update, add, etc."""
-    #_habitlist : list[Habit] = field(default_factory=lambda: [])
-    #_len : int = 0
-
+    
     def __init__(self, habitlist: list[Habit]):
         self._habitlist = habitlist
         self._len = len(habitlist)
@@ -73,6 +73,24 @@ class HabitAnalysis:
         """HABIT: gets the length of the habitlist: number of habits"""
         return self._len
     
+    def add_habit(self, habit: Habit) -> None:
+        """HABIT: adds Habit instance to _habitlist,
+        and updates counter of total stored habits"""
+        self._habitlist.append(habit)
+        self._len += 1
+        #breakpoint()
+    
+    def get_habit_by_id(self, id: int) -> Habit:
+        """HABIT: returns the habit when given its ID"""
+        # TODO: make this into a self.value (dict), to avoid repeating
+        # but needs to be updated at habit creation & edit
+        habit_dict = {
+                    habit.id: habit 
+                    for habit in self.return_all()
+                    }
+        #return deepcopy(habit_dict[id])
+        return habit_dict[id]
+            
     def update_habit(self, new_habit: Habit):
         """HABIT: updates a habit in the habitlist
         (overwrites it with a new copy)"""
@@ -90,60 +108,152 @@ class HabitAnalysis:
         return self._habitlist
     
     def return_tracked(self) -> list[Habit]:
-        """HABIT: returns tracked habits"""
-        return [habit 
-                for habit in self._habitlist 
-                if habit.is_tracked and
-                habit.streak != -1 # flagged as deleted: streak = -1
-                ] 
+        """HABIT: returns tracked habits (not untracked & deleted)"""
+        # required to be functional
+        # return [habit 
+        #         for habit in self._habitlist 
+        #         if habit.is_tracked and
+        #         habit.streak != -1 # flagged as deleted: streak = -1
+        #         ] 
+        return list(
+                    filter(
+                        lambda habit: 
+                        habit.is_tracked and 
+                        habit.streak != -1
+                        ,self._habitlist
+                        )
+                )
     
     def return_same_period(self, period: Period) -> list[Habit]:
-        """HABIT: returns habits with same periodicity"""
-        return [habit 
-                for habit in self._habitlist
-                if habit.period == period and
-                habit.is_tracked and
-                habit.streak != -1 # flagged as deleted: streak = -1
-                ]
+        """HABIT: returns tracked habits with same periodicity"""
+        # required to be functional
+        # return [habit 
+        #         for habit in self._habitlist
+        #         if habit.period == period and
+        #         habit.is_tracked and
+        #         habit.streak != -1 # flagged as deleted: streak = -1
+        #         ]
+        return list(
+                    filter(
+                        lambda habit:
+                        habit.period == period and
+                        habit.is_tracked and
+                        habit.streak != -1
+                        ,self._habitlist
+                        )
+                )
     
-    def return_longest_streak_all(self) -> Habit:
-        """HABIT: returns longest streak of all habits"""
+    def return_current_longest_streak_all(self) -> Habit:
+        """HABIT: returns longest streak of all habits
+        -> Habit"""
+        # required to be functional
         #longest: int = -1
         #ft = filter(, self.habitlist)
         # TODO: check behaviour when multiple values or empty
-        return max([length.streak for length in self._habitlist])
-    
-    def return_longest_ever_all(self) -> Habit:
-        pass
+        #return max([length.streak for length in self._habitlist])
+
+        # max = -2
+        # max_id = 0
+        # for habit in self._habitlist:
+        #     if habit.streak > max:
+        #         max = habit.streak
+        #         max_id = habit.id
         
-    def return_longest_streak_specific(self, habit: Habit) -> tuple[str, int]:
-        """HABIT: returns the longest streak of a particular habit
-        tuple(date: str, streak: int)"""
-        # TODO: check behaviour when returning multiple values or empty
-        # added default for now, but will fail at the other end.
-        return max(
-                (
-                (h.last_complete, h.streak)
-                for h in self._habitlist if h == habit
-                ), key = lambda x: x[1], default=("", 0)
+        # for habit in self._habitlist:
+        #     if max_id == habit.id:
+        #         return habit
+        
+        max_ = max(
+                    # map(
+                    #     lambda habit: habit.streak,
+                    #     self._habitlist
+                    #     )
+                    self._habitlist,
+                    key = lambda habit: habit.streak
                 )
-
-
-        return (
-            the_date_it_occured,
-            max([stored_habit.streak for stored_habit in self._habitlist
-                     if stored_habit == habit ])
-                     )
-    
-    def return_longest_ever_specific(self, habit: Habit) -> Habit:
-        pass
         
-    def add_habit(self, habit: Habit) -> None:
-        """HABIT: adds Habit instance to _habitlist,
-        and updates counter of total stored habits"""
-        self._habitlist.append(habit)
-        self._len += 1
-        #breakpoint()
+        # multiples = list(
+        #                 filter(
+        #                         lambda habit: habit.streak == max_,
+        #                         self._habitlist
+        #                 )
+        #             )
+        
+        #return multiples[0]
+        return max_
+
+        
+    def return_past_longest_streak_all(self) -> BestStreak:
+        """HABIT: returns the record of habit with  highest past streak.
+        -> BestStreak object
+        also looks in untracked habits!!
+        """
+        # required to be functional
+        top_habit = max(
+                        self._habitlist,
+                        key = lambda habit: habit.record.max_streak)
+        return self.get_habit_by_id(top_habit.id).record
+        
+    def return_current_longest_streak_period(
+                                            self,
+                                            period: Period
+                                            ) -> tuple[str, int]:
+        """HABIT: returns the current longest streak of a particular period
+        ->tuple(date: str, streak: int)"""
+        # required to be functional
+
+        # max_ = -2
+        # max_id = 0
+        # max_date = ""
+        # for habit in self.return_tracked():
+        #     if habit.period == period:
+        #         if habit.streak > max_:
+        #             max_ = habit.streak
+        #             max_id = habit.id
+        #             max_date = habit.last_complete
+        # return (max_date, max_)
+    
+        period_habits = filter(
+                        lambda habit: habit.period == period,
+                        self.return_tracked()
+                        )
+    
+        top_habit = max(
+                        period_habits,
+                        key = lambda habit: habit.streak,
+                        default = None
+                    )
+        
+        if top_habit is None:
+            return ("", 0)
+        return (top_habit.last_complete, top_habit.streak)
+
+    
+    def return_past_longest_streak_period(self, period: Period) -> BestStreak:
+        """HABIT: returns the past longest streak of a particular period
+        -> BestStreak object"""
+        # max_ = -2
+        # max_id = 0
+        # for habit in self._habitlist:
+        #     if habit.period == period:
+        #         if habit.record.max_streak > max_:
+        #             max_ = habit.record.max_streak
+        #             max_id = habit.id
+        # return self.get_habit_by_id(max_id).record
+
+        top_habit = max(
+                        filter(
+                            lambda habit: habit.period == period,
+                            self._habitlist
+                            ),
+                            key=lambda habit: habit.record.max_streak,
+                            default=None
+                    )
+        if top_habit is None:
+            return BestStreak("1900-01-01",0)
+        return self.get_habit_by_id(top_habit.id).record
+
+        
 
 
 if __name__ == "__main__":
