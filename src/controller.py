@@ -3,14 +3,16 @@
 # some kind of venv-related problem
 # ::: only on Windows laptop, no problem on Linux or macOS
 
+
 from __future__ import annotations
-from src.habit import Habit, Period, BestStreak
 from typing import TYPE_CHECKING
-from src.constants import Settings
-import datetime as dt
-#from copy import deepcopy
-from dataclasses import dataclass
 import sys
+import datetime as dt
+from dataclasses import dataclass
+
+from src.habit import Habit, Period, BestStreak
+from src.constants import Settings
+
 
 if TYPE_CHECKING:
     from src.storage2 import Storage

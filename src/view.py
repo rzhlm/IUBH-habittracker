@@ -1,22 +1,20 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from collections.abc import Callable
-from src.constants import Motivational
-from dataclasses import dataclass
 import os
-from src.habit import Period
-from abc import ABC, abstractmethod
-from copy import deepcopy
 import datetime as dt
+from copy import deepcopy
+from collections.abc import Callable
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
+
+from src.constants import Motivational
+from src.habit import Period
 from src.colorprint import cprint
+
 
 if TYPE_CHECKING:
     from src.controller import Controller
     from src.habit import Habit
-
-# Intention to make Abstract Fact or Facade for choice of UI
-# Either TUI or GUI
-# and only allow a single instance at a time
 
 # TODO: add debug & info logging
 
@@ -209,7 +207,6 @@ class TUI(View):
         # reset = self.colors["reset"]
         # print(f'{color}Input not valid{reset}')
         rprint("Input not valid")
-
 
     def goto_advance_date(self) -> None:
         """VIEW/TUI: advances the date to new value"""

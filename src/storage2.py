@@ -1,13 +1,9 @@
 import json
-from src.habit import Period, Habit, HabitAnalysis, BestStreak
 import sys
 import dataclasses
 from typing import Any
-#from habit import Period, Habit, HabitList
-# -> don't run directly from VSC, run with: python -m src.storage2
 
-#from typing import List
-
+from src.habit import Period, Habit, HabitAnalysis, BestStreak
 
 
 # TODO: add Singleton pattern: class attr or decorator

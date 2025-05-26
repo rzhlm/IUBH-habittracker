@@ -1,6 +1,8 @@
 import pytest
 from copy import deepcopy
+
 from src.habit import Period, Habit, HabitAnalysis, BestStreak
+
 
 # ##############################################################################
 # FIXTURES

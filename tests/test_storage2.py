@@ -1,12 +1,13 @@
 from __future__ import annotations
+from typing import Any
+import os
+from dataclasses import asdict
+
 import pytest
+
+from tests.test_habit import habit_list, create_habits # noqa # type: ignore
 from src.storage2 import Storage
 from src.habit import Habit, HabitAnalysis
-from tests.test_habit import habit_list, create_habits # noqa # type: ignore
-# above ignore is for typechecker, which doesn't understand the fixtures
-import os
-from typing import Any
-from dataclasses import asdict
 
 
 # ##############################################################################
