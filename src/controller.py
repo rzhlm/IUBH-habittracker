@@ -163,6 +163,8 @@ class Controller:
     def update_streak(self, habit: Habit) -> None:
         """CONTROLLER: updates the streak with 1 unit"""
         habit.streak += 1
+        if habit.streak > habit.record.max_streak:
+            habit.record = BestStreak(self.dt_to_str(self.current_date), habit.streak)
 
     def do_advance_date(self) -> None:
         """CONTROLLER: advances the manual date"""
