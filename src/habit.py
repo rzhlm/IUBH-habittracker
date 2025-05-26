@@ -94,7 +94,7 @@ class HabitAnalysis:
         return [habit 
                 for habit in self._habitlist 
                 if habit.isTracked and
-                habit.streak != -1 # streak = -1 if flagged as deleted
+                habit.streak != -1 # flagged as deleted: streak = -1
                 ] 
     
     def return_same_period(self, period: Period) -> list[Habit]:
@@ -103,22 +103,28 @@ class HabitAnalysis:
                 for habit in self._habitlist
                 if habit.period == period and
                 habit.isTracked and
-                habit.streak != -1 # streak = -1 if flagged as deleted
+                habit.streak != -1 # flagged as deleted: streak = -1
                 ]
     
-    def return_longest_streak_all(self) -> int:
+    def return_longest_streak_all(self) -> Habit:
         """HABIT: returns longest streak of all habits"""
         #longest: int = -1
         #ft = filter(, self.habitlist)
         # TODO: check behaviour when multiple values or empty
         return max([length.streak for length in self._habitlist])
+    
+    def return_longest_ever_all(self) -> Habit:
+        pass
         
-    def return_longest_streak(self, habit: Habit) -> int:
+    def return_longest_streak_specific(self, habit: Habit) -> Habit:
         """HABIT: returns the longest streak of a particular habit"""
         # TODO: check behaviour when returning multiple values or empty
         # This won't work with the current code: max = current
         return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
+    
+    def return_longest_ever_specific(self, habit: Habit) -> Habit:
+        pass
         
     def add_habit(self, habit: Habit) -> None:
         """HABIT: adds Habit instance to _habitlist,

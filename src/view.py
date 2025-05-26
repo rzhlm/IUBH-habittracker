@@ -306,9 +306,8 @@ class TUI(View):
     def goto_analysis(self) -> None:
         self.clear()
         c, r = self.set_default_colors()
-        # what is longest habit streak
-        # what is my current list of <period>
-        # 
+        # what is longest habit streak of all habits
+        # what is max 
         pass
         self.controller.do_analysis()
 
