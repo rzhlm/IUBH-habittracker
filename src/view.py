@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 # TODO: add debug & info logging
 
 # initialize custom color-print functions (curried), in this namespace
-yprint = cprint()
-rprint = cprint("\033[31m")
+yprint = cprint() # yellow print func
+rprint = cprint("\033[31m") #red print func
 
 @dataclass
 class MenuChoices:
@@ -75,8 +75,6 @@ class TUI(View):
 
     def get_date(self) -> dt.date:
         """VIEW/TUI: gets date value from controller instance"""
-        # TODO: implement load on start
-        # get date from storage in Controller
         return self.controller.current_date
 
     def init_menulist(self) -> list[MenuChoices]:
@@ -122,7 +120,6 @@ class TUI(View):
     def show_menulist(self) -> None:
         """VIEW/TUI: prints menulist"""
         print("-" * 80)
-        # TODO: somekind of decorator or print_color function
         c, r = self.set_default_colors()
         strf = self.controller.settings.DTSTRF
         curr_date = self.get_date()
@@ -182,7 +179,6 @@ class TUI(View):
         # REPL:
         while True:
             self.show_menulist()
-            # TODO: somekind of decorator or print_color function
             c, r = self.set_default_colors()
             inp = input(f'{c}Make your choice: {r}')
 
