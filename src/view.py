@@ -179,7 +179,7 @@ class TUI(View):
                 # could make a custom one
                 #print("Intended exit, GeneratorExit")
                 # breakpoint()
-                print(f"{c}Do you habits! No excuses!{r}")
+                print(f"{c}Do your habits! No excuses!{r}")
                 break
             except Exception as e:
                 # This is for actual Exceptions
