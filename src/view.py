@@ -21,10 +21,11 @@ if TYPE_CHECKING:
 # initialize custom color-print functions (curried), in this namespace
 yprint = cprint() # yellow print func
 rprint = cprint("\033[31m") #red print func
+tprint = cprint("\t") # adds a tab in front of everything printed
 
 @dataclass
 class MenuChoices:
-    """VIEW: the structure to bundle a TUI-menu-item"""
+    """VIEW: the data structure to bundle a TUI-menu-item"""
     name: str
     command: str
     func: Callable[[], None]
@@ -183,8 +184,8 @@ class TUI(View):
                 self.mainmenu_input(inp.lower())
 
             except GeneratorExit:
-                # This is how I handle getting out of the input loop
-                # could make a custom one, in case a real GeneratorExit occurs
+                # This is how I handle getting out of the input loop.
+                # Could make a custom one, in case a real GeneratorExit occurs
                 # print("Intended exit, GeneratorExit")
                 # breakpoint()
                 #print(f"{c}Do your habits! No excuses!{r}")
@@ -230,7 +231,8 @@ class TUI(View):
                 print(to_mark)
 
     def goto_main(self) -> None:
-        """VIEW/TUI: placeholder function for getting to main menu"""
+        """VIEW/TUI: placeholder function for getting to main menu
+        Currently just clears the screen."""
         self.clear()
 
     def begin_quickmark(self) -> None:
@@ -313,14 +315,63 @@ class TUI(View):
         #print(self.controller.done_indicator)
 
     def goto_analysis(self) -> None:
-        self.clear()
-        c, r = self.set_default_colors()
-        print(f"{c}{r}")
-        # what is longest habit streak of all habits
-        # what is max 
-        pass
-        self.controller.do_analysis()
+        # self.controller.do_analysis()
 
+        self.clear()
+        #c, r = self.set_default_colors()
+        #print(f"{c}{r}")
+        yprint("Here follows an analysis of some habit properties:")
+        print("-" * 80)
+        
+        # What is the current top streak?
+        # current longest streak all
+        yprint("The current top streak:")
+        top = self.controller.habitlist.return_current_longest_streak_all()
+        tprint(f"id: {top.id}")
+        tprint(f"{top.streak} unit streak on {top.last_complete}, " +\
+               f"with period: {top.period}")
+        tprint(f"Habit description: {top.description}\n")
+
+        # What is the past top streak?
+        # past longest streak all
+        yprint("The past top streak:")
+        top_p = self.controller.habitlist\
+                                            .return_past_longest_streak_all()
+        tprint(f"id: {top_p.id}")
+        tprint(f"{top_p.record.max_streak} unit streak " +\
+               f"on {top_p.record.on_date}, with period: {top_p.period}")
+        tprint(f"Habit description: {top_p.description}\n")
+
+        # What is the current top_streak, for a period?
+        # current longest streak period
+        yprint("The current top streak per period:")
+        for period in Period:
+            top_cu_pe = self.controller.habitlist\
+                                .return_current_longest_streak_period(period)
+            yprint(f"\t* Period: {period}")
+            if not top_cu_pe:
+                tprint("No habits!")
+            else:
+                tprint(f"id: {top_cu_pe.id}")
+                tprint(f"{top_cu_pe.streak} unit streak " +\
+                       f"on {top_cu_pe.last_complete}")
+                tprint(f"Habit description: {top_cu_pe.description}\n")
+
+        # What is the past top_streak, for a period?
+        # past longest streak period
+        yprint("The past top streak per period:")
+        for period in Period:
+            top_pa_pe = self.controller.habitlist\
+                                .return_past_longest_streak_period(period)
+            yprint(f"\t* Period: {period}")
+            if not top_pa_pe:
+                tprint("No habits!")
+            else:
+                tprint(f"id: {top_pa_pe.id}")
+                tprint(f"{top_pa_pe.record.max_streak} unit streak " +\
+                       f"on {top_pa_pe.record.on_date}")
+                tprint(f"Habit description: {top_pa_pe.description}\n")
+        
     def print_table_head(self) -> None:
         """VIEW/TUI: prints the header of the Habit table"""
         #"obj(".ljust(7) +\

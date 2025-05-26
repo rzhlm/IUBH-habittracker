@@ -1,16 +1,19 @@
 import json
+import os
 import sys
 import dataclasses
 from typing import Any
+import datetime as dt
 
 from src.habit import Period, Habit, HabitAnalysis, BestStreak
+from src.constants import Settings
 
 
 # TODO: add Singleton pattern: class attr or decorator
 class Storage:
     """STORAGE2: all the methods needed for loading & saving of our data"""
     def __init__(self):
-        pass 
+        self.settings = Settings()
 
     def date_save(self,
                   date: str,
@@ -21,6 +24,17 @@ class Storage:
 
     def date_load(self, filename: str = "datefile.sav") -> str:
         """STORAGE: loads the date value from file"""
+        # if no datefile exists, take system date and make that the file
+        if not os.path.exists(filename):
+            strf = self.settings.DTSTRF
+            today = dt.date.today()
+            date_str = today.strftime(strf)
+            try:
+                self.date_save(date_str)
+            except Exception as e:
+                print(f"No datefile! Could not generate datefile! error: {e}")
+                sys.exit(1)          
+
         with open(filename, 'r') as f:
             date: str = f.readline().rstrip('\n').strip()
         return date
@@ -40,7 +54,20 @@ class Storage:
                        }, file)
 
     def HL_load(self, filename: str = "default_savefile.sav") -> HabitAnalysis:
-        """STORAGE: loads the Habitlist from storage, and transforms into instance"""
+        """STORAGE: loads the Habitlist from storage, and transforms 
+        into instance"""
+        # TODO: if no file exists, create a blank file 
+        # with 1 demo habit for each period in it
+        if not os.path.exists(filename):
+            try:
+                pass
+                raise NotImplementedError("No savefile, and generation not yet implemented!")
+                # either generate one from code
+                # or copy from a default one which is always shipped
+            except Exception as e:
+                print(f"No savefile! Could not generate default! error: {e}")
+                sys.exit(1)          
+
         try:
             with open(filename,"r") as file:
                 data = json.load(file)

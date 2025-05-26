@@ -22,25 +22,30 @@ testdate_date: str = "2020-01-01"
 
 @pytest.fixture
 def testfile() -> str:
+    """Fixture which fixes the testfile name"""
     return testfile_name
 
 @pytest.fixture
 def test_date_file() -> str:
+    """Fixture which fixes the testdatefile name"""
     return testdatefile_name
 
 @pytest.fixture
 def date() -> str:
+    """fixture which returns a string with the date"""
     return testdate_date
 
 @pytest.fixture
 def st() -> Storage:
+    """Fixture which fixes a Storage instance"""
     return Storage()
 
 # ##############################################################################
 # Test functions
 
 def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
-    # in order to make the savefile, comment out all the os.remove
+    # in order to make a savefile, comment out all the os.remove
+    # the savefile will ocnsist of the test data.
     if os.path.exists(testfile):
         os.remove(testfile)
         # ↑ this one should be uncommented normally
@@ -50,7 +55,6 @@ def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
     os.remove(testfile)
     # ↑ this one should be uncommented normally
     
-
 def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
     st.HL_save(habit_list, testfile)
     hl: HabitAnalysis = st.HL_load(testfile)
@@ -66,7 +70,6 @@ def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
     os.remove(testfile)
     # ↑ this one should be uncommented normally
 
-
 def test_to_JSON(st: Storage, create_habits: list[Habit]):
     first_habit = create_habits[0]
     correct: dict[str, Any] =  {
@@ -80,7 +83,6 @@ def test_to_JSON(st: Storage, create_habits: list[Habit]):
         "record": {"on_date": "2023-10-01", "max_streak": 10},
         }
     assert st.to_JSON(first_habit) == correct
-
 
 def test_from_JSON(st: Storage, ):
     test_habit: dict[str, Any] = {
@@ -103,7 +105,6 @@ def test_from_JSON(st: Storage, ):
     assert habit.streak == test_habit["streak"]
     assert habit.last_complete == test_habit["last_complete"]
     assert asdict(habit.record) == test_habit["record"]
-
 
 def test_save_date(st: Storage, date: str, test_date_file: str) -> None:
     if os.path.exists(test_date_file):

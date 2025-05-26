@@ -11,20 +11,12 @@ REQUIREMENTS:
 
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
-
-ANALYSIS LOGIC:
-current_all -> Habit
-past_all -> BestStreak
-current_period -> tuple[str, int]
-past_period -> BestStreak
-
-
 OTHER TODO:
 - [x]  Habit has action & period
 -  [x] An action/task can be checked off
 -  [x] Miss = break
 -  [x] streak
--  [ ] Analysis of best & worst
+-  [x] Analysis of best
 -  [x] Save state on exit
 -  [x] save state on edit
 
@@ -32,7 +24,8 @@ OTHER TODO:
 
 
 
-
+This was an intention,
+the actual design is altered:
 # UI flow
 ```mermaid
 

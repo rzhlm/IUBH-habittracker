@@ -82,14 +82,14 @@ class HabitAnalysis:
     
     def get_habit_by_id(self, id: int) -> Habit:
         """HABIT: returns the habit when given its ID"""
-        # TODO: make this into a self.value (dict), to avoid repeating
-        # but needs to be updated at habit creation & edit
+        # TODO:  also make a self.value (dict), to avoid repeating
+        # but then needs to be updated at habit creation & edit
         habit_dict = {
                     habit.id: habit 
                     for habit in self.return_all()
                     }
         #return deepcopy(habit_dict[id])
-        return habit_dict[id]
+        return habit_dict[id] or None
             
     def update_habit(self, new_habit: Habit):
         """HABIT: updates a habit in the habitlist
@@ -105,7 +105,7 @@ class HabitAnalysis:
 
     def return_all(self) -> list[Habit]:
         """HABIT: returns all habits (also untracked & deleted)"""
-        return self._habitlist
+        return self._habitlist or []
     
     def return_tracked(self) -> list[Habit]:
         """HABIT: returns tracked habits (not untracked & deleted)"""
@@ -122,7 +122,7 @@ class HabitAnalysis:
                         habit.streak != -1
                         ,self._habitlist
                         )
-                )
+                ) or []
     
     def return_same_period(self, period: Period) -> list[Habit]:
         """HABIT: returns tracked habits with same periodicity"""
@@ -180,10 +180,10 @@ class HabitAnalysis:
         #             )
         
         #return multiples[0]
-        return max_
+        return max_ or None
 
         
-    def return_past_longest_streak_all(self) -> BestStreak:
+    def return_past_longest_streak_all(self) -> Habit:
         """HABIT: returns the record of habit with  highest past streak.
         -> BestStreak object
         also looks in untracked habits!!
@@ -192,12 +192,12 @@ class HabitAnalysis:
         top_habit = max(
                         self._habitlist,
                         key = lambda habit: habit.record.max_streak)
-        return self.get_habit_by_id(top_habit.id).record
+        return self.get_habit_by_id(top_habit.id) or None
         
     def return_current_longest_streak_period(
                                             self,
                                             period: Period
-                                            ) -> tuple[str, int]:
+                                            ) -> Habit | None:
         """HABIT: returns the current longest streak of a particular period
         ->tuple(date: str, streak: int)"""
         # required to be functional
@@ -224,12 +224,12 @@ class HabitAnalysis:
                         default = None
                     )
         
-        if top_habit is None:
-            return ("", 0)
-        return (top_habit.last_complete, top_habit.streak)
+        # if top_habit is None:
+        #     return None
+        return top_habit or None
 
     
-    def return_past_longest_streak_period(self, period: Period) -> BestStreak:
+    def return_past_longest_streak_period(self, period: Period) -> Habit | None:
         """HABIT: returns the past longest streak of a particular period
         -> BestStreak object"""
         # max_ = -2
@@ -249,9 +249,9 @@ class HabitAnalysis:
                             key=lambda habit: habit.record.max_streak,
                             default=None
                     )
-        if top_habit is None:
-            return BestStreak("1900-01-01",0)
-        return self.get_habit_by_id(top_habit.id).record
+        if top_habit:
+            return self.get_habit_by_id(top_habit.id)
+        return None
 
         
 

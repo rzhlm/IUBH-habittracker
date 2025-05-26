@@ -9,6 +9,7 @@ from src.habit import Period, Habit, HabitAnalysis, BestStreak
 
 @pytest.fixture
 def create_habits() -> list[Habit]:
+    """Fixture which fixes a list of Habits to use in testing"""
     
     return [
         Habit(
@@ -75,6 +76,8 @@ def create_habits() -> list[Habit]:
 
 @pytest.fixture
 def habit_list(create_habits: list[Habit]) -> HabitAnalysis:
+    """Fixture which transforms the previous fixture
+    into a HabitAnalysis instance"""
     #hl: HabitList = HabitList(create_habits)
     #return hl
     return HabitAnalysis(create_habits)
@@ -89,7 +92,7 @@ def test_get_len(habit_list: HabitAnalysis, create_habits: list[Habit]):
     assert actual == expected
 
 def test_add_habit(habit_list: HabitAnalysis):
-    """Test that .add_havit() correctly adds habits"""
+    """Test that add_havit() correctly adds habits"""
     to_add: Habit = Habit(id = 10, 
                           description = "desc", 
                           creation_data = "2023-01-01",
@@ -104,13 +107,13 @@ def test_add_habit(habit_list: HabitAnalysis):
 
 def test_get_habit_by_id(habit_list: HabitAnalysis, 
                          create_habits: list[Habit]):
-    """Test that .get_habit_by_id() returns the correct habit"""
+    """Test that get_habit_by_id() returns the correct habit"""
     for expected in create_habits:
         retrieved_habit = habit_list.get_habit_by_id(expected.id)
         assert retrieved_habit == expected
 
 def test_update_habit(habit_list: HabitAnalysis):
-    """Test that .update_habit() updates correctly"""
+    """Test that update_habit() updates correctly"""
     original = habit_list.get_habit_by_id(1)
     
     updated_habit = deepcopy(original)
@@ -123,22 +126,22 @@ def test_update_habit(habit_list: HabitAnalysis):
     assert new_habit.streak == 111
 
 def test_return_all(habit_list: HabitAnalysis, create_habits: list[Habit]):
-    """Test that .return_all() returns all habits, aslo untracked & deleted"""
+    """Test that return_all() returns all habits, aslo untracked & deleted"""
     all_ = habit_list.return_all()
     assert len(all_) == len(create_habits)
     assert all_ == create_habits
 
 def test_return_tracked(habit_list: HabitAnalysis):
-    """Test that .return_tracked returns only the tracked habits
+    """Test that return_tracked returns only the tracked habits
     (not the deleted or untracked)"""
     tracked : list[Habit] = habit_list.return_tracked()
     assert len(tracked) == 4
     for habit in tracked:
         assert habit.is_tracked
         assert habit.streak != -1
-
     
 def test_return_same_period(habit_list: HabitAnalysis):
+    """Test that return_same_period returns habits only with that period"""
     same_period : list[Habit] = habit_list.return_same_period(Period.daily)
     assert len(same_period) == 3
     for habit in same_period:
@@ -147,11 +150,10 @@ def test_return_same_period(habit_list: HabitAnalysis):
         assert habit.streak != -1
 
 def test_return_current_longest_streak_all(habit_list: HabitAnalysis):
-    """Test that .return_current_longest_streak_all 
+    """Test that return_current_longest_streak_all 
     returns the habit with the highest streak"""
     longest_habit = habit_list.return_current_longest_streak_all()
     assert longest_habit.streak == 17
-
 
 #@pytest.mark.xfail
 # def test_return_current_longest_streak_specific(habit_list: HabitAnalysis,
@@ -160,9 +162,8 @@ def test_return_current_longest_streak_all(habit_list: HabitAnalysis):
 #     assert habit_list\
 #         .return_current_longest_streak_period(habits) == ("2023-11-01", 5)
 
-
 def test_return_past_longest_streak_all(habit_list: HabitAnalysis):
-    """Test that .return_past_longest_streak_all returns BestStreak for
+    """Test that return_past_longest_streak_all returns BestStreak for
     habit with the highest past streak.
     """
     for index, habit in enumerate(habit_list._habitlist): # type: ignore
@@ -171,6 +172,64 @@ def test_return_past_longest_streak_all(habit_list: HabitAnalysis):
             habit_list._habitlist[index] = habit  # type: ignore
             break
     
-    best_record = habit_list.return_past_longest_streak_all()
-    assert best_record.max_streak == 20
-    assert best_record.on_date == "2023-09-30"
+    best = habit_list.return_past_longest_streak_all()
+    assert best.record.max_streak == 20
+    assert best.record.on_date == "2023-09-30"
+
+
+def test_return_current_longest_streak_period(habit_list: HabitAnalysis):
+    """Test that return_current_longest_streak_period returns habit with
+    highest current streak for that period (or None)."""
+    
+    daily_habit = habit_list.return_current_longest_streak_period(Period.daily)
+    assert daily_habit is not None
+    assert daily_habit.period == Period.daily
+    assert daily_habit.streak == 17
+    assert daily_habit.id == 6
+
+    weekly_habit = habit_list.return_current_longest_streak_period(Period.weekly)
+    assert weekly_habit is None
+
+    monthly_habit = habit_list\
+                        .return_current_longest_streak_period(Period.monthly)
+    assert monthly_habit is not None
+    assert monthly_habit.period == Period.monthly
+    assert monthly_habit.streak == 11
+    assert monthly_habit.id == 3
+
+
+def test_return_past_longest_streak_period(habit_list: HabitAnalysis):
+    """Test that return_past_longest_streak_period returns habit with 
+    top past streak, for the period (or None)."""
+    
+    # modify the BestStreak fixtures, as they all use the same values.
+
+    # daily
+    for idx, habit in enumerate(habit_list._habitlist): # type: ignore
+        if habit.period == Period.daily and habit.id == 4:
+            habit.record = BestStreak("2023-11-22", 20)
+            habit_list._habitlist[idx] = habit # type: ignore
+            break
+
+    # monthly
+    for idx, habit in enumerate(habit_list._habitlist): # type: ignore
+        if habit.period == Period.monthly:
+            habit.record = BestStreak("2023-11-23", 25)
+            habit_list._habitlist[idx] = habit  # type: ignore
+            break
+
+    daily_habit = habit_list.return_past_longest_streak_period(Period.daily)
+    assert daily_habit is not None
+    assert daily_habit.period == Period.daily
+    assert daily_habit.id == 4
+    assert daily_habit.record.max_streak == 20
+
+    weekly_habit = habit_list.return_past_longest_streak_period(Period.weekly)
+    assert weekly_habit is not None
+    assert weekly_habit.period == Period.weekly
+    assert weekly_habit.record.max_streak == 10
+
+    monthly_habit = habit_list.return_past_longest_streak_period(Period.monthly)
+    assert monthly_habit is not None
+    assert monthly_habit.period == Period.monthly
+    assert monthly_habit.record.max_streak == 25
