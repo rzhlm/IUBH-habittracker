@@ -1,6 +1,7 @@
 # lots of trouble with imports, 
 # (temporarily) solved by '.env' file with PYTHONPATH hardcoded
 # some kind of venv-related problem
+# ::: only on Windows laptop, no problem on Linux or macOS
 
 from __future__ import annotations
 from src.habit import Habit, Period
@@ -280,10 +281,11 @@ class Controller:
         You can't advance the date, until each tracked habit has 
         been marked "done" or "not done". Do this with "Quick mark".
 
-        Daily streaks get calculated *after* advancing to the next day.
-        Weekly streaks get calculated *after* advancing from Monday to Tuesday.
-        Monthly streaks get calculated *after* advancing from 1st to 2nd 
-        of the month.
+        -Daily streaks get calculated *after* advancing to the next day.
+        -Weekly streaks get calculated *after* advancing from Monday to Tuesday.
+        -Monthly streaks get calculated *after* advancing from 1st to 2nd 
+        of the month. (A monthly streak is defined as being done 
+        in the previous 31 days.)
 
         When you edit, you can change: track/untrack, description, or delete.
 

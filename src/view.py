@@ -77,7 +77,7 @@ class TUI(View):
     def init_menulist(self) -> list[MenuChoices]:
         """VIEW/TUI: initializes the menulist"""
         return [
-        MenuChoices("Main menu","m", self.goto_main),
+        MenuChoices("Main menu / Clear","m", self.goto_main),
         MenuChoices("Advance date","adv", self.goto_advance_date),
         MenuChoices("Quick mark","qm",self.begin_quickmark),
         MenuChoices("Analysis", "a", self.goto_analysis),
@@ -124,16 +124,39 @@ class TUI(View):
         weekday = curr_date.strftime("%A")
 
         curr_date = curr_date.strftime(strf)
-        
+
+        num_tomark: int = len(self.controller.return_unmarked_habits())
+        #breakpoint()
+                
         print(f"{c}current date:{r} {curr_date} ({weekday})")
 
+        # TODO: IF TIME BEFORE SUBMIT, DO THIS FIRST:
+        # TODO: refactor this and simplify logic, too nested
+        # perhaps .is_menu_type(menutype)->bool, and match/case
         print(f"\n{c}Choose an option: {r}")
         for choice in self.choices:
             if not choice.name.startswith(" "):
-                print(f'[{c}{choice.command}{r}] \t{choice.name}')
+                # if startswith space, move slightly right (next branch)
+                # here: normal menu item
+
+                # adv-date: add remaining + colorize/capitalize if ready
+                if choice.command == "adv":
+                    if num_tomark:
+                        # Not ready: there are still habits to mark done/not-done
+                        print(f'[{c}{choice.command}{r}] \t{choice.name}' +\
+                              f' (still {c}{num_tomark}{r} habits to mark)')
+                    else:
+                        # Ready: all habits for the day are marked
+                        g = self.colors["green"]
+                        print(f'[{c}{choice.command}{r}] \t{choice.name}!' +\
+                              f'{g} (READY!){r}')
+                else:
+                    # normal menu item
+                    print(f'[{c}{choice.command}{r}] \t{choice.name}')
             else:
-                print(f' [{c}{choice.command}{r}] \t{choice.name}')
                 # this is to push the submenu slightly to the right
+                print(f' [{c}{choice.command}{r}] \t{choice.name}')
+                
         print("-" * 80)    
 
     def mainmenu_input(self, input_action: str) -> None:
@@ -282,6 +305,11 @@ class TUI(View):
 
     def goto_analysis(self) -> None:
         self.clear()
+        c, r = self.set_default_colors()
+        # what is longest habit streak
+        # what is my current list of <period>
+        # 
+        pass
         self.controller.do_analysis()
 
     def print_table_head(self) -> None:

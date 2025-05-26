@@ -2,6 +2,13 @@ from dataclasses import dataclass #, field
 from enum import Enum, auto
 from copy import deepcopy
 
+# ANALYSIS requirements:
+# - return all currently tracked habits : ✓
+# - return all habits of <period>: ✓
+# - return longest streak of all habits: ✓
+# - return longest streak of 1 habit: (works in theory), but no max is stored
+
+
 class Period(Enum):
     daily = auto()
     weekly = auto()
@@ -109,7 +116,7 @@ class HabitAnalysis:
     def return_longest_streak(self, habit: Habit) -> int:
         """HABIT: returns the longest streak of a particular habit"""
         # TODO: check behaviour when returning multiple values or empty
-        # This won't work with the current code. Must be amended
+        # This won't work with the current code: max = current
         return max([stored_habit.streak for stored_habit in self._habitlist
                      if stored_habit == habit ])
         

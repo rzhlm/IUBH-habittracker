@@ -2,7 +2,7 @@
 REQUIREMENTS:
 -  [x] At least Weekly & Daily periods
 -  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
--  [ ] creation date + date/time of task completion
+-  [x] creation date + date/time of task completion
 
 - [x] Give list of all tracked habits
 - [x] Give list of all habits with same period
