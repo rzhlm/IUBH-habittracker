@@ -7,6 +7,7 @@ from src.habit import Period
 from abc import ABC, abstractmethod
 from copy import deepcopy
 import datetime as dt
+from src.colorprint import cprint
 
 if TYPE_CHECKING:
     from src.controller import Controller
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
 
 # TODO: add debug & info logging
 
+yprint = cprint()
 
 @dataclass
 class MenuChoices:
@@ -133,6 +135,7 @@ class TUI(View):
         # TODO: IF TIME BEFORE SUBMIT, DO THIS FIRST:
         # TODO: refactor this and simplify logic, too nested
         # perhaps .is_menu_type(menutype)->bool, and match/case
+        #print(f"\n{c}Choose an option: {r}")
         print(f"\n{c}Choose an option: {r}")
         for choice in self.choices:
             if not choice.name.startswith(" "):
@@ -306,6 +309,7 @@ class TUI(View):
     def goto_analysis(self) -> None:
         self.clear()
         c, r = self.set_default_colors()
+        print(f"{c}{r}")
         # what is longest habit streak of all habits
         # what is max 
         pass
