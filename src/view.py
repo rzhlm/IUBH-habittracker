@@ -41,20 +41,6 @@ class GUI(View):
         pass
 
 
-# TUI: interact -> splash -> show_choices -> do_input
-#
-# interact
-#   -> Splash
-#   Loop:
-#       -> Show choices
-#       -> take input
-#       input valid:
-#           -> mainmenu_input
-#               -> goto chosen function
-#       input invalid:
-#           -> error message
-
-
 class TUI(View):
     """VIEW: The TUI class, with all of its methods
     The flow (REPL) is as follows:
@@ -176,8 +162,8 @@ class TUI(View):
 
             except GeneratorExit:
                 # This is how I handle getting out of the input loop
-                # could make a custom one
-                #print("Intended exit, GeneratorExit")
+                # could make a custom one, in case a real GeneratorExit occurs
+                # print("Intended exit, GeneratorExit")
                 # breakpoint()
                 print(f"{c}Do your habits! No excuses!{r}")
                 break

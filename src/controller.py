@@ -154,38 +154,6 @@ class Controller:
             case _:
                 raise ValueError(f"non-expected period: {habit}")
 
-    # def is_habit_done_in_period(self, habit: Habit, period_days: int) -> bool:
-    #     """CONTROLLER: is habit done in the period until day before the current?
-    #     (for weekly/monthly habits at tehir edges)"""
-    #     habit_dt = self.str_to_dt(habit.last_complete)
-    #     diff = (self.current_date - habit_dt).days
-    #     return 1 <= diff <= period_days
-
-    # def is_habit_done_last_week(self, habit: Habit) -> bool:
-    #     """CONTROLLER: is habit done in previous calendar week.
-    #     test on subsequent monday."""
-    #     last_completion_date = self.str_to_dt(habit.last_complete)
-    #     last_week_start = self.current_date - dt.timedelta(days=7)
-    #     last_week_end = self.current_date - dt.timedelta(days=1)
-    #     return last_week_start <= last_completion_date <= last_week_end
-
-    # def is_habit_done_last_month(self, habit: Habit) -> bool:
-    #     """CONTROLLER: is habit done in previous calendar month?
-    #     Test on 1st day of new month."""
-    #     # if today is 1st March, is habit.last_complete
-    #     # in the month of February?
-
-    #     prev_date = self.current_date - dt.timedelta(days=1)
-    #     last_complete_date = self.str_to_dt(habit.last_complete)
-    #     # if self.current_date.month == 1:
-    #     #     prev_year = self.current_date.year - 1
-    #     #     prev_month = 12
-    #     # else:
-    #     #     prev_year = self.current_date.year
-    #     #     prev_month = self.current_date.month - 1
-    #     return last_complete_date.year == prev_date.year and \
-    #         last_complete_date.month == prev_date.month
-
     def update_streak(self, habit: Habit) -> None:
         """CONTROLLER: updates the streak with 1 unit"""
         habit.streak += 1
