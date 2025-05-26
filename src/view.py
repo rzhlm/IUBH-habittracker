@@ -302,7 +302,7 @@ class TUI(View):
         whether it was done or not done that day"""
 
         # note: habit is deepcopy() of an existing habit
-        c, r = self.set_default_colors()
+        #c, r = self.set_default_colors()
         #print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
         yprint("Done 'd', or Not Done 'n'? ('q' to return)")
         action = input().strip()[:1].lower()
@@ -332,8 +332,8 @@ class TUI(View):
     def print_table_head(self) -> None:
         """VIEW/TUI: prints the header of the Habit table"""
         #"obj(".ljust(7) +\
-        c, r = self.set_default_colors()
-        header: str = c +\
+        #c, r = self.set_default_colors()
+        header: str = \
         "|id".ljust(6) +\
         "|start date".ljust(12) +\
         "|period".ljust(8) +\
@@ -342,7 +342,7 @@ class TUI(View):
         "|last done".ljust(11) +\
         "|description\t" +\
         ")"
-        print(header.expandtabs(3))
+        yprint(header.expandtabs(3))
         #print(f"{c}{'_' * 80}{r}")
         yprint(f"{'_' * 80}")
     
@@ -447,7 +447,7 @@ class TUI(View):
     def begin_edit(self) -> None:
         """VIEW/TUI: gets & validates input for the habit to edit"""
         #self.clear()
-        c, r = self.set_default_colors()
+        #c, r = self.set_default_colors()
         #print(f"{c}Which ID would you like to edit? ('q' to return){r}")
         yprint("Which ID would you like to edit? ('q' to return)")
         try:
@@ -501,7 +501,7 @@ class TUI(View):
         # edit:
         # period, track, description: modifyible
         try:
-            c, r = self.set_default_colors()
+            #c, r = self.set_default_colors()
             quit = False
             while not quit:
                 #self.clear()
