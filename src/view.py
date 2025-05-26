@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 # TODO: add debug & info logging
 
 yprint = cprint()
+rprint = cprint("\033[31m")
 
 @dataclass
 class MenuChoices:
@@ -136,7 +137,7 @@ class TUI(View):
         # TODO: refactor this and simplify logic, too nested
         # perhaps .is_menu_type(menutype)->bool, and match/case
         #print(f"\n{c}Choose an option: {r}")
-        print(f"\n{c}Choose an option: {r}")
+        yprint("\nChoose an option: ")
         for choice in self.choices:
             if not choice.name.startswith(" "):
                 # if startswith space, move slightly right (next branch)
@@ -191,7 +192,8 @@ class TUI(View):
                 # could make a custom one, in case a real GeneratorExit occurs
                 # print("Intended exit, GeneratorExit")
                 # breakpoint()
-                print(f"{c}Do your habits! No excuses!{r}")
+                #print(f"{c}Do your habits! No excuses!{r}")
+                yprint("Do your habits! No excuses!")
                 break
             except Exception as e:
                 # This is for actual Exceptions
@@ -206,9 +208,11 @@ class TUI(View):
     def invalid_input(self) -> None:
         """VIEW/TUI: prints that input is invalid"""
         #self.clear()
-        color = self.colors["red"]
-        reset = self.colors["reset"]
-        print(f'{color}Input not valid{reset}')
+        # color = self.colors["red"]
+        # reset = self.colors["reset"]
+        # print(f'{color}Input not valid{reset}')
+        rprint("Input not valid")
+
 
     def goto_advance_date(self) -> None:
         """VIEW/TUI: advances the date to new value"""
@@ -219,11 +223,14 @@ class TUI(View):
             self.controller.do_advance_date()
         else:
             # not yet advance logic
-            red = self.colors["red"]
-            c, r = self.set_default_colors()
-            print(f"{red}Can't advance to tomorrow, still habits to mark!{r}")
+
+            #red = self.colors["red"]
+            #c, r = self.set_default_colors()
+            #print(f"{red}Can't advance to tomorrow, still habits to mark!{r}")
+            rprint("Can't advance to tomorrow, still habits to mark!")
             self.pause()
-            print(f"{c}Please mark these, with Quick Mark:{r}")
+            #print(f"{c}Please mark these, with Quick Mark:{r}")
+            yprint("Please mark these, with Quick Mark:")
             self.print_table_head()
             for to_mark in self.controller.return_unmarked_habits():
                 print(to_mark)
@@ -235,7 +242,7 @@ class TUI(View):
     def begin_quickmark(self) -> None:
         """VIEW/TUI: the method which asks user for input on which
         habits to mark as done/not-done (is called 'marking')"""
-        c,r = self.set_default_colors()
+        #c,r = self.set_default_colors()
         self.clear()
         #print(self.controller.done_indicator)
         self.print_table_head()
@@ -243,15 +250,18 @@ class TUI(View):
         unmarked_habits = self.controller.return_unmarked_habits()
         
         if not unmarked_habits:
-            print(f"{c}All habits marked! You can advance date.{r}")
+            #print(f"{c}All habits marked! You can advance date.{r}")
+            yprint("All habits marked! You can advance date.")
             self.pause()
             return
         
         for to_mark in unmarked_habits:
             print(to_mark)
 
-        print(f"{c}Which ID would you like to mark (done/not-done)?" +\
-              f"('q' to return){r}")
+        # print(f"{c}Which ID would you like to mark (done/not-done)?" +\
+        #       f"('q' to return){r}")
+        yprint("Which ID would you like to mark (done/not-done)?" +\
+               "('q' to return)")
         try:
             mark_id: str = input("ID:")[:4].strip()
             if mark_id.lower().startswith('q'):
@@ -277,8 +287,9 @@ class TUI(View):
                 found = True
                 break
         if not found:
-            red = self.colors["red"]
-            print(f"{red}ID not in list!{r}")
+            #red = self.colors["red"]
+            #print(f"{red}ID not in list!{r}")
+            rprint("ID not in list!")
             self.pause()
             return
     
@@ -290,7 +301,8 @@ class TUI(View):
 
         # note: habit is deepcopy() of an existing habit
         c, r = self.set_default_colors()
-        print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
+        #print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
+        yprint("Done 'd', or Not Done 'n'? ('q' to return)")
         action = input().strip()[:1].lower()
         match action:
             case 'd':
@@ -329,7 +341,8 @@ class TUI(View):
         "|description\t" +\
         ")"
         print(header.expandtabs(3))
-        print(f"{c}{'_' * 80}{r}")
+        #print(f"{c}{'_' * 80}{r}")
+        yprint(f"{'_' * 80}")
     
     def goto_showlist(self, option: str | None = None) -> None:
         """VIEW/TUI: shows user-requested type of habitlist"""
@@ -348,9 +361,10 @@ class TUI(View):
             period_habits: list[Habit] = self.controller.do_showlist_period(period)
             if len(period_habits) == 0:
                 self.clear()
-                red = self.colors["red"]
-                _, r = self.set_default_colors()
-                print(f"{red}No habits with this periodicity{r}")
+                #red = self.colors["red"]
+                #_, r = self.set_default_colors()
+                #print(f"{red}No habits with this periodicity{r}")
+                rprint("No habits with this periodicity")
             else:
                 self.clear()
                 self.print_table_head()
@@ -386,10 +400,12 @@ class TUI(View):
             .strip()
             length = len(Period)
             if period_inp not in [str(i) for i in range(1, length + 1)]:
-                red = self.colors["red"]
+                #red = self.colors["red"]
                 _, r = self.set_default_colors()
-                print(f"{red}Invalid selection!")
-                print(f"setting period to default: daily{r}")
+                #print(f"{red}Invalid selection!")
+                #print(f"setting period to default: daily{r}")
+                rprint("Invalid selection!")
+                rprint("setting period to default: daily")
                 period = Period.daily # TODO: an explicit Period.default
                 self.pause()
                 return period
@@ -430,7 +446,8 @@ class TUI(View):
         """VIEW/TUI: gets & validates input for the habit to edit"""
         #self.clear()
         c, r = self.set_default_colors()
-        print(f"{c}Which ID would you like to edit? ('q' to return){r}")
+        #print(f"{c}Which ID would you like to edit? ('q' to return){r}")
+        yprint("Which ID would you like to edit? ('q' to return)")
         try:
             edit_id: str = input("ID:")[:4].strip()
             if edit_id.lower().startswith('q'):
@@ -457,8 +474,9 @@ class TUI(View):
                 found = True
                 break
         if not found:
-            red = self.colors["red"]
-            print(f"{red}ID not in list!{r}")
+            # red = self.colors["red"]
+            # print(f"{red}ID not in list!{r}")
+            rprint("ID not in list!")
             self.pause()
             return
         
@@ -485,37 +503,42 @@ class TUI(View):
             quit = False
             while not quit:
                 #self.clear()
-                print(f"{c}Which edit? " +\
+                yprint("Which edit? " +\
                       "Track/untrack 't'," +\
                         "Description 'desc'," +\
-                            f"Delete 'del'? {r}")
-                print(f"{c}('q' to return){r}")
+                            "Delete 'del'?")
+                yprint("('q' to return)")
 
                 edit_select: str = input()[:4].lower().strip()
                 match edit_select:
                     case 't':
                         habit.toggle_tracked()
                         self.controller.do_edit(habit)
-                        print(f"{c}Tracking toggled!{r}")
+                        #print(f"{c}Tracking toggled!{r}")
+                        yprint("Tracking toggled!")
                         self.print_table_head()
                         print(habit)
                         print("-" * 80)
                         #self.pause()
                     case 'desc':
-                        print(f"{c}New description: (max length 35){r}")
-                        print(f"{c}{'-' * 34}|{r}")
+                        #print(f"{c}New description: (max length 35){r}")
+                        yprint("New description: (max length 35)")
+                        #print(f"{c}{'-' * 34}|{r}")
+                        yprint(f"{'-' * 34}|")
                         new_descr: str = input()[:35]
                         habit.description = new_descr
                         self.controller.do_edit(habit)
 
-                        print(f"{c}Description changed!{r}")
+                        #print(f"{c}Description changed!{r}")
+                        yprint("Description changed!")
                         self.print_table_head()
                         print(habit)
                         print("-" * 80)
                     case 'del':
                         # habit.streak = -1
                         self.controller.do_delete(habit)
-                        print(f"{c}habit deleted! (kindof){r}")
+                        #print(f"{c}habit deleted! (kindof){r}")
+                        yprint("habit deleted! (kindof)")
                         return
                         #self.pause()
                     case 'q':
