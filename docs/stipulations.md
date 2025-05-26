@@ -12,6 +12,13 @@ REQUIREMENTS:
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
 
+ANALYSIS LOGIC:
+current_all -> Habit
+past_all -> BestStreak
+current_period -> tuple[str, int]
+past_period -> BestStreak
+
+
 OTHER TODO:
 - [x]  Habit has action & period
 -  [x] An action/task can be checked off

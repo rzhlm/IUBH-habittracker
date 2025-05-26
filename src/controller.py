@@ -33,6 +33,8 @@ class DoneIndicatorList:
     today: dt.date
     data: list[DoneIndicator]
 
+# TODO: split methods off into separate modules
+# eg Init/Exit, Date, Interface, Marking
 
 class Controller:
     """CONTROLLER: C part of the MVC"""
@@ -219,9 +221,11 @@ class Controller:
             if not di.marked]
 
     def do_qm(self):
+        """CONTROLLER: placeholder for QuickMark logic, if needed"""
         pass
 
     def do_analysis(self):
+        """CONTROLLER: placeholder for Analysis logic, if needed"""
         pass
 
     def do_showlist(self) -> list[Habit]:
@@ -249,7 +253,7 @@ class Controller:
             is_tracked = True,
             streak = 0,
             last_complete = "1900-01-01",
-            record = BestStreak("1900-01-01", 0),
+            record = BestStreak("1900-01-01", -1),
         )
         self.habitlist.add_habit(new_habit)
         self.addto_indicator_list(new_habit)

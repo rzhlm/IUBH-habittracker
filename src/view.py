@@ -109,7 +109,6 @@ class TUI(View):
         #print("first screen / remember to add pause again")
         # TODO: make sure not Win Console or default Mac Terminal
         self.pause()
-        # TODO: TURN PAUSE BACK ON BEFORE SUBMITTING
         
     def set_default_colors(self) -> tuple[str, str]:
         """VIEW/TUI: returns the default color values"""
@@ -134,7 +133,7 @@ class TUI(View):
 
         # TODO: IF TIME BEFORE SUBMIT, DO THIS FIRST:
         # TODO: refactor this and simplify logic, too nested
-        # perhaps .is_menu_type(menutype)->bool, and match/case
+        # perhaps= .is_menu_type(menutype)->bool, and match/case
         #print(f"\n{c}Choose an option: {r}")
         yprint("\nChoose an option: ")
         for choice in self.choices:
