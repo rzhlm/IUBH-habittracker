@@ -68,14 +68,6 @@ def habit_list(create_habits: list[Habit]) -> HabitAnalysis:
     #hl: HabitList = HabitList(create_habits)
     #return hl
     return HabitAnalysis(create_habits)
-"""
-def test_period():
-    pass
-
-    
-def test_habit():
-    pass
-"""
 
 def test_return_tracked(habit_list: HabitAnalysis):
     tracked : list[Habit] = habit_list.return_tracked()

@@ -50,7 +50,6 @@ def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
 def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
     st.HL_save(habit_list, testfile)
     hl: HabitAnalysis = st.HL_load(testfile)
-    #hl: HabitList = st.load()
     for habit, load_habit in zip(habit_list.return_all(), hl.return_all()):
         assert habit.description == load_habit.description
         assert habit.creation_data == load_habit.creation_data
