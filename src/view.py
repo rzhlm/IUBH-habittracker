@@ -130,13 +130,27 @@ class TUI(View):
         strf: str = self.controller.settings.DTSTRF
         curr_date: dt.datetime = self.get_date()
         weekday: str = curr_date.strftime("%A")
-
         curr_str: str = curr_date.strftime(strf)
 
         num_tomark: int = len(self.controller.return_unmarked_habits())
         #breakpoint()
                 
-        print(f"{c}current date:{r} {curr_str} ({weekday})")
+        #print(f"{c}current date:{r} {curr_str} ({weekday})")
+        # Print notice on Mondays
+        if curr_date.weekday() == 0 and curr_date.date().day != 1:
+            print(f"{c}current date:{r} {curr_str} ({weekday}) " +\
+                  "Weekly streaks advance tonight!")
+        # print notice on 1st of Month
+        elif curr_date.weekday() != 0 and curr_date.date().day == 1:
+            print(f"{c}current date:{r} {curr_str} ({weekday}) " +\
+                  "Monthly streaks advance tonight!")
+        # print notice on Mondays && 1st of months
+        elif curr_date.weekday() == 0 and curr_date.date().day == 1:
+            print(f"{c}current date:{r} {curr_str} ({weekday}) " +\
+                  "Monthly & weekly streaks " +\
+                    "advances tonight!")
+        else:
+            print(f"{c}current date:{r} {curr_str} ({weekday})")
 
         # TODO: IF TIME BEFORE SUBMIT, DO THIS FIRST:
         # TODO: refactor this and simplify logic, too nested

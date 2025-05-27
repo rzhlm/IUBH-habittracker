@@ -9,6 +9,7 @@ controller.sav
 default_savefile.sav
 *.good*
 savefile-*.sav
+*.sav
 
 .env
 

@@ -3,7 +3,7 @@ import os
 import sys
 import dataclasses
 from typing import Any
-import datetime as dt
+#import datetime as dt
 
 from src.habit import Period, Habit, HabitAnalysis, BestStreak
 from src.constants import Settings
@@ -30,11 +30,14 @@ class Storage:
         loads the date value from file"""
         # if no datefile exists, take system date and make that the file
         if not os.path.exists(filename):
-            strf = self.settings.DTSTRF
-            today = dt.date.today()
-            date_str = today.strftime(strf)
+            #strf = self.settings.DTSTRF
+            #today = dt.date.today()
+            #date_str = today.strftime(strf)
+            defined_date = "2022-05-01"
+            
             try:
-                self.date_save(date_str)
+                #self.date_save(date_str)
+                self.date_save(defined_date)
             except Exception as e:
                 print(f"No datefile! Could not generate datefile! error: {e}")
                 sys.exit(1)          
@@ -64,10 +67,12 @@ class Storage:
         into instance"""
         # TODO: if no file exists, create a blank file 
         # with 1 demo habit for each period in it
+        #breakpoint()
+
         if not os.path.exists(filename):
             try:
-                pass
-                raise NotImplementedError("No savefile, and generation not yet implemented!")
+                self.generate_savefile()
+                #raise NotImplementedError("No savefile, and generation not yet implemented!")
                 # either generate one from code
                 # or copy from a default one which is always shipped
             except Exception as e:
@@ -130,6 +135,93 @@ class Storage:
                      record,
                      )
     
+    def generate_savefile(self):
+        """STORAGE2: Storage:
+         Creates the save-file, which conforms to the 
+        requirements"""
+
+        habit1: Habit = Habit(id = 1,
+                    description = "Memorise top 500 french words",
+                    creation_data = "2021-01-01",
+                    period = Period.daily,
+                    is_tracked = False,
+                    streak = 101,
+                    last_complete = "2021-08-19",
+                    record = BestStreak("2021-08-19", 21),
+                        )
+        
+        habit2: Habit = Habit(id = 2,
+                    description = "Stretch iliopsoas muscles",
+                    creation_data = "2021-01-01",
+                    period = Period.daily,
+                    is_tracked = False,
+                    streak = -1,
+                    last_complete = "2021-08-20",
+                    record = BestStreak("2021-08-17", 11),
+                        )
+    
+        habit3: Habit = Habit(id = 3,
+                    description = "Stretch iliopsoas muscles",
+                    creation_data = "2021-01-01",
+                    period = Period.daily,
+                    is_tracked = True,
+                    streak = 62,
+                    last_complete = "2022-05-01",
+                    record = BestStreak("2021-08-20", 231),
+                        )
+        
+        habit4: Habit = Habit(id = 4,
+                    description = "Memorise top 3000 german words",
+                    creation_data = "2021-01-02",
+                    period = Period.daily,
+                    is_tracked = True,
+                    streak = 29,
+                    last_complete = "2022-05-01",
+                    record = BestStreak("2021-05-04", 123),
+                        )
+        
+        habit5: Habit = Habit(id = 5,
+                    description = "Solve weekly Project Euler",
+                    creation_data = "2021-01-03",
+                    period = Period.weekly,
+                    is_tracked = True,
+                    streak = 9,
+                    last_complete = "2022-05-01",
+                    record = BestStreak("2021-10-08", 40),
+                        )
+        
+        habit6: Habit = Habit(id = 6,
+                    description = "Read >=1 Computer Science book",
+                    creation_data = "2021-01-04",
+                    period = Period.weekly,
+                    is_tracked = True,
+                    streak = 7,
+                    last_complete = "2022-05-01",
+                    record = BestStreak("2021-06-11", 23),
+                        )
+
+        habit7: Habit = Habit(id = 7,
+                    description = "Print invoices for VAT declaration",
+                    creation_data = "2021-01-05",
+                    period = Period.monthly,
+                    is_tracked = True,
+                    streak = 3,
+                    last_complete = "2022-05-01",
+                    record = BestStreak("2021-11-27", 11),
+                        )
+
+
+        habit_list: list[Habit] = [habit1,
+                                   habit2,
+                                   habit3,
+                                   habit4,
+                                   habit5,
+                                   habit6,
+                                   habit7,]   
+        habit_analysis: HabitAnalysis = HabitAnalysis(habit_list)
+
+        #self.HL_save(habit_analysis, "savefile-PAT.sav")
+        self.HL_save(habit_analysis, self.settings.FILENAME)
 
 if __name__ == "__main__":
     print("This module is for importing, not for running directly")

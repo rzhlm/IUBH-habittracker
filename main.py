@@ -16,7 +16,15 @@ If they grew more, ideally they would be put into separate modules,
 and/or separate classes.
 As the assignment was to be mainly OOP (except for the Analytics part),
 the choice was made to have a simpler Class structure,
-at the cost of being more visually crowded.
+at the cost of being more visually crowded, 
+rather than branch out to multiple modules.
+
+If the save-files don't exist, they get re-generated.
+
+2022-05-01 is a Sunday, and 1st of the month
+-> after marking and advancing tonight, the monthly streak increments
+-> the next day, after marking and advancing, the weekly streak increments
+
 
 """
 
