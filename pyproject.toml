@@ -1,7 +1,7 @@
 [project]
-name = "Pat's Habit Tracker"
+name = "pats-habit-tracker"
 version = "1.0.0"
-description = "A very important project"
+description = "An oldskool terminal habit tracker"
 readme = "README.md"
 requires-python = ">=3.13.0"
 # List any runtime dependencies here if needed.
