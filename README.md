@@ -81,7 +81,7 @@ This has only been tested on local development machines:
 
 Even though they are packaged for standalone use, it could be that particular dependencies are needed on your device.
 
-Windows (x64): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-win-x64.exe)
+Windows (x64): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-win-x64.exe) (packaged with pyinstaller)
 
 macOS (Apple ARM): (here)
 
