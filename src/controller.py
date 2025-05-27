@@ -32,7 +32,7 @@ class DoneIndicator:
 class DoneIndicatorList:
     """CONTROLLER: bundles all the DoneIndicators of all the tracked habits
     + the day for which they are marked (= done or not done)"""
-    today: dt.date
+    today: dt.datetime
     data: list[DoneIndicator]
 
 # TODO: split methods off into separate modules
@@ -45,7 +45,7 @@ class Controller:
         self.settings: Settings = Settings()
         self.habitlist: HabitAnalysis = habitlist
         self.storage : Storage = storage
-        self.current_date: dt.date = self.load_date()
+        self.current_date: dt.datetime = self.load_date()
         self.ready_to_advance = False
         self.done_indicator = self.init_done_indicator_list()
 
@@ -76,7 +76,7 @@ class Controller:
             print(f"could not save datefile! error: {e}")
             sys.exit(1)
 
-    def load_date(self) -> dt.date:
+    def load_date(self) -> dt.datetime:
         """CONTROLLER: loads the datestring from storage and makes it datetime"""
         strf = self.settings.DTSTRF
         try:
@@ -89,12 +89,12 @@ class Controller:
         return date_dt
         #return date_dt.date()
 
-    def dt_to_str(self, date: dt.date) -> str:
+    def dt_to_str(self, date: dt.datetime) -> str:
         """CONTROLLER: turns a datetime into string, with our configured format"""
         format = self.settings.DTSTRF
         return date.strftime(format)
 
-    def str_to_dt(self, date_str: str) -> dt.date:
+    def str_to_dt(self, date_str: str) -> dt.datetime:
         """CONTROLLER: turns a string into datetime, using our configured format"""
         strf = self.settings.DTSTRF
         date_dt = dt.datetime.strptime(date_str, strf)

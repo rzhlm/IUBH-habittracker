@@ -72,7 +72,7 @@ class TUI(View):
             "reset" : "\033[0m",
         }
 
-    def get_date(self) -> dt.date:
+    def get_date(self) -> dt.datetime:
         """VIEW/TUI: gets date value from controller instance"""
         return self.controller.current_date
 
@@ -313,6 +313,7 @@ class TUI(View):
                 self.pause()
 
         self.controller.do_qm()
+        self.begin_quickmark()
         #print(self.controller.done_indicator)
 
     def goto_analysis(self) -> None:
