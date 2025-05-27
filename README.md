@@ -11,7 +11,10 @@
 ### [Using the software](#using-the-software)
 
 ## Screenshots
-screenshots
+![Splash](./screenshots/splash.png)
+![List of tracked](./screenshots/tracked.png)
+![QuickMark](./screenshots/quickmark.png)
+![Analysis](./screenshots/analysis.png)
 
 ## Installing
 
