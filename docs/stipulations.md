@@ -26,6 +26,12 @@ OTHER TODO:
 
 - [ ] add notice to best use winterminal, not console; nor default Mac terminal
 
+Habit spec:
+- eaxtly 5
+- min 1 wkly, min 1 daily
+- each min 4 weeks of data
+
+
 
 
 This was an intention,

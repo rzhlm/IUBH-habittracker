@@ -349,14 +349,19 @@ class Controller:
         (untracked: is for 'archival'/'soft deletion').
         
         The date is advanced manually, this is a great feature.
+        (It does not use your system date)
         You can't advance the date, until each tracked habit has 
         been marked "done" or "not done". Do this with "Quick mark".
 
         -Daily streaks get calculated *after* advancing to the next day.
+
         -Weekly streaks get calculated *after* advancing from Monday to Tuesday.
+        (i.e. the evaluation theoretically happens on midnight at Monday)
+        
         -Monthly streaks get calculated *after* advancing from 1st to 2nd 
         of the month. (A monthly streak is defined as being done 
-        in the previous 31 days.)
+        in the previous 31 days, even if the month is shorter.)
+        (i.e. the evaluation theoretically happens on midnight on the 1st day)
 
         When you edit, you can change: track/untrack, description, or delete.
 
