@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-### Screenshots
-### Installing
-#### Dependencies
-#### Option 1: clone and run
-#### Option 2: download packaged binaries
-#### Option 3: (unstable) install from 'pyproject.toml'
-### Using the software
+### [Screenshots](#Screenshots)
+### [Installing](#Installing)
+#### [Dependencies](#Dependencies)
+#### [Option 1: clone and run](#Option 1: clone and run)
+#### [Option 2: download packaged binaries](#Option 2: download packaged binaries)
+#### [Option 3: (unstable) install from 'pyproject.toml'](#Option 3: (unstable) install from 'pyproject.toml')
+### [Using the software](#Using the software)
 
 ## Screenshots
 screenshots
@@ -17,6 +17,7 @@ screenshots
 
 ### Dependencies
 For the program itself there are no dependencies, other than the Python Standard Library
+
 For testing, Pytest is used (>= 8.3.3).
 
 Python >= 3.13.0 is required, as the new syntax regarding type hints is used.
