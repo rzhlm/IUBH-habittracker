@@ -5,10 +5,10 @@
 ### [Screenshots](#Screenshots)
 ### [Installing](#Installing)
 #### [Dependencies](#Dependencies)
-#### [Option 1: clone and run](#Option-1:-clone-and-run)
-#### [Option 2: download packaged binaries](#Option-2:-download-packaged-binaries)
-#### [Option 3: (unstable) install from 'pyproject.toml'](#Option 3:-(unstable)-install-from-'pyproject.toml')
-### [Using the software](#Using-the-software)
+#### [Option 1: clone and run](#option-1-clone-and-run)
+#### [Option 2: download packaged binaries](#option-2-download-packaged-binaries)
+#### [Option 3: (unstable) install from 'pyproject.toml'](#option-3-unstable-install-from-pyprojecttoml)
+### [Using the software](#using-the-software)
 
 ## Screenshots
 screenshots
