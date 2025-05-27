@@ -151,7 +151,7 @@ class Storage:
                         )
         
         habit2: Habit = Habit(id = 2,
-                    description = "Stretch iliopsoas muscles",
+                    description = "Do 100 morning pushups ",
                     creation_data = "2021-01-01",
                     period = Period.daily,
                     is_tracked = False,
