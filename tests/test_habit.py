@@ -85,6 +85,33 @@ def habit_list(create_habits: list[Habit]) -> HabitAnalysis:
 # ##############################################################################
 # FUNCTIONS
 
+def test_register_observer(habit_list: HabitAnalysis) -> None:
+    """Test register_observer: appends in observer list"""
+    calls: list[str] = []
+    
+    def observer() -> None:
+        calls.append("observer called")
+    assert observer not in habit_list._observers # type: ignore
+    
+    habit_list.register_observer(observer)
+    assert observer in habit_list._observers # type: ignore
+
+def test_notify_observers(habit_list: HabitAnalysis) -> None:
+    """Test notify_observers: calls all callbacks."""
+    
+    call_count: list[int] = [0, 0]
+    def observer1() -> None:
+        call_count[0] += 1
+
+    def observer2() -> None:
+        call_count[1] += 1
+
+    habit_list.register_observer(observer1)
+    habit_list.register_observer(observer2)
+    habit_list.notify_observers()
+    assert call_count[0] == 1
+    assert call_count[1] == 1
+
 def test_get_len(habit_list: HabitAnalysis, create_habits: list[Habit]):
     """Test that get_len() returns the correct number of habits"""
     expected = len(create_habits)
@@ -114,20 +141,20 @@ def test_get_habit_by_id(habit_list: HabitAnalysis,
 
 def test_update_habit(habit_list: HabitAnalysis):
     """Test that update_habit() updates correctly"""
-    original = habit_list.get_habit_by_id(1)
+    original: Habit = habit_list.get_habit_by_id(1)
     
-    updated_habit = deepcopy(original)
+    updated_habit: Habit = deepcopy(original)
     updated_habit.description = "UPDATE TEST"
     updated_habit.streak = 111
     
     habit_list.update_habit(updated_habit)
-    new_habit = habit_list.get_habit_by_id(1)
+    new_habit: Habit = habit_list.get_habit_by_id(1)
     assert new_habit.description == "UPDATE TEST"
     assert new_habit.streak == 111
 
 def test_return_all(habit_list: HabitAnalysis, create_habits: list[Habit]):
     """Test that return_all() returns all habits, aslo untracked & deleted"""
-    all_ = habit_list.return_all()
+    all_: list[Habit] = habit_list.return_all()
     assert len(all_) == len(create_habits)
     assert all_ == create_habits
 
@@ -152,7 +179,7 @@ def test_return_same_period(habit_list: HabitAnalysis):
 def test_return_current_longest_streak_all(habit_list: HabitAnalysis):
     """Test that return_current_longest_streak_all 
     returns the habit with the highest streak"""
-    longest_habit = habit_list.return_current_longest_streak_all()
+    longest_habit: Habit = habit_list.return_current_longest_streak_all()
     assert longest_habit.streak == 17
 
 #@pytest.mark.xfail
@@ -172,7 +199,7 @@ def test_return_past_longest_streak_all(habit_list: HabitAnalysis):
             habit_list._habitlist[index] = habit  # type: ignore
             break
     
-    best = habit_list.return_past_longest_streak_all()
+    best: Habit = habit_list.return_past_longest_streak_all()
     assert best.record.max_streak == 20
     assert best.record.on_date == "2023-09-30"
 
@@ -181,16 +208,16 @@ def test_return_current_longest_streak_period(habit_list: HabitAnalysis):
     """Test that return_current_longest_streak_period returns habit with
     highest current streak for that period (or None)."""
     
-    daily_habit = habit_list.return_current_longest_streak_period(Period.daily)
+    daily_habit: Habit|None = habit_list.return_current_longest_streak_period(Period.daily)
     assert daily_habit is not None
     assert daily_habit.period == Period.daily
     assert daily_habit.streak == 17
     assert daily_habit.id == 6
 
-    weekly_habit = habit_list.return_current_longest_streak_period(Period.weekly)
+    weekly_habit: Habit|None = habit_list.return_current_longest_streak_period(Period.weekly)
     assert weekly_habit is None
 
-    monthly_habit = habit_list\
+    monthly_habit: Habit|None = habit_list\
                         .return_current_longest_streak_period(Period.monthly)
     assert monthly_habit is not None
     assert monthly_habit.period == Period.monthly

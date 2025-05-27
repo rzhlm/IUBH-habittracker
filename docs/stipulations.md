@@ -11,13 +11,9 @@ REQUIREMENTS:
 
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
-- RUNTIME EXCEPTION 
-when deleting a new habit
 - default savefile creation
-- Save on change, not on exit
-- QM: direct return
-- QM: mark all
-
+- change default datefile
+to something prespecified
 
 OTHER TODO:
 - [x]  Habit has action & period

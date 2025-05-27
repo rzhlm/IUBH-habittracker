@@ -1,11 +1,22 @@
 from constants import StorageType
-import json
+from abc import ABC, abstractmethod
 
-class StorageStrategy:
+"""
+NOTE: This class is currently not used anywhere
+It is unfinished, a placeholder.
+"""
+
+class StorageStrategy(ABC):
+    """STORAGE: StorageStrategy"""
+    @abstractmethod
     def add_habit(self):
         pass
+    
+    @abstractmethod
     def load_all(self):
         pass
+    
+    @abstractmethod
     def save_all(self):
         pass
 
@@ -18,7 +29,10 @@ class StorageFactory:
     return cls.unique[cls]
     """
     
-    def create_storage(cls, storage_type, save_file):
+    def create_storage(self, storage_type = StorageType.JSON, save_file):
+            """STORAGE: StorageFactory: creates a Storage object of
+            the specified type"""
+            
         
             match storage_type:
                 case StorageType.PICKLE:
@@ -31,10 +45,12 @@ class StorageFactory:
                     st = SQLiteStorage(save_file)
                     return st
                 case _:
-                    raise Exception("StorageFactory: no storage type given!")
+                    raise Exception("StorageFactory: no valid storage type given!")
             return cls.unique[cls]
 
 class JSONStorage(StorageStrategy):
+    """Storage: JSONStorage: creates a storage object,
+    for use with JSON"""
     def __init__(self, savefile):
         self.savefile = savefile
     
@@ -45,6 +61,8 @@ class JSONStorage(StorageStrategy):
         pass
     
 class PickleStorage(StorageStrategy):
+    """Storage: PickleStorage: creates a storage object,
+    for use with Pickle"""
     def __init__(self, savefile):
         self.savefile = savefile
 
@@ -55,6 +73,8 @@ class PickleStorage(StorageStrategy):
         pass
     
 class SQLiteStorage(StorageStrategy):
+    """Storage: SQLiteStorage: creates a storage object,
+    for use with SQLite"""
     def __init__(self, savefile):
         pass
 

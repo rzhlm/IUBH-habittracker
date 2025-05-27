@@ -1,7 +1,7 @@
-from dataclasses import dataclass #, field
+from dataclasses import dataclass
 from enum import Enum, auto
 from copy import deepcopy
-
+from collections.abc import Callable
 
 class Period(Enum):
     daily = auto()
@@ -13,14 +13,16 @@ class Period(Enum):
 
 @dataclass
 class BestStreak:
-    """HABIT: the structure which stores date & streak of best streak
+    """HABIT:BestStreak:
+    the structure which stores date & streak of best streak
     for each habit"""
     on_date: str
     max_streak: int
 
 @dataclass
 class Habit:
-    """HABIT: the structure which defines a habit"""
+    """HABIT:Habit:
+    the structure which defines a habit"""
     # if adding here, modify testing
     # and modify savefiles
     id: int
@@ -35,7 +37,8 @@ class Habit:
     # Use @property method for streak calculation?
 
     def __str__(self):
-        """HABIT: The string representation when printed"""
+        """HABIT:Habit:
+        The string representation when printed"""
         #f"|{self.last_complete}".ljust(11) +\
         never = "1900-01-01"
         last = "never" if self.last_complete == never else self.last_complete
@@ -50,38 +53,62 @@ class Habit:
 
         return repr.expandtabs(3)
         
-    def toggle_tracked(self):
-        """HABIT: Toggles Tracked bool of Habit"""
+    def toggle_tracked(self) -> None:
+        """HABIT:Habit:
+        Toggles Tracked bool of Habit"""
         self.is_tracked = not self.is_tracked
-    def un_track(self):
-        """HABIT: turns Tracked bool to False"""
+    def un_track(self) -> None:
+        """HABIT:Habit:
+        turns Tracked bool to False"""
         self.is_tracked = False
-    def track(self):
-        """HABIT: turns Tracked bool to True"""
+    def track(self) -> None:
+        """HABIT:Habit:
+        turns Tracked bool to True"""
         self.is_tracked = True
 
 #@dataclass
 class HabitAnalysis:
-    """HABIT: stores a list of all the habits, counts them
+    """HABIT:HabitAnalysis:
+    stores a list of all the habits, counts them
     + all the methods to retrieve, update, add, etc."""
     
     def __init__(self, habitlist: list[Habit]):
-        self._habitlist = habitlist
-        self._len = len(habitlist)
+        # TODO: keep track of maximum ID, noth with length of list
+        # but with an actual read of each added ID + increment
+        self._habitlist: list[Habit] = habitlist
+        self._len: int = len(habitlist)
+        #self._max_id = 0 #
+        self._observers: list[Callable[[], None]] = []
+
+    def register_observer(self, callback: Callable[[], None]) -> None:
+        """HABIT:HabitAnalysis:
+        adds a callback for observers (design pattern)"""
+        self._observers.append(callback)
+
+    def notify_observers(self) -> None:
+        """HABIT:HabitAnalysis:
+        notifies by running all the observer callbakcs"""
+        for callback in self._observers:
+            callback()
 
     def get_len(self) -> int:
-        """HABIT: gets the length of the habitlist: number of habits"""
+        """HABIT: HabitAnalysis:
+        gets the length of the habitlist: number of habits"""
         return self._len
     
     def add_habit(self, habit: Habit) -> None:
-        """HABIT: adds Habit instance to _habitlist,
+        """HABIT: HabitAnalysis:
+        adds Habit instance to _habitlist,
         and updates counter of total stored habits"""
-        self._habitlist.append(habit)
         self._len += 1
+        #self.max_id += 1
+        self._habitlist.append(habit)
+        self.notify_observers()
         #breakpoint()
     
     def get_habit_by_id(self, id: int) -> Habit:
-        """HABIT: returns the habit when given its ID"""
+        """HABIT: HabitAnalysis:
+        returns the habit when given its ID"""
         # TODO:  also make a self.value (dict), to avoid repeating
         # but then needs to be updated at habit creation & edit
         habit_dict = {
@@ -91,24 +118,27 @@ class HabitAnalysis:
         #return deepcopy(habit_dict[id])
         return habit_dict[id] or None
             
-    def update_habit(self, new_habit: Habit):
-        """HABIT: updates a habit in the habitlist
-        (overwrites it with a new copy)"""
+    def update_habit(self, new_habit: Habit) -> None:
+        """HABIT: HabitAnalysis:
+        updates a habit in the habitlist (overwrites it with a new copy)"""
         #self._habitlist[]
         for i, habit in enumerate(self._habitlist):
             if new_habit.id == habit.id:
                 self._habitlist[i] = deepcopy(new_habit)
+                self.notify_observers()
                 #self._habitlist[i] = new_habit
                 # need deepcopy to prevent a Heisenbug
                 # TODO: find heisenbug, remove deepcopy
                 break
 
     def return_all(self) -> list[Habit]:
-        """HABIT: returns all habits (also untracked & deleted)"""
+        """HABIT: HabitAnalysis:
+        returns all habits (also untracked & deleted)"""
         return self._habitlist or []
     
     def return_tracked(self) -> list[Habit]:
-        """HABIT: returns tracked habits (not untracked & deleted)"""
+        """HABIT: HabitAnalysis:
+        returns tracked habits (not untracked & deleted)"""
         # required to be functional
         # return [habit 
         #         for habit in self._habitlist 
@@ -125,7 +155,8 @@ class HabitAnalysis:
                 ) or []
     
     def return_same_period(self, period: Period) -> list[Habit]:
-        """HABIT: returns tracked habits with same periodicity"""
+        """HABIT: HabitAnalysis:
+        returns tracked habits with same periodicity"""
         # required to be functional
         # return [habit 
         #         for habit in self._habitlist
@@ -144,13 +175,9 @@ class HabitAnalysis:
                 )
     
     def return_current_longest_streak_all(self) -> Habit:
-        """HABIT: returns longest streak of all habits
-        -> Habit"""
+        """HABIT: HabitAnalysis:
+        returns longest streak of all habits"""
         # required to be functional
-        #longest: int = -1
-        #ft = filter(, self.habitlist)
-        # TODO: check behaviour when multiple values or empty
-        #return max([length.streak for length in self._habitlist])
 
         # max = -2
         # max_id = 0
@@ -184,8 +211,8 @@ class HabitAnalysis:
 
         
     def return_past_longest_streak_all(self) -> Habit:
-        """HABIT: returns the record of habit with  highest past streak.
-        -> BestStreak object
+        """HABIT:HabitAnalysis:
+        returns the record of habit with  highest past streak.
         also looks in untracked habits!!
         """
         # required to be functional
@@ -198,8 +225,9 @@ class HabitAnalysis:
                                             self,
                                             period: Period
                                             ) -> Habit | None:
-        """HABIT: returns the current longest streak of a particular period
-        ->tuple(date: str, streak: int)"""
+        """HABIT: HabitAnalysis:
+        returns the current longest streak of a particular period
+        for the tracked habits."""
         # required to be functional
 
         # max_ = -2
@@ -224,14 +252,12 @@ class HabitAnalysis:
                         default = None
                     )
         
-        # if top_habit is None:
-        #     return None
         return top_habit or None
 
     
     def return_past_longest_streak_period(self, period: Period) -> Habit | None:
-        """HABIT: returns the past longest streak of a particular period
-        -> BestStreak object"""
+        """HABIT: HabitAnalysis: 
+        returns the past longest streak of a particular period"""
         # max_ = -2
         # max_id = 0
         # for habit in self._habitlist:
@@ -254,7 +280,5 @@ class HabitAnalysis:
         return None
 
         
-
-
 if __name__ == "__main__":
     print("This module is for importing, not for running directly")

@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 # TODO: add debug & info logging
 
 # initialize custom color-print functions (curried), in this namespace
-yprint = cprint() # yellow print func
-rprint = cprint("\033[31m") #red print func
-tprint = cprint("\t") # adds a tab in front of everything printed
+yprint: Callable[[str],None] = cprint() # yellow print func
+rprint: Callable[[str],None] = cprint("\033[31m") #red print func
+tprint: Callable[[str],None] = cprint("\t") # adds a tab in front
 
 @dataclass
 class MenuChoices:
@@ -48,10 +48,12 @@ class GUI(View):
 class TUI(View):
     """VIEW: The TUI class, with all of its methods
     The flow (REPL) is as follows:
-    # TUI: interact -> splash -> show_menulist -> mainmenu_input
+    # TUI: 
+    # interact -> splash -> help -> show_menulist -> mainmenu_input
     #
     # interact
     #   -> Splash
+    #   -> Help, instructions
     #   REPL:
     #       -> Show Menulist
     #       -> take input
@@ -63,6 +65,8 @@ class TUI(View):
     """
 
     def __init__(self, controller: Controller):
+        
+        self.repl_quit: bool = False
         self.controller: Controller = controller
         self.choices: list[MenuChoices] = self.init_menulist()
         self.colors: dict[str, str] = {
@@ -84,7 +88,8 @@ class TUI(View):
         MenuChoices("Advance date","adv", self.goto_advance_date),
         MenuChoices("Quick mark","qm",self.begin_quickmark),
         MenuChoices("Analysis", "a", self.goto_analysis),
-        MenuChoices("Show list (all) (EXPERT MODE, for debugging)", "sl", self.goto_showlist),
+        MenuChoices("Show list (all) (EXPERT MODE, " +\
+                    "shows deleted & untracked)", "sl", self.goto_showlist),
         MenuChoices(" Show list (tracked)", "slt", self.goto_showlist_tracked),
         MenuChoices(" Show list (same period, tracked)", "slp", self.goto_showlist_period),
         MenuChoices("Add Habit", "ah", self.goto_add),
@@ -109,6 +114,8 @@ class TUI(View):
         #print("first screen / remember to add pause again")
         # TODO: make sure not Win Console or default Mac Terminal
         self.pause()
+        self.goto_help()
+        self.pause()
         
     def set_default_colors(self) -> tuple[str, str]:
         """VIEW/TUI: returns the default color values"""
@@ -120,16 +127,16 @@ class TUI(View):
         """VIEW/TUI: prints menulist"""
         print("-" * 80)
         c, r = self.set_default_colors()
-        strf = self.controller.settings.DTSTRF
-        curr_date = self.get_date()
-        weekday = curr_date.strftime("%A")
+        strf: str = self.controller.settings.DTSTRF
+        curr_date: dt.datetime = self.get_date()
+        weekday: str = curr_date.strftime("%A")
 
-        curr_date = curr_date.strftime(strf)
+        curr_str: str = curr_date.strftime(strf)
 
         num_tomark: int = len(self.controller.return_unmarked_habits())
         #breakpoint()
                 
-        print(f"{c}current date:{r} {curr_date} ({weekday})")
+        print(f"{c}current date:{r} {curr_str} ({weekday})")
 
         # TODO: IF TIME BEFORE SUBMIT, DO THIS FIRST:
         # TODO: refactor this and simplify logic, too nested
@@ -175,8 +182,9 @@ class TUI(View):
         """VIEW/TUI: The main REPL method, called from MAIN"""
         self.clear()
         self.splash_screen()
+
         # REPL:
-        while True:
+        while not self.repl_quit:
             self.show_menulist()
             c, r = self.set_default_colors()
             inp = input(f'{c}Make your choice: {r}')
@@ -184,14 +192,14 @@ class TUI(View):
             try:
                 self.mainmenu_input(inp.lower())
 
-            except GeneratorExit:
-                # This is how I handle getting out of the input loop.
-                # Could make a custom one, in case a real GeneratorExit occurs
-                # print("Intended exit, GeneratorExit")
-                # breakpoint()
-                #print(f"{c}Do your habits! No excuses!{r}")
-                yprint("Do your habits! No excuses!")
-                break
+            # except GeneratorExit:
+            #     # This is how I handle getting out of the input loop.
+            #     # Could make a custom one, in case a real GeneratorExit occurs
+            #     # print("Intended exit, GeneratorExit")
+            #     # breakpoint()
+            #     #print(f"{c}Do your habits! No excuses!{r}")
+            #     yprint("Do your habits! No excuses!")
+            #     break
             except Exception as e:
                 # This is for actual Exceptions
                 print(f"VIEW/TUI: self.interact: Exception: {e}")
@@ -200,6 +208,7 @@ class TUI(View):
                 
         # print("exited main loop (self.interact)")
         # breakpoint()
+        yprint("Do your habits! No excuses!")
         self.controller.do_quit()
 
     def invalid_input(self) -> None:
@@ -280,8 +289,8 @@ class TUI(View):
             if id == habit.id: # type: ignore
                 # TODO: reimplement HabitAnalysis with a dict instead of list
                 # edit_habit = habit # by ref, so the actual habit gets edited!
-                mark_habit = deepcopy(habit) 
-                found = True
+                mark_habit: Habit = deepcopy(habit) 
+                found: bool = True
                 break
         if not found:
             #red = self.colors["red"]
@@ -300,7 +309,7 @@ class TUI(View):
         #c, r = self.set_default_colors()
         #print(f"{c}Done 'd', or Not Done 'n'? ('q' to return){r}")
         yprint("Done 'd', or Not Done 'n'? ('q' to return)")
-        action = input().strip()[:1].lower()
+        action: str = input().strip()[:1].lower()
         match action:
             case 'd':
                 self.controller.mark_habit_done(habit)
@@ -328,21 +337,29 @@ class TUI(View):
         # What is the current top streak?
         # current longest streak all
         yprint("The current top streak:")
-        top = self.controller.habitlist.return_current_longest_streak_all()
-        tprint(f"id: {top.id}")
-        tprint(f"{top.streak} unit streak on {top.last_complete}, " +\
-               f"with period: {top.period}")
-        tprint(f"Habit description: {top.description}\n")
+        top: Habit = self.controller.habitlist.return_current_longest_streak_all()
+        
+        if not top:
+            tprint("No habits!\n")
+        else:
+            tprint(f"id: {top.id}")
+            tprint(f"{top.streak} unit streak on {top.last_complete}, " +\
+                f"with period: {top.period}")
+            tprint(f"Habit description: {top.description}\n")
 
         # What is the past top streak?
         # past longest streak all
         yprint("The past top streak:")
-        top_p = self.controller.habitlist\
+        top_p: Habit = self.controller.habitlist\
                                             .return_past_longest_streak_all()
-        tprint(f"id: {top_p.id}")
-        tprint(f"{top_p.record.max_streak} unit streak " +\
-               f"on {top_p.record.on_date}, with period: {top_p.period}")
-        tprint(f"Habit description: {top_p.description}\n")
+        
+        if not top_p:
+            tprint("No habits!\n")
+        else:
+            tprint(f"id: {top_p.id}")
+            tprint(f"{top_p.record.max_streak} unit streak " +\
+                f"on {top_p.record.on_date}, with period: {top_p.period}")
+            tprint(f"Habit description: {top_p.description}\n")
 
         # What is the current top_streak, for a period?
         # current longest streak period
@@ -363,8 +380,8 @@ class TUI(View):
         # past longest streak period
         yprint("The past top streak per period:")
         for period in Period:
-            top_pa_pe = self.controller.habitlist\
-                                .return_past_longest_streak_period(period)
+            top_pa_pe: Habit | None = self.controller.\
+                            habitlist.return_past_longest_streak_period(period)
             yprint(f"\t* Period: {period}")
             if not top_pa_pe:
                 tprint("No habits!")
@@ -478,7 +495,7 @@ class TUI(View):
         period: Period = self.period_picker()
 
         c, r = self.set_default_colors()
-        print(f"{c}\nDescription? (type 'q.' to return)")
+        print(f"{c}\nDescription? (type 'q.' to return ('q_dot'))")
         # "q." because "quit smoking" also starts with 'q'
         print("max 35 char, more will be cut off)")
         print("until here, circa:".ljust(34,"-") + f"|{r}")
@@ -547,7 +564,7 @@ class TUI(View):
         # period, track, description: modifyible
         try:
             #c, r = self.set_default_colors()
-            quit = False
+            quit: bool = False
             while not quit:
                 #self.clear()
                 yprint("Which edit? " +\
@@ -583,10 +600,10 @@ class TUI(View):
                         print("-" * 80)
                     case 'del':
                         # habit.streak = -1
-                        breakpoint()
+                        #breakpoint()
                         self.controller.do_delete(habit)
                         #print(f"{c}habit deleted! (kindof){r}")
-                        yprint("habit deleted! (kindof)")
+                        yprint("habit deleted! (kind of)")
                         return
                         #self.pause()
                     case 'q':
@@ -617,7 +634,8 @@ class TUI(View):
         self.controller.do_quit()
         # ↑ is already run once at exit of REPL
         # ↑ can probably be removed, to avoid unnecessary disk activity
-        raise GeneratorExit()
+        # raise GeneratorExit()
+        self.repl_quit = True
     
     def clear(self) -> None:
         """VIEW/TUI: clears the shell screen"""

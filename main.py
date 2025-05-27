@@ -10,6 +10,16 @@ from src.view import TUI
 if TYPE_CHECKING:
     from src.habit import HabitAnalysis
 
+"""
+ NOTE: Some of the Classes are getting crowded with methods.
+If they grew more, ideally they would be put into separate modules,
+and/or separate classes.
+As the assignment was to be mainly OOP (except for the Analytics part),
+the choice was made to have a simpler Class structure,
+at the cost of being more visually crowded.
+
+"""
+
 def initialize_ui() -> TUI:
     """MAIN: sets up all the necessary instances for the TUI,
     and then returns the TUI"""

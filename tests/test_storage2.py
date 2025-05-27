@@ -44,6 +44,7 @@ def st() -> Storage:
 # Test functions
 
 def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
+    """tests the save function"""
     # in order to make a savefile, comment out all the os.remove
     # the savefile will ocnsist of the test data.
     if os.path.exists(testfile):
@@ -56,6 +57,7 @@ def test_save(st: Storage, habit_list: HabitAnalysis, testfile: str):
     # ↑ this one should be uncommented normally
     
 def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
+    """tests the load function"""
     st.HL_save(habit_list, testfile)
     hl: HabitAnalysis = st.HL_load(testfile)
     for habit, load_habit in zip(habit_list.return_all(), hl.return_all()):
@@ -71,6 +73,7 @@ def test_load(st: Storage, habit_list: HabitAnalysis, testfile: str):
     # ↑ this one should be uncommented normally
 
 def test_to_JSON(st: Storage, create_habits: list[Habit]):
+    """tests that a Habit converts to JSON properly"""
     first_habit = create_habits[0]
     correct: dict[str, Any] =  {
         "id": 1,
@@ -85,6 +88,7 @@ def test_to_JSON(st: Storage, create_habits: list[Habit]):
     assert st.to_JSON(first_habit) == correct
 
 def test_from_JSON(st: Storage, ):
+    """tests that JSON converts to a Habit"""
     test_habit: dict[str, Any] = {
         "id" : 1,
         "description": "daily_Habit_tracked",
@@ -95,7 +99,7 @@ def test_from_JSON(st: Storage, ):
         "last_complete": "2023-11-01",
         "record": {"on_date": "2023-10-01", "max_streak": 10},
         }
-    habit = st.from_JSON(test_habit)
+    habit: Habit = st.from_JSON(test_habit)
 
     assert habit.id == test_habit["id"]
     assert habit.description == test_habit["description"]
@@ -107,6 +111,7 @@ def test_from_JSON(st: Storage, ):
     assert asdict(habit.record) == test_habit["record"]
 
 def test_save_date(st: Storage, date: str, test_date_file: str) -> None:
+    """tests that the date is stored into the datefile"""
     if os.path.exists(test_date_file):
         os.remove(test_date_file)
         # ↑ this one should be uncommented normally
@@ -115,6 +120,7 @@ def test_save_date(st: Storage, date: str, test_date_file: str) -> None:
     os.remove(test_date_file)
 
 def test_date_load(st: Storage, date: str, test_date_file: str):
+    """tests that the date loads from the savefile"""
     st.date_save(date, test_date_file)
     date_loaded: str = st.date_load(test_date_file)
     assert date == date_loaded
