@@ -29,7 +29,7 @@ class StorageFactory:
     return cls.unique[cls]
     """
     
-    def create_storage(self, storage_type = StorageType.JSON, save_file):
+    def create_storage(self, save_file, storage_type = StorageType.JSON):
             """STORAGE: StorageFactory: creates a Storage object of
             the specified type"""
             
