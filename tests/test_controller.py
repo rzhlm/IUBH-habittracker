@@ -227,7 +227,7 @@ def test_do_add(controller: Controller, habit_list: HabitAnalysis):
 
 def test_do_delete_and_do_edit(controller: Controller, habit_list: HabitAnalysis):
     """Test do_delete: mark a habit as deleted"""
-    original: list[Habit] = habit_list._habitlist[0] # type: ignore
+    original: Habit = habit_list._habitlist[0] # type: ignore
     habit_copy: Habit = deepcopy(original)
     controller.do_delete(habit_copy)
     updated: Habit = habit_list.get_habit_by_id(habit_copy.id)
