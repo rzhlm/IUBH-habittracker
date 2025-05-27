@@ -20,11 +20,11 @@ at the cost of being more visually crowded,
 rather than branch out to multiple modules.
 
 If the save-files don't exist, they get re-generated.
+(i.e. they are safe to be deleted in order to start over)
 
 2022-05-01 is a Sunday, and 1st of the month
 -> after marking and advancing tonight, the monthly streak increments
 -> the next day, after marking and advancing, the weekly streak increments
-
 
 """
 

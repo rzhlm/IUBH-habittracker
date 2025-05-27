@@ -15,6 +15,7 @@ savefile-*.sav
 
 IUBH-habittracker.code-workspace
 savefile.old-notcompat
+setup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

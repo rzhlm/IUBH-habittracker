@@ -1,7 +1,7 @@
 
 REQUIREMENTS:
 -  [x] At least Weekly & Daily periods
--  [ ] min 5 preloaded (w & d) habits, with min 4 weeks of data
+-  [x] 5 preloaded (w & d) habits, with min 4 weeks of data
 -  [x] creation date + date/time of task completion
 
 - [x] Give list of all tracked habits
@@ -9,11 +9,7 @@ REQUIREMENTS:
 - [x] Return longest streak of all habits
 - [x] Return longest streak for chosen habits
 
-- [ ] MAKE TESTS FOR FUNCS & METHODS
-
-- default savefile creation
-- change default datefile
-to something prespecified
+- [x] MAKE TESTS FOR FUNCS & METHODS
 
 OTHER TODO:
 - [x]  Habit has action & period
@@ -32,7 +28,7 @@ Habit spec:
 - each min 4 weeks of data
 
 
-
+=================
 
 This was an intention,
 the actual design is altered:
