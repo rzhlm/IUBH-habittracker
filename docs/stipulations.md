@@ -11,6 +11,14 @@ REQUIREMENTS:
 
 - [ ] MAKE TESTS FOR FUNCS & METHODS
 
+- RUNTIME EXCEPTION 
+when deleting a new habit
+- default savefile creation
+- Save on change, not on exit
+- QM: direct return
+- QM: mark all
+
+
 OTHER TODO:
 - [x]  Habit has action & period
 -  [x] An action/task can be checked off

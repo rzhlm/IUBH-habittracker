@@ -78,6 +78,7 @@ class TUI(View):
 
     def init_menulist(self) -> list[MenuChoices]:
         """VIEW/TUI: initializes the menulist"""
+        # TODO: add setter & check for duplicate commands
         return [
         MenuChoices("Main menu / Clear","m", self.goto_main),
         MenuChoices("Advance date","adv", self.goto_advance_date),
@@ -350,7 +351,7 @@ class TUI(View):
                                 .return_current_longest_streak_period(period)
             yprint(f"\t* Period: {period}")
             if not top_cu_pe:
-                tprint("No habits!")
+                tprint("No habits!\n")
             else:
                 tprint(f"id: {top_cu_pe.id}")
                 tprint(f"{top_cu_pe.streak} unit streak " +\
@@ -581,6 +582,7 @@ class TUI(View):
                         print("-" * 80)
                     case 'del':
                         # habit.streak = -1
+                        breakpoint()
                         self.controller.do_delete(habit)
                         #print(f"{c}habit deleted! (kindof){r}")
                         yprint("habit deleted! (kindof)")

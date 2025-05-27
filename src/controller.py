@@ -220,7 +220,9 @@ class Controller:
         return [
             habit_dict[di.id]
             for di in self.done_indicator.data 
-            if not di.marked]
+            if not di.marked and
+            di.id in habit_dict # crash on delete otherwise
+            ]
 
     def do_qm(self):
         """CONTROLLER: placeholder for QuickMark logic, if needed"""
@@ -265,6 +267,10 @@ class Controller:
         """CONTROLLER: flags a habit from Habitlist as 'deleted'"""
         habit.streak = -1
         self.do_edit(habit)
+        self.done_indicator.data = [
+                                    di 
+                                    for di in self.done_indicator.data
+                                    if di.id != habit.id]
 
     def do_edit(self, edit_habit: Habit) -> None:
         """CONTROLLER: edits a habit"""
