@@ -350,7 +350,7 @@ class TUI(View):
         
         # What is the current top streak?
         # current longest streak all
-        yprint("The current top streak (tracked):")
+        yprint("The CURRENT top streak (tracked):")
         top: Habit = self.controller.habitlist.return_current_longest_streak_all()
         
         if not top:
@@ -375,9 +375,11 @@ class TUI(View):
                 f"on {top_p.record.on_date}, with period: {top_p.period}")
             tprint(f"Habit description: {top_p.description}\n")
 
+        print("-" * 80)
+
         # What is the current top_streak, for a period?
         # current longest streak period
-        yprint("The current top streak per period (tracked):")
+        yprint("The CURRENT top streak per period (tracked):")
         for period in Period:
             top_cu_pe = self.controller.habitlist\
                                 .return_current_longest_streak_period(period)
