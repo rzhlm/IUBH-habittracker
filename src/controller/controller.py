@@ -357,11 +357,13 @@ class Controller:
 
         -Weekly streaks get calculated *after* advancing from Monday to Tuesday.
         (i.e. the evaluation theoretically happens on midnight at Monday)
+        (i.e. the streak runs from Monday 23:59 to next Monday 23:59)
         
         -Monthly streaks get calculated *after* advancing from 1st to 2nd 
         of the month. (A monthly streak is defined as being done 
         in the previous 31 days, even if the month is shorter.)
         (i.e. the evaluation theoretically happens on midnight on the 1st day)
+        (i.e. the streak runs from 1st 23:59 to next 1st at 23:59 )
 
         When you edit, you can change: track/untrack, description, or delete.
 
