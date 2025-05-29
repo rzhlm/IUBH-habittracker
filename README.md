@@ -2,30 +2,39 @@
 
 ## Table of Contents
 
-### Screenshots
-### Installing
-#### Dependencies
-#### Option 1: clone and run
-#### Option 2: download packaged binaries
-#### Option 3: (unstable) install from 'pyproject.toml'
-### Using the software
+### 1. Screenshots
+### 2. Installing
+#### 2.a) Dependencies
+#### 2.b) Option 1: clone and run
+#### 2.c) Option 2: download packaged binaries
+#### 2.d) Option 3: (unstable) install from 'pyproject.toml'
+### 3. Using the software
 
-## Screenshots
+---
+
+## 1. Screenshots
+Startup
 ![Splash](./screenshots/splash.png)
+
+Tabular overview of tracked habits
 ![List of tracked](./screenshots/tracked.png)
+
+Marking habits (done / not-done)
 ![QuickMark](./screenshots/quickmark.png)
+
+Analysis of some habits
 ![Analysis](./screenshots/analysis.png)
 
-## Installing
+## 2. Installing
 
-### Dependencies
+### 2.a) Dependencies
 For the program itself there are no dependencies, other than the Python Standard Library
 
 For testing, Pytest is used (>= 8.3.3).
 
 Python >= 3.13.0 is required, as the new syntax regarding type hints is used.
 
-### Option 1: clone and run
+### 2.b) Option 1: clone and run
 1) Make sure you have a Python version >= 3.13.0
    
 e.g. if using Pyenv for version management:
@@ -78,7 +87,7 @@ pytest -v .
 ```
 
 
-### Option 2: Download a packaged binary release
+### 2.c) Option 2: Download a packaged binary release
 This has only been tested on local development machines: 
 
 Even though they are packaged for standalone use, it could be that particular dependencies are needed on your device.
@@ -89,7 +98,7 @@ macOS (Apple ARM): [here](https://github.com/rzhlm/IUBH-habittracker/releases/do
 
 
 
-### Option 3: (experimental) install from 'pyproject.toml'
+### 2.d) Option 3: (experimental) install from 'pyproject.toml'
 
 This is not a recommended method, it is experimental at the moment.
 You are free to try, if you'd like.
@@ -113,6 +122,39 @@ and then run:
  python main.py
 ```
 
-## Using the software
-placeholder
+## 3.Using the software
+
+Also see the help-section at startup, and in the menu.
+
+![List of tracked](./screenshots/tracked.png)
+        
+The colored letters are commands, which you should input.
+
+A habit can be tracked or untracked.
+(untracked: is for 'archival'/'soft deletion').
+(A deleted habit is flagged with 'streak = -1', and can only be
+seen in the special 'show-list (all) EXPERT' command.)
+
+The date has to be advanced manually (this is a great feature).
+It does not use your system date. This forces you to be pro-active.
+You're not able to advance the date, until each tracked habit has
+been marked "done" or "not done", for the day.
+Do this with "Quick mark".
+
+- The Daily streaks increments are visible *after* advancing to the next day.
+
+- The Weekly streaks increments are visible *after* advancing from Monday to Tuesday.
+(i.e. the evaluation theoretically happens on midnight at Monday)
+
+- The Monthly streak increments are visible *after* advancing from 1st to 2nd of the month. (A monthly streak is defined as being done
+in the previous 31 days, even if the month is shorter.)
+(i.e. the evaluation theoretically happens on midnight on the 1st day)
+
+When you edit, you can change: track/untrack, description, or delete.
+
+EXPERT MODE: for easy evaluation. Streak of -1 is used
+to flag a deleted habit.
+
+
+---
 
