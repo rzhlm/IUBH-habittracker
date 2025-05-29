@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-### [Screenshots](#Screenshots)
-### [Installing](#Installing)
-#### [Dependencies](#Dependencies)
-#### [Option 1: clone and run](#option-1-clone-and-run)
-#### [Option 2: download packaged binaries](#option-2-download-packaged-binaries)
-#### [Option 3: (unstable) install from 'pyproject.toml'](#option-3-unstable-install-from-pyprojecttoml)
-### [Using the software](#using-the-software)
+### Screenshots
+### Installing
+#### Dependencies
+#### Option 1: clone and run
+#### Option 2: download packaged binaries
+#### Option 3: (unstable) install from 'pyproject.toml'
+### Using the software
 
 ## Screenshots
 ![Splash](./screenshots/splash.png)
@@ -44,13 +44,13 @@ uv python install 3.13
 git clone https://github.com/rzhlm/IUBH-habittracker.git
 cd IUBH-habittracker
  ```
-**a) if you don't want to run any testing, then you don't need to install anything further.**
+**3a) if you don't want to run any testing, then you don't need to install anything further.**
 
 simply run it:
 ```
 python main.py
 ```
-**b) if you would like to run the testing, you need to install PyTest**
+**3b) if you would like to run the testing, you need to install PyTest**
 
 it is recommended to make a virtual environment.
 
@@ -60,12 +60,14 @@ python -m venv venv --prompt HabitTracker
 .\venv\Scripts\activate.bat (on Windows)
 source /venv/bin/activate (POSIX)
 ```
-or with the equivalent options in 'uv' or 'pyenv', or whichever tools you use.
+or with the equivalent options in e.g. 'uv' or 'pyenv', or whichever tools you use.
 Once that is done, you can install the required PyTest package:
 ```
 uv pip install -r requirements.txt
 or 
 pip install -r requirements.txt
+or
+pip install pytest
 ```
 
 and then you can run the tests, e.g.
@@ -83,10 +85,19 @@ Even though they are packaged for standalone use, it could be that particular de
 
 Windows (x64): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-win-x64.exe) (packaged with pyinstaller)
 
-macOS (Apple ARM): (here)
+macOS (Apple ARM): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-macos-arm-nuitka.bin) (compiles with Nuitka)
 
 
-### Option 3: (unstable) install from 'pyproject.toml'
+
+### Option 3: (experimental) install from 'pyproject.toml'
+
+This is not a recommended method, it is experimental at the moment.
+You are free to try, if you'd like.
+
+
+Clone from GitHub, as described above.
+
+Then install:
 
 e.g. with 'uv': 
 ```
@@ -95,6 +106,11 @@ uv pip install .[test]
 e.g. with 'pip': 
 ```
 pip install .[test]
+```
+
+and then run:
+```
+ python main.py
 ```
 
 ## Using the software
