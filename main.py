@@ -1,17 +1,18 @@
 from typing import TYPE_CHECKING
 import sys
 
-from src.constants import Settings
-from src.controller import Controller
-from src.storage2 import Storage
-from src.view import TUI
+from src.model.constants import Settings
+from src.model.storage import Storage
+from src.view.view import TUI
+from src.controller.controller import Controller
 
 
 if TYPE_CHECKING:
-    from src.habit import HabitAnalysis
+    from src.model.habit import HabitAnalysis
 
 """
- NOTE: Some of the Classes are getting crowded with methods.
+ NOTE: 
+- Some of the Classes are getting crowded with methods.
 If they grew more, ideally they would be put into separate modules,
 and/or separate classes.
 As the assignment was to be mainly OOP (except for the Analytics part),
@@ -19,12 +20,13 @@ the choice was made to have a simpler Class structure,
 at the cost of being more visually crowded, 
 rather than branch out to multiple modules.
 
-If the save-files don't exist, they get re-generated.
+- If the save-files don't exist, they get re-generated.
 (i.e. they are safe to be deleted in order to start over)
 
 2022-05-01 is a Sunday, and 1st of the month
--> after marking and advancing tonight, the monthly streak increments
--> the next day, after marking and advancing, the weekly streak increments
+-> after marking and advancing tonight, the MONTHLY streak increments
+-> the next day, after marking and advancing, the WEEKLY streak increments
+-> the daily streaks updates every day
 
 """
 

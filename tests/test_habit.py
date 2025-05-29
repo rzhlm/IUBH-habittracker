@@ -1,7 +1,7 @@
 import pytest
 from copy import deepcopy
 
-from src.habit import Period, Habit, HabitAnalysis, BestStreak
+from src.model.habit import Period, Habit, HabitAnalysis, BestStreak
 
 
 # ##############################################################################

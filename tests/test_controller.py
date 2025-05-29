@@ -9,13 +9,14 @@ from tests.test_habit import habit_list, create_habits  # type: ignore
 from tests.test_storage2 import st # type: ignore
 # type checker keeps complaining about the fixtures not being used!
 
-from src.controller import Controller
-from src.habit import Habit, HabitAnalysis, Period, BestStreak
-from src.constants import Settings
-from src.storage2 import Storage
+from src.controller.controller import Controller
+from src.model.habit import Habit, HabitAnalysis, Period, BestStreak
+from src.model.constants import Settings
+from src.model.storage import Storage
+
 
 if TYPE_CHECKING:
-    from src.controller import DoneIndicator
+    from src.controller.controller import DoneIndicator
 
 
 # ##############################################################################
