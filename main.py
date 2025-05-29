@@ -13,19 +13,20 @@ if TYPE_CHECKING:
 """
  NOTE: 
 - Some of the Classes are getting crowded with methods.
-If they grew more, ideally they would be put into separate modules,
+If they grew more, ideally they would be put into more separate modules,
 and/or separate classes.
 As the assignment was to be mainly OOP (except for the Analytics part),
-the choice was made to have a simpler Class structure,
+the choice was made to have a simpler import structure,
 at the cost of being more visually crowded, 
 rather than branch out to multiple modules.
 
 - If the save-files don't exist, they get re-generated.
 (i.e. they are safe to be deleted in order to start over)
 
-2022-05-01 is a Sunday, and 1st of the month
--> after marking and advancing tonight, the MONTHLY streak increments
--> the next day, after marking and advancing, the WEEKLY streak increments
+For easy eval of functionality:
+2022-05-01 is a Sunday, and also 1st of the month, 
+-> after marking and advancing on that date, the MONTHLY streak increments
+-> the day after, after marking and advancing, the WEEKLY streak increments
 -> the daily streaks updates every day
 
 """

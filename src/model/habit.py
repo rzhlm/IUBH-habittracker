@@ -76,7 +76,7 @@ class HabitAnalysis:
         # TODO: keep track of maximum ID, noth with length of list
         # but with an actual read of each added ID + increment
         self._habitlist: list[Habit] = habitlist
-        #  ↑ in retrospect, obviously this should be a dictionary, not a list
+        # ↑ in retrospect, obviously this should've been a dictionary, not list
         self._len: int = len(habitlist)
         #self._max_id = 0 #
         self._observers: list[Callable[[], None]] = []
@@ -179,35 +179,15 @@ class HabitAnalysis:
         """HABIT: HabitAnalysis:
         returns longest streak of all habits"""
         # required to be functional
-
-        # max = -2
-        # max_id = 0
-        # for habit in self._habitlist:
-        #     if habit.streak > max:
-        #         max = habit.streak
-        #         max_id = habit.id
-        
-        # for habit in self._habitlist:
-        #     if max_id == habit.id:
-        #         return habit
-        
+       
         max_ = max(
-                    # map(
-                    #     lambda habit: habit.streak,
-                    #     self._habitlist
-                    #     )
-                    self._habitlist,
+                    filter(
+                        lambda habit:habit.is_tracked,
+                        self._habitlist
+                        ),
                     key = lambda habit: habit.streak
                 )
         
-        # multiples = list(
-        #                 filter(
-        #                         lambda habit: habit.streak == max_,
-        #                         self._habitlist
-        #                 )
-        #             )
-        
-        #return multiples[0]
         return max_ or None
 
         
@@ -231,17 +211,6 @@ class HabitAnalysis:
         for the tracked habits."""
         # required to be functional
 
-        # max_ = -2
-        # max_id = 0
-        # max_date = ""
-        # for habit in self.return_tracked():
-        #     if habit.period == period:
-        #         if habit.streak > max_:
-        #             max_ = habit.streak
-        #             max_id = habit.id
-        #             max_date = habit.last_complete
-        # return (max_date, max_)
-    
         period_habits = filter(
                         lambda habit: habit.period == period,
                         self.return_tracked()
@@ -259,14 +228,6 @@ class HabitAnalysis:
     def return_past_longest_streak_period(self, period: Period) -> Habit | None:
         """HABIT: HabitAnalysis: 
         returns the past longest streak of a particular period"""
-        # max_ = -2
-        # max_id = 0
-        # for habit in self._habitlist:
-        #     if habit.period == period:
-        #         if habit.record.max_streak > max_:
-        #             max_ = habit.record.max_streak
-        #             max_id = habit.id
-        # return self.get_habit_by_id(max_id).record
 
         top_habit = max(
                         filter(
