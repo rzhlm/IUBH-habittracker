@@ -94,7 +94,7 @@ Even though they are packaged for standalone use, it could be that particular de
 
 Windows (x64): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-win-x64.exe) (packaged with pyinstaller)
 
-macOS (Apple ARM): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-macos-arm-nuitka.bin) (compiles with Nuitka)
+macOS (Apple ARM): [here](https://github.com/rzhlm/IUBH-habittracker/releases/download/v1.0.0/habits-macos-arm-nuitka.bin) (compiled with Nuitka)
 
 
 
