@@ -67,7 +67,7 @@ e.g. with Python directly:
 ```
 python -m venv venv --prompt HabitTracker
 .\venv\Scripts\activate.bat (on Windows)
-source /venv/bin/activate (POSIX)
+source /venv/bin/activate (POSIX-like)
 ```
 or with the equivalent options in e.g. 'uv' or 'pyenv', or whichever tools you use.
 Once that is done, you can install the required PyTest package:
