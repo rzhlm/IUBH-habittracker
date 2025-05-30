@@ -349,6 +349,7 @@ class Controller:
         """CONTROLLER: Controller: 
         flags a habit from Habitlist as 'deleted'"""
         habit.streak = -1
+        habit.is_tracked = False
         self.do_edit(habit)
         self.done_indicator.data = [
                                     di 
