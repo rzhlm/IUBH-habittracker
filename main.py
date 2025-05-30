@@ -20,11 +20,17 @@ the choice was made to have a simpler import structure,
 at the cost of being more visually crowded, 
 rather than branch out to multiple modules.
 
+- Depending on your view of what a Controller and a Model should do:
+(i.e. either only link View and Model, or either Model only contains data and
+date structures)
+Controller has methods that fit there,
+or that don't fit there (and should be in Model).
+
 - If the save-files don't exist, they get re-generated.
 (i.e. they are safe to be deleted in order to start over)
 
 For easy eval of functionality:
-2022-05-01 is a Sunday, and also 1st of the month, 
+2022-04-30 is a Saturday, and also last day of the month of April, 
 -> after marking and advancing on that date, the MONTHLY streak increments
 -> the day after, after marking and advancing, the WEEKLY streak increments
 -> the daily streaks updates every day

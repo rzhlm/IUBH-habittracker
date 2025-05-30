@@ -143,12 +143,12 @@ Do this with "Quick mark".
 
 - The Daily streaks increments are visible *after* advancing to the next day.
 
-- The Weekly streaks increments are visible *after* advancing from Monday to Tuesday.
-(i.e. the evaluation theoretically happens on midnight at Monday)
+- The Weekly streaks increments are visible *after* advancing from Sunday to Monday.
+(i.e. the evaluation theoretically happens on midnight at Sunday)
 
-- The Monthly streak increments are visible *after* advancing from 1st to 2nd of the month. (A monthly streak is defined as being done
-in the previous 31 days, even if the month is shorter.)
-(i.e. the evaluation theoretically happens on midnight on the 1st day)
+- The Monthly streak increments are visible *after* advancing from last day of 
+a month to first of the next month.
+(i.e. the evaluation theoretically happens on midnight on the last day)
 
 When you edit, you can change: track/untrack, description, or delete.
 

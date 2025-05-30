@@ -139,18 +139,95 @@ def test_mark_habit_not_done(controller: Controller, habit_list: HabitAnalysis):
             assert di.marked and not di.done
             break
 
-def test_is_habit_done_timely(controller: Controller, habit_list: HabitAnalysis):
+# def test_is_habit_done_timely(controller: Controller, habit_list: HabitAnalysis):
+#     """test is_habit_done_timely: True when habit.last_complete is timely
+#     for that period."""
+#     habit: Habit = deepcopy(habit_list.return_all()[0])
+    
+#     habit.last_complete = controller.current_date.strftime(Settings().DTSTRF)
+#     assert controller.is_habit_done_timely(habit)
+    
+#     past: dt.datetime = controller.current_date - dt.timedelta(days=2)
+#     habit.last_complete = past.strftime(Settings().DTSTRF)
+#     if habit.period == Period.daily:
+#         assert not controller.is_habit_done_timely(habit)
+
+def test_is_habit_done_timely(controller: Controller):
     """test is_habit_done_timely: True when habit.last_complete is timely
     for that period."""
-    habit: Habit = deepcopy(habit_list.return_all()[0])
-    
-    habit.last_complete = controller.current_date.strftime(Settings().DTSTRF)
-    assert controller.is_habit_done_timely(habit)
-    
-    past: dt.datetime = controller.current_date - dt.timedelta(days=2)
-    habit.last_complete = past.strftime(Settings().DTSTRF)
-    if habit.period == Period.daily:
-        assert not controller.is_habit_done_timely(habit)
+             
+    date_format: str = controller.settings.DTSTRF
+    fixed_date: dt.datetime = dt.datetime(2025, 6, 1)
+    controller.current_date = fixed_date
+
+    # DAILY HABIT
+    # on time
+    daily_on_time = Habit(
+        id=101,
+        description="Daily on time",
+        creation_data="2025-05-01",
+        period=Period.daily,
+        is_tracked=True,
+        streak=0,
+        last_complete=fixed_date.strftime(date_format),
+        record=BestStreak(fixed_date.strftime(date_format), 0)
+    )
+    assert controller.is_habit_done_timely(daily_on_time) is True
+
+    # not on time
+    daily_late = deepcopy(daily_on_time)
+    daily_late.id = 102
+    daily_late.last_complete = (fixed_date - dt.timedelta(days=1))\
+                                                    .strftime(date_format)
+    assert controller.is_habit_done_timely(daily_late) is False
+    # -------------------------------------------------------------------------
+    # WEEKLY
+    # on time
+    weekly_on_time = Habit(
+        id=103,
+        description="Weekly on time",
+        creation_data="2025-05-01",
+        period=Period.weekly,
+        is_tracked=True,
+        streak=0,
+        last_complete=(fixed_date - dt.timedelta(days=7)).strftime(date_format),
+        record=BestStreak((fixed_date - dt.timedelta(days=7)).strftime(date_format), 0)
+    )
+    assert controller.is_habit_done_timely(weekly_on_time) is True
+
+    # not on time
+    weekly_late = deepcopy(weekly_on_time)
+    weekly_late.id = 104
+    weekly_late.last_complete = (fixed_date - dt.timedelta(days=8)).strftime(date_format)
+    assert controller.is_habit_done_timely(weekly_late) is False
+    # -------------------------------------------------------------------------
+    # MONTHLY HABIT
+    # on time
+    monthly_on_time = Habit(
+        id=105,
+        description="Monthly on time",
+        creation_data="2025-05-01",
+        period=Period.monthly,
+        is_tracked=True,
+        streak=0,
+        last_complete=(fixed_date - dt.timedelta(days=20)).strftime(date_format),
+        record=BestStreak((fixed_date - dt.timedelta(days=20)).strftime(date_format), 0)
+    )
+    assert controller.is_habit_done_timely(monthly_on_time) is True
+
+    # not on time
+    monthly_late = Habit(
+        id=106,
+        description="Monthly late",
+        creation_data="2025-04-01",
+        period=Period.monthly,
+        is_tracked=True,
+        streak=0,
+        last_complete=(fixed_date - dt.timedelta(days=32)).strftime(date_format),
+        record=BestStreak((fixed_date - dt.timedelta(days=32)).strftime(date_format), 0)
+    )
+    assert controller.is_habit_done_timely(monthly_late) is False
+
 
 def test_update_streak(controller: Controller, habit_list: HabitAnalysis):
     """test update_streak: increment streak. If new streak 
@@ -161,6 +238,42 @@ def test_update_streak(controller: Controller, habit_list: HabitAnalysis):
     controller.update_streak(habit)
     assert habit.streak == orig_record + 1
     assert habit.record.max_streak == habit.streak
+
+def test_is_last_day_of_month(controller: Controller):
+    """test that is_last_day_of_month return True, when the date is the 
+    last day of the month."""
+    d_last_jan = dt.datetime(2025, 1, 31)
+    assert controller.is_last_day_of_month(d_last_jan) is True
+
+    d_not_last_jan = dt.datetime(2025, 1, 30)
+    assert controller.is_last_day_of_month(d_not_last_jan) is False
+
+    d_last_feb = dt.datetime(2025, 2, 28)
+    assert controller.is_last_day_of_month(d_last_feb) is True
+
+    d_last_feb_leap = dt.datetime(2020, 2, 29)
+    assert controller.is_last_day_of_month(d_last_feb_leap) is True
+
+    d_last_apr = dt.datetime(2025, 6, 30)
+    assert controller.is_last_day_of_month(d_last_apr) is True
+
+def test_get_num_days_in_month(controller: Controller):
+    """Test that get_num_days_in_month returns the number of days in a month"""
+    d_apr = dt.datetime(2025, 4, 15)
+    result_apr = controller.get_num_days_in_month(d_apr)
+    assert result_apr == 30
+
+    d_feb_non_leap = dt.datetime(2025, 2, 10)
+    result_feb_non_leap = controller.get_num_days_in_month(d_feb_non_leap)
+    assert result_feb_non_leap == 28
+
+    d_feb_leap = dt.datetime(2020, 2, 10)
+    result_feb_leap = controller.get_num_days_in_month(d_feb_leap)
+    assert result_feb_leap == 29
+
+    d_dec = dt.datetime(2025, 12, 10)
+    result_dec = controller.get_num_days_in_month(d_dec)
+    assert result_dec == 31
 
 def test_do_advance_date(controller: Controller, habit_list: HabitAnalysis):
     """test do_advance_date: advance controller.current_date by one day,

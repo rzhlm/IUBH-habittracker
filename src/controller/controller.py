@@ -41,6 +41,13 @@ class DoneIndicatorList:
 class Controller:
     """CONTROLLER: Controller: 
     C part of the MVC"""
+
+    # Depending on what you think a Controller should do,
+    # many of the methods here could be part of the Model, not the Controller.
+    # i.e., if you think the Controller only should link View and Model.
+    # But perhaps less so, if you think that Model should be more storing data
+    # and its data structures.
+
     def __init__(self, habitlist: HabitAnalysis,
                   storage: Storage):
         self.settings: Settings = Settings()
@@ -93,6 +100,7 @@ class Controller:
     def addto_indicator_list(self, habit: Habit) -> None:
         """CONTROLLER: Controller: 
         adds a newly created habit to the DoneIndicatorList"""
+        # TODO: check what can be removed here
         # not needed anymore now with Observer pattern
         di = DoneIndicator(habit.id, False, False)
         self.done_indicator.data.append(di)
@@ -121,7 +129,6 @@ class Controller:
 
         date_dt: dt.datetime = dt.datetime.strptime(loaded_date, strf)
         return date_dt
-        #return date_dt.date()
 
     def dt_to_str(self, date: dt.datetime) -> str:
         """CONTROLLER: Controller: 
@@ -142,7 +149,6 @@ class Controller:
         if self.done_indicator.today == self.current_date:
             return all(di.marked for di in self.done_indicator.data)
         return False
-        # raise Exception("CONTROLLER: are_all_habits_marked: logic error")
 
     def is_ready_to_advance(self) -> bool:
         """CONTROLLER: Controller:
@@ -153,7 +159,6 @@ class Controller:
                 return True
             return False
         return False
-        # raise Exception("CONTROLLER: is_ready_to_advance: logic error")
 
     def mark_habit_done(self, passed_habit: Habit) -> None:
         """CONTROLLER: Controller: 
@@ -182,24 +187,24 @@ class Controller:
 
     def is_habit_done_timely(self, habit: Habit) -> bool:
         """"CONTROLLER: Controller: 
-        checks if habit is done on time
-        depending on its periodicity"""
+        checks if habit is done on time depending on its periodicity"""
         habit_dt: dt.datetime = self.str_to_dt(habit.last_complete)
         diff: int = (self.current_date - habit_dt).days
 
         match habit.period:
             case Period.daily:
-                # done today (note: today is new day after the rollover!)
+                # done today
                 return diff == 0
+            
             case Period.weekly:
                 # done in the past 7 days
-                # a diff of 6 is also possible, depending on how you
-                # define how much time has passed and if a streak
-                # becomes missed on or after the period.
                 return diff <= 7
+            
             case Period.monthly:
-                # done in the past 31 days. Same caveat as above
-                return diff <= 31
+                days_in_month = self.get_num_days_in_month(habit_dt)
+                #return diff <= 31
+                return diff <= days_in_month
+            
             case _:
                 raise ValueError(f"non-expected period: {habit}")
 
@@ -208,8 +213,39 @@ class Controller:
         updates the streak with 1 unit"""
         habit.streak += 1
         if habit.streak > habit.record.max_streak:
-            habit.record = BestStreak(self.dt_to_str(self.current_date), habit.streak)
+            habit.record = BestStreak(
+                                    self.dt_to_str(self.current_date),
+                                    habit.streak
+                                    )
 
+    def is_last_day_of_month(self, date: dt.datetime) -> bool:
+        """CONTROLLER:Controller: checks whether the given date is the 
+        last day of the month"""
+        day_after: dt.datetime = date + dt.timedelta(days=1)
+        return date.month != day_after.month
+    
+    def get_num_days_in_month(self, date: dt.datetime) -> int:
+        """CONTROLLER: Controller: gets the number of days in the month
+        instead of a dictionary or match/case the extra complexity also
+        outsources the 28/29 day, leap-year problem of February."""
+        #given_month: int = date.month
+        # not december (because otherwise the next day, the year changes):
+        if date.month != 12:
+            first_of_next_month: dt.datetime = dt.datetime(
+                                        date.year,
+                                        date.month + 1,
+                                        1
+                                        )
+        else:
+            first_of_next_month: dt.datetime = dt.datetime(
+                                        date.year + 1,
+                                        1,
+                                        1
+                                        )
+        end_of_month: dt.datetime = first_of_next_month - dt.timedelta(days=1)
+        last_date: int = end_of_month.day
+        return last_date
+        
     def do_advance_date(self) -> None:
         """CONTROLLER: Controller:
         advances the manual date"""
@@ -224,19 +260,17 @@ class Controller:
                         else:
                             # not done: streak loss
                             habit.streak = 0
+
                     case Period.weekly:
-                        # checked after every monday
-                        # meaning: is habit done in previous calendar-week?
                         # dt.weekday: 0=monday, 6=sunday
-                        if self.current_date.weekday() == 0:
+                        if self.current_date.weekday() == 6:
                             if self.is_habit_done_timely(habit):
                                 self.update_streak(habit)
                             else:
                                 habit.streak = 0
+
                     case Period.monthly:
-                        # check after 1st of next month
-                        # meaning: is habit done in calendar-month?
-                        if self.current_date.day == 1:
+                        if self.is_last_day_of_month(self.current_date):
                             if self.is_habit_done_timely(habit):
                                 self.update_streak(habit)
                             else:
@@ -353,17 +387,15 @@ class Controller:
         You can't advance the date, until each tracked habit has 
         been marked "done" or "not done". Do this with "Quick mark".
 
-        -Daily streaks get calculated *after* advancing to the next day.
+        -Daily streaks get calculated *during* advancement to the next day.
 
-        -Weekly streaks get calculated *after* advancing from Monday to Tuesday.
-        (i.e. the evaluation theoretically happens on midnight at Monday)
-        (i.e. the streak runs from Monday 23:59 to next Monday 23:59)
-        
-        -Monthly streaks get calculated *after* advancing from 1st to 2nd 
-        of the month. (A monthly streak is defined as being done 
-        in the previous 31 days, even if the month is shorter.)
-        (i.e. the evaluation theoretically happens on midnight on the 1st day)
-        (i.e. the streak runs from 1st 23:59 to next 1st at 23:59 )
+        -Weekly streaks get calculated *during* advancing from Sunday to Monday.
+        (i.e. they are visible *after* the advancement: on Monday)
+        (i.e. the evaluation theoretically happens on midnight at Sunday)
+                
+        -Monthly streaks get calculated *during* advancing from last day of month
+        to first day of new month.
+        (i.e. the evaluation theoretically happens on midnight of the last day)
 
         When you edit, you can change: track/untrack, description, or delete.
 

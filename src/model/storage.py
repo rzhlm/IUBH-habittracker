@@ -28,12 +28,14 @@ class Storage:
     def date_load(self, filename: str = "datefile.sav") -> str:
         """STORAGE: Storage:
         loads the date value from file"""
-        # if no datefile exists, take system date and make that the file
+        ## if no datefile exists, take system date and make that the file
+        # no, that was the previous functionality. Now it fixes the date to
+        # 30th April 2022, which is a Saturday.
         if not os.path.exists(filename):
             #strf = self.settings.DTSTRF
             #today = dt.date.today()
             #date_str = today.strftime(strf)
-            defined_date = "2022-05-01"
+            defined_date = "2022-04-30"
             
             try:
                 #self.date_save(date_str)
@@ -51,7 +53,6 @@ class Storage:
                 filename: str = "default_savefile.sav") -> None:
         """STORAGE: Storage: 
         saves the Habitlist instance (to JSON to file)"""
-        #habit_list: HabitList) -> None:
         with open(filename,"w") as file:
         #with open(self.savefile, 'r') as file:
             json.dump({"_habitlist":
@@ -65,16 +66,11 @@ class Storage:
         """STORAGE: Storage: 
         loads the Habitlist from storage, and transforms 
         into instance"""
-        # TODO: if no file exists, create a blank file 
-        # with 1 demo habit for each period in it
         #breakpoint()
 
         if not os.path.exists(filename):
             try:
                 self.generate_savefile()
-                #raise NotImplementedError("No savefile, and generation not yet implemented!")
-                # either generate one from code
-                # or copy from a default one which is always shipped
             except Exception as e:
                 print(f"No savefile! Could not generate default! error: {e}")
                 sys.exit(1)          

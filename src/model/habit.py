@@ -3,6 +3,13 @@ from enum import Enum, auto
 from copy import deepcopy
 from collections.abc import Callable
 
+"""
+NOTE:
+The functional paradigm showcase is in the HabitAnalysis class.
+The section containing it is indicated.
+Starts circa at line 150.
+ """
+
 class Period(Enum):
     daily = auto()
     weekly = auto()
@@ -66,11 +73,12 @@ class Habit:
         turns Tracked bool to True"""
         self.is_tracked = True
 
-#@dataclass
 class HabitAnalysis:
     """HABIT:HabitAnalysis:
     stores a list of all the habits, counts them
     + all the methods to retrieve, update, add, etc."""
+    # Analytics, later in this class: functional programming style,
+    # as requested in assignment
     
     def __init__(self, habitlist: list[Habit]):
         # TODO: keep track of maximum ID, noth with length of list
@@ -136,7 +144,12 @@ class HabitAnalysis:
         """HABIT: HabitAnalysis:
         returns all habits (also untracked & deleted)"""
         return self._habitlist or []
-    
+
+# ##############################################################################
+# ANALYSIS: FUNCTIONAL PARADIGM
+#
+# ##############################################################################
+
     def return_tracked(self) -> list[Habit]:
         """HABIT: HabitAnalysis:
         returns tracked habits (not untracked & deleted)"""
